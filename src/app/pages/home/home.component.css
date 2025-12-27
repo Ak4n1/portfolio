@@ -449,8 +449,8 @@
   transform-style: flat;
 }
 
-/* Hover para iconos personalizados (mantener el filtro blanco) */
-.tech-item:hover .tech-icon:not([src*="simpleicons.org"]) {
+/* Hover para iconos personalizados (mantener el filtro blanco solo en modo oscuro) */
+[data-theme='dark'] .tech-item:hover .tech-icon:not([src*="simpleicons.org"]) {
   filter: brightness(0) saturate(100%) invert(1) brightness(1.2);
 }
 

@@ -1,26 +1,25 @@
 <section class="about-hero">
   <div class="container">
     <div class="about-content">
-      <div class="about-text">
+      <div class="about-text" data-aos="fade-right" data-aos-duration="600" data-aos-delay="50">
         <h1 class="about-title">Sobre mí</h1>
-        <p class="about-subtitle">Full Stack Developer & Estudiante de <a href="https://exa.unicen.edu.ar/tudai/" target="_blank" class="tudai-link">TUDAI</a></p>
         <div class="about-description">
           <p>
-            Soy estudiante de la Tecnicatura Universitaria en Desarrollo de Aplicaciones Informáticas (<a href="https://exa.unicen.edu.ar/tudai/" target="_blank" class="tudai-link">TUDAI</a>) 
-            en la Universidad Nacional del Centro de la Provincia de Buenos Aires. Mi pasión por la tecnología 
-            me impulsa a crear aplicaciones web modernas y funcionales.
+            Soy estudiante de la Tecnicatura Universitaria en Desarrollo de Aplicaciones Informáticas (<a
+              href="https://exa.unicen.edu.ar/tudai/" target="_blank" class="tudai-link">TUDAI</a>)
+            en la Universidad Nacional del Centro de la Provincia de Buenos Aires.
           </p>
           <p>
-            Me especializo en el desarrollo full stack, utilizando tecnologías como Angular, Spring Boot, 
-            Java y MySQL. Mi objetivo es crear experiencias de usuario excepcionales y soluciones tecnológicas 
-            que marquen la diferencia.
+            Mi objetivo es convertirme en programador full stack. Actualmente me encuentro desarrollando proyectos
+            personales
+            en Angular, Spring Boot y MySQL para fortalecer mis habilidades, y busco formar parte de un equipo donde
+            pueda aprender más y crecer profesionalmente.
           </p>
         </div>
       </div>
-      <div class="about-image">
+      <div class="about-image" data-aos="fade-left" data-aos-duration="600" data-aos-delay="100">
         <div class="profile-card">
           <div class="profile-avatar">
-            <div class="avatar-placeholder">JE</div>
           </div>
           <div class="profile-info">
             <h3>Juan Encabo</h3>
@@ -35,15 +34,16 @@
 
 <section class="education">
   <div class="container">
-    <h2 class="section-title">Educación</h2>
+    <h2 class="section-title" data-aos="fade-up" data-aos-duration="600" data-aos-delay="50">Educación</h2>
     <div class="education-grid">
-      <div class="education-card">
-        <div class="education-icon">🎓</div>
-        <h3><a href="https://exa.unicen.edu.ar/tudai/" target="_blank" class="tudai-link">Tecnicatura Universitaria en Desarrollo de Aplicaciones Informáticas</a></h3>
+      <div class="education-card" data-aos="fade-up" data-aos-duration="600" data-aos-delay="100">
+        <div class="education-icon"><img [src]="getUniversityLogo()" alt="TUDAI"></div>
+        <h3><a href="https://exa.unicen.edu.ar/tudai/" target="_blank" class="tudai-link">Tecnicatura Universitaria en
+            Desarrollo de Aplicaciones Informáticas</a></h3>
         <p class="institution">Universidad Nacional del Centro de la Provincia de Buenos Aires</p>
         <p class="period">2023 - En curso</p>
         <p class="description">
-          Formación integral en desarrollo de software, programación orientada a objetos, 
+          Formación integral en desarrollo de software, programación orientada a objetos,
           bases de datos y desarrollo web moderno.
         </p>
       </div>
@@ -53,41 +53,42 @@
 
 <section class="academic-timeline">
   <div class="container">
-    <h2 class="section-title">Trayectoria Académica - TUDAI</h2>
-    <p class="timeline-subtitle">Tecnicatura Universitaria en Desarrollo de Aplicaciones Informáticas</p>
-    
+    <h2 class="section-title" data-aos="fade-up" data-aos-duration="600" data-aos-delay="50">Contenido de la carrera
+    </h2>
+    <p class="timeline-subtitle" data-aos="fade-up" data-aos-duration="600" data-aos-delay="100">Tecnicatura
+      Universitaria en Desarrollo de Aplicaciones Informáticas</p>
+
     <div class="academic-timeline-container">
-      <div *ngFor="let year of academicTimeline; let yearIndex = index" class="timeline-item">
+      <div *ngFor="let year of academicTimeline; let yearIndex = index" class="timeline-item" data-aos="fade-up"
+        data-aos-duration="600" [attr.data-aos-delay]="150 + (yearIndex * 100)">
         <div class="timeline-marker">{{ year.year }}</div>
         <div class="timeline-content">
           <h3 class="year-title">{{ year.displayYear }}</h3>
-          <p class="year-period">{{ year.semesters.length * 2 }} cuatrimestres académicos</p>
-          
+
           <div class="semesters-list">
-            <div *ngFor="let semester of year.semesters; let semesterIndex = index" 
-                 class="semester-item">
-              
-              <div class="semester-header" 
-                   (click)="toggleSemester(yearIndex, semesterIndex)">
+            <div *ngFor="let semester of year.semesters; let semesterIndex = index" class="semester-item">
+
+              <div class="semester-header" (click)="toggleSemester(yearIndex, semesterIndex)">
                 <div>
-                  <h4 class="semester-title">{{ semester.name }}</h4>
-                  <p class="semester-subjects-count">{{ semester.subjects.length }} materias</p>
+                  <h4 class="semester-title">{{ semester.name }} <span class="semester-subjects-count">{{
+                      semester.subjects.length }} materias</span></h4>
+                  <ul style="font-size: 11px; list-style-type: none; padding: 0;">
+                    <li *ngFor="let subject of semester.subjects">{{ subject.name }}</li>
+                  </ul>
                 </div>
-                <div class="expand-icon" 
-                     [class.rotated]="isSemesterExpanded(yearIndex, semesterIndex)">
+                <div class="expand-icon" [class.rotated]="isSemesterExpanded(yearIndex, semesterIndex)">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/>
+                    <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z" />
                   </svg>
                 </div>
               </div>
-              
-              <div class="semester-content" 
-                   [class.visible]="isSemesterExpanded(yearIndex, semesterIndex)">
+
+              <div class="semester-content" [class.visible]="isSemesterExpanded(yearIndex, semesterIndex)">
                 <div class="subjects-grid">
-                  <div *ngFor="let subject of semester.subjects" class="subject-card">
+                  <div *ngFor="let subject of semester.subjects; let subjectIndex = index" class="subject-card">
                     <h5 class="subject-name">{{ subject.name }}</h5>
                     <div class="concepts-list">
-                      <span *ngFor="let concept of subject.concepts" class="concept-tag">
+                      <span *ngFor="let concept of subject.concepts; let conceptIndex = index" class="concept-tag">
                         {{ concept }}
                       </span>
                     </div>
@@ -102,29 +103,148 @@
   </div>
 </section>
 
-<section class="interests">
+
+
+<section class="courses-certifications">
   <div class="container">
-    <h2 class="section-title">Intereses</h2>
-    <div class="interests-grid">
-      <div class="interest-card">
-        <div class="interest-icon">💻</div>
-        <h3>Desarrollo Web</h3>
-        <p>Crear aplicaciones web modernas y responsivas</p>
+    <h2 class="section-title" data-aos="fade-up" data-aos-duration="600" data-aos-delay="50">Cursos y Certificaciones
+    </h2>
+
+    <!-- Cursos Online -->
+    <div class="courses-section" data-aos="fade-up" data-aos-duration="600" data-aos-delay="100">
+      <h3 class="subsection-title"> Cursos Online</h3>
+      <div class="courses-grid">
+        <div class="course-card">
+          <div class="course-header">
+            <div class="course-icon"><img [src]="getIconSrc({slug: 'udemy'})" alt="Udemy" width="32" height="32"></div>
+            <div class="course-info">
+              <h4><a href="https://www.udemy.com/course/spring-framework-5" target="_blank">Spring Framework 6 y Spring
+                  Boot 3</a></h4>
+              <p class="course-platform">Udemy</p>
+              <p class="course-status">Completado</p>
+            </div>
+          </div>
+          <div class="course-description">
+            <p>Desarrollo de aplicaciones web con Spring Boot, Spring Data JPA, Spring Security y más.</p>
+          </div>
+          <div class="course-progress">
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: 100%"></div>
+            </div>
+            <span class="progress-text">100%</span>
+          </div>
+        </div>
+
+
       </div>
-      <div class="interest-card">
-        <div class="interest-icon">🎨</div>
-        <h3>Diseño UX/UI</h3>
-        <p>Diseñar experiencias de usuario intuitivas</p>
+    </div>
+
+    <!-- Seminarios -->
+    <div class="seminars-section" data-aos="fade-up" data-aos-duration="600" data-aos-delay="150">
+      <h3 class="subsection-title"> Seminarios</h3>
+      <div class="seminars-grid">
+        <div class="seminar-card">
+          <div class="seminar-icon">
+            <img [src]="getIconSrc({slug: 'angular'})" alt="Angular" width="32" height="32">
+          </div>
+          <div class="seminar-content">
+            <h4>Seminario de Angular CLI</h4>
+            <p class="seminar-description">Herramientas avanzadas de Angular CLI para desarrollo eficiente</p>
+            <div class="seminar-tags">
+              <span class="tag">Angular</span>
+              <span class="tag">CLI</span>
+              <span class="tag">Desarrollo</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="seminar-card">
+          <div class="seminar-icon">
+            <fa-icon [icon]="faRobot" class="ai-icon" [style.color]="iconColor"></fa-icon>
+          </div>
+          <div class="seminar-content">
+            <h4>Productividad Aumentada por IA</h4>
+            <p class="seminar-description">Herramientas de inteligencia artificial para mejorar la productividad en
+              desarrollo</p>
+            <div class="seminar-tags">
+              <span class="tag">IA</span>
+              <span class="tag">Productividad</span>
+              <span class="tag">Herramientas</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="seminar-card">
+          <div class="seminar-icon">
+            <img [src]="getIconSrc({slug: 'googleanalytics'})" alt="Google Analytics" width="32" height="32">
+          </div>
+          <div class="seminar-content">
+            <h4>Google Analytics 4</h4>
+            <p class="seminar-description">Análisis de datos web y métricas con Google Analytics 4</p>
+            <div class="seminar-tags">
+              <span class="tag">Analytics</span>
+              <span class="tag">Google</span>
+              <span class="tag">Métricas</span>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="interest-card">
-        <div class="interest-icon">🚀</div>
-        <h3>Tecnologías Emergentes</h3>
-        <p>Explorar nuevas tecnologías y frameworks</p>
-      </div>
-      <div class="interest-card">
-        <div class="interest-icon">🤝</div>
-        <h3>Trabajo en Equipo</h3>
-        <p>Colaborar en proyectos de desarrollo</p>
+    </div>
+
+    <!-- Certificaciones -->
+    <div class="certifications-section" data-aos="fade-up" data-aos-duration="600" data-aos-delay="200">
+      <h3 class="subsection-title"> Certificaciones</h3>
+      <div class="certifications-grid">
+        <div class="certification-card">
+          <div class="certification-header">
+            <div class="certification-icon">
+              <fa-icon [icon]="faDesktop" [style.color]="iconColor"></fa-icon>
+            </div>
+            <div class="certification-info">
+              <h4>Asistente Informático</h4>
+              <p class="certification-institution">EEM N°1 "Álvaro Barros"</p>
+              <p class="certification-year">2012</p>
+            </div>
+          </div>
+          <div class="certification-description">
+            <p>Seminario enfocado en herramientas de Office y fundamentos de informática.</p>
+            <div class="certification-skills">
+              <span class="skill-tag">Microsoft Office</span>
+              <span class="skill-tag">Word</span>
+              <span class="skill-tag">Excel</span>
+              <span class="skill-tag">PowerPoint</span>
+              <span class="skill-tag">Manipulacion de hardware</span>
+              <span class="skill-tag">Mantenimiento de equipos</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="certification-card">
+          <div class="certification-header">
+            <div class="certification-icon"><img [src]="getIconSrc({slug: 'udemy'})" alt="Udemy" width="32" height="32">
+            </div>
+            <div class="certification-info">
+              <h4>Spring Framework 6 y Spring Boot 3</h4>
+              <p class="certification-institution">Udemy</p>
+              <p class="certification-year">2024</p>
+            </div>
+          </div>
+          <div class="certification-description">
+            <p>Certificación completada en desarrollo de aplicaciones web con Spring Boot, Spring Data JPA, Spring
+              Security y más.</p>
+            <p class="certificate-link">
+              <a href="https://www.udemy.com/certificate/UC-7e1d8d05-5d39-4504-85aa-68a7b3d341c8/" target="_blank">Ver
+                certificado →</a>
+            </p>
+            <div class="certification-skills">
+              <span class="skill-tag">Spring Boot</span>
+              <span class="skill-tag">Spring Framework</span>
+              <span class="skill-tag">Spring Data JPA</span>
+              <span class="skill-tag">Spring Security</span>
+              <span class="skill-tag">Java</span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>

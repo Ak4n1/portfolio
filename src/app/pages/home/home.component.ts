@@ -52,6 +52,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     }
     
     // Para iconos de Simple Icons, usar el color dinámico
+    // Sin cache-buster para mejor performance
     return `https://cdn.simpleicons.org/${tech.slug}/${this.iconColor}`;
   }
 
@@ -133,6 +134,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   ngOnInit() {
     // Suscribirse a cambios de tema para actualizar los iconos
     this.themeSubscription = this.themeService.currentTheme$.subscribe(() => {
+      // Solo una detección de cambios, sin delays adicionales
       this.cdr.detectChanges();
     });
   }

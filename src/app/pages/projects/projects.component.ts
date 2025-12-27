@@ -42,24 +42,24 @@ export class ProjectsComponent implements OnInit, OnDestroy {
   projects: Project[] = [
     {
       id: 1,
-      title: 'L2Terra Online',
-      description: 'Aplicación web completa para servidor L2Terra con market offline, estadísticas de personajes, sistema de cuentas maestras y gestión de inventarios. Incluye autenticación JWT y filtros de seguridad.',
+      title: 'L2 Terra Web',
+      description: 'Plataforma web completa desarrollada en Angular para servidor privado de Lineage 2 basado en L2Jmobius Classic. Incluye autenticación, pagos, marketplace offline y sistema de streaming.',
       icon: '🎮',
-      tags: ['Angular', 'TypeScript', 'SCSS', 'JWT', 'Responsive'],
+      tags: ['Angular', 'Spring Boot', 'JWT', 'MercadoPago', 'Firebase', 'N8N'],
       category: 'Frontend',
       github: 'https://github.com/juanencabo/l2terra-web',
       demo: 'https://l2terra.online',
-      images: ['assets/images/bgweb3.png', 'assets/images/bgweb2.png', 'assets/images/bgweb1.png']
+      images: ['assets/images/terra-web/bg1.jpg', 'assets/images/terra-web/bg2.jpg', 'assets/images/terra-web/bg3.jpg', 'assets/images/terra-web/bg4.jpg', 'assets/images/terra-web/bg5.jpg', 'assets/images/terra-web/bg6.jpg', 'assets/images/terra-web/bg7.jpg', 'assets/images/terra-web/bg8.jpg']
     },
     {
       id: 2,
       title: 'Terra API',
-      description: 'API REST completa para L2Terra con gestión de cuentas maestras, verificación por email, market offline, estadísticas de personajes y sistema de seguridad con JWT y rate limiting.',
+      description: 'API REST monolítica desarrollada en Spring Boot 3.4.4 para servidor privado de Lineage 2 basado en L2Jmobius Classic. Incluye autenticación JWT, gestión de personajes, pagos con PayPal y MercadoPago, marketplace offline y sistema de notificaciones.',
       icon: '🔌',
-      tags: ['Spring Boot', 'Java', 'JWT', 'MySQL', 'Security'],
+      tags: ['Spring Boot', 'Java', 'JWT', 'MariaDB', 'PayPal', 'MercadoPago', 'Firebase', 'WebSocket'],
       category: 'Backend',
       github: 'https://github.com/juanencabo/terra-api',
-      images: ['assets/images/bgweb3.png', 'assets/images/bgweb2.png', 'assets/images/bgweb1.png']
+      images: ['assets/images/terra-api/bgweb3.png', 'assets/images/terra-api/bgweb2.png', 'assets/images/terra-api/bgweb1.png']
     },
     {
       id: 3,
@@ -70,28 +70,17 @@ export class ProjectsComponent implements OnInit, OnDestroy {
       category: 'Desktop',
       github: 'https://github.com/juanencabo/game-launcher',
       demo: 'https://github.com/juanencabo/game-launcher/releases',
-      images: ['assets/images/launcherlogin.png', 'assets/images/launcherpanel.png','assets/images/launcherpanel2.png']
+      images: ['assets/images/terra-launcher/launcherlogin.png', 'assets/images/terra-launcher/launcherpanel.png','assets/images/terra-launcher/launcherpanel2.png']
     },
     {
       id: 4,
-      title: 'Chatbot AI',
-      description: 'Sistema de chatbot inteligente con sprite animado, integrado con N8N para automatización. Desarrollado en Angular con backend de automatización.',
-      icon: '🤖',
-      tags: ['Angular', 'N8N', 'AI', 'Automation', 'Chat'],
-      category: 'Frontend',
-      github: 'https://github.com/juanencabo/chatbot-ai',
-      demo: 'https://l2terra.online/chatbot',
-      images: ['assets/images/n8nchat.png', 'assets/images/clientchat.png', ]
-    },
-    {
-      id: 5,
       title: 'L2Jmobius Server',
       description: 'Servidor L2Jmobius Classic 3.0 completo con core personalizado, datapack optimizado y sistema de infraestructura en VPS con N8N para automatización.',
       icon: '🖥️',
       tags: ['Java', 'L2Jmobius', 'VPS', 'Linux', 'Infrastructure'],
       category: 'Backend',
       github: 'https://github.com/juanencabo/l2jmobius-server',
-      images: ['assets/images/bgweb3.png', 'assets/images/bgweb2.png', 'assets/images/bgweb1.png']
+      images: ['assets/images/l2jmobius-server/bgweb3.png', 'assets/images/l2jmobius-server/bgweb2.png', 'assets/images/l2jmobius-server/bgweb1.png']
     }
   ];
 

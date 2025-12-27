@@ -125,11 +125,11 @@ export const THEME_CONFIGS: Record<string, ThemeConfig> = {
       accent: 'rgb(0, 184, 148)',         // Acento - mismo que primary
 
       // Backgrounds
-      backgroundDark: 'rgb(252, 252, 252)', // Blanco puro
-      backgroundLight: 'rgb(248, 250, 252)', // Gris muy claro
+      backgroundDark: 'rgb(240, 242, 245)', // Gris muy claro suave (antes blanco puro)
+      backgroundLight: 'rgb(235, 238, 242)', // Gris claro suave
       backgroundCard: 'rgba(0, 0, 0, 0.05)', // Fondo de tarjetas
-      backgroundHero: 'linear-gradient(135deg, rgb(252, 252, 252) 0%, rgb(248, 250, 252) 100%)', // Fondo hero
-      backgroundSection: 'rgb(255, 255, 255)', // Fondo de secciones alternas
+      backgroundHero: 'linear-gradient(135deg, rgb(240, 242, 245) 0%, rgb(235, 238, 242) 100%)', // Fondo hero
+      backgroundSection: 'rgb(245, 247, 250)', // Fondo de secciones alternas (gris muy claro)
 
       // Textos
       textPrimary: 'rgb(45, 52, 54)',     // Casi negro
@@ -235,21 +235,16 @@ export class ThemeService implements OnDestroy {
       // Añadir una clase temporal para indicar cambio de tema
       document.body.classList.add('theme-changing');
 
-      // Aplicar el tema con un pequeño delay
-      const timeout1 = window.setTimeout(() => {
-        applyTheme();
+      // Aplicar el tema inmediatamente sin delays
+      applyTheme();
 
-        // Remover la clase después de la transición completa (delay + duration)
-        const timeout2 = window.setTimeout(() => {
-          document.body.classList.remove('theme-changing');
-          this.activeTimeouts.delete(timeout2);
-        }, 4000); // 1.5s delay + 2.5s duration = 4s total
+      // Remover la clase después de la transición
+      const timeout = window.setTimeout(() => {
+        document.body.classList.remove('theme-changing');
+        this.activeTimeouts.delete(timeout);
+      }, 1000); // Solo 1s para la transición CSS
 
-        this.activeTimeouts.add(timeout2);
-        this.activeTimeouts.delete(timeout1);
-      }, 50);
-
-      this.activeTimeouts.add(timeout1);
+      this.activeTimeouts.add(timeout);
     } else {
       applyTheme();
     }

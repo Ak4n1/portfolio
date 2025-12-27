@@ -1,5 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import * as AOS from 'aos';
+import { ThemeService } from '../../core/services/theme.service';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faRobot, faDesktop, faLaptopCode } from '@fortawesome/free-solid-svg-icons';
 
 interface Subject {
   name: string;
@@ -22,11 +26,43 @@ interface AcademicYear {
 @Component({
   selector: 'app-about',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FontAwesomeModule],
   templateUrl: './about.component.html',
   styleUrl: './about.component.css'
 })
-export class AboutComponent {
+export class AboutComponent implements OnInit, OnDestroy, AfterViewInit {
+  private themeService = inject(ThemeService);
+  private cdr = inject(ChangeDetectorRef);
+  private themeSubscription?: any;
+
+  // FontAwesome icons
+  faRobot = faRobot;
+  faDesktop = faDesktop;
+  faLaptopCode = faLaptopCode;
+
+
+  // Getter para obtener el color de iconos según el tema actual
+  get iconColor(): string {
+    const theme = this.themeService.getCurrentTheme();
+    return theme === 'dark' ? 'white' : 'black';
+  }
+
+  // Método para obtener el ícono correcto según el tema
+  getIconSrc(tech: any): string {
+    const theme = this.themeService.getCurrentTheme();
+    
+    // Para iconos de Simple Icons, usar el color dinámico (igual que en Home)
+    // Sin cache-buster para mejor performance
+    return `https://cdn.simpleicons.org/${tech.slug}/${this.iconColor}`;
+  }
+
+  // Método para obtener el logo de la universidad según el tema
+  getUniversityLogo(): string {
+    const theme = this.themeService.getCurrentTheme();
+    return theme === 'dark' 
+      ? '/assets/images/logos_universidad/blanco_transparente_300.png'  // Blanco para tema oscuro
+      : '/assets/images/logos_universidad/negro_transparente_250.png';  // Negro para tema claro
+  }
 
   academicTimeline: AcademicYear[] = [
     {
@@ -76,7 +112,10 @@ export class AboutComponent {
                 'Programación Server Side con PHP',
                 'APIs REST y consumo de servicios',
                 'Autenticación JWT y seguridad web',
-                'Aplicaciones web dinámicas'
+                'Aplicaciones web dinámicas',
+                'Protocolo HTTP/HTTPS y sus métodos',
+                'Autenticación y autorización',
+                'WebSockets y comunicación en tiempo real',
               ]
             },
             {
@@ -108,7 +147,7 @@ export class AboutComponent {
     },
     {
       year: 2,
-      displayYear: 'Segundo Año (2024)',
+      displayYear: 'Segundo Año',
       semesters: [
         {
           number: 1,
@@ -117,47 +156,54 @@ export class AboutComponent {
             {
               name: 'Programación II',
               concepts: [
-                'POO: Objetos, clases, herencia y polimorfismo',
-                'Interfaces y clases abstractas',
-                'Manejo de excepciones',
-                'Patrones de diseño: Strategy, Observer, Decorator, Composite',
-                'Buenas prácticas y refactoring',
-                'Asociación, agregación y composición'
+                'Repaso de Programación I aplicado a POO',
+                'Objetos, clases e instancias',
+                'Mensajes, métodos y variables de instancia',
+                'Creación y destrucción de objetos',
+                'Herencia, especialización y generalización',
+                'Redefinición de métodos y uso de this/super',
+                'Asociación, agregación y composición',
+                'Clases abstractas e interfaces',
+                'Polimorfismo y binding dinámico',
+                'Manejo de excepciones en POO',
+                'Patrones de diseño estructurales: composite, decorator',
+                'Patrones de diseño comportamentales: strategy, state, observer, iterator, command',
               ]
             },
             {
-              name: 'Base de Datos I',
+              name: 'Configuracion y desarrollo de aplicaciones en red',
               concepts: [
-                'Modelo relacional y álgebra relacional',
-                'SQL: DDL, DML y consultas complejas',
-                'Normalización y diseño de BD',
-                'Integridad referencial y constraints',
-                'Índices y optimización básica',
-                'Transacciones y concurrencia'
+                'Definición y funcionamiento de Internet',
+                'Protocolos de comunicación y su importancia',
+                'Topologías de red: bus, estrella, anillo, malla y mixta',
+                'Tipos de servicios de Internet y proveedores (ISP)',
+                'Medios de transmisión: cable UTP, coaxial y fibra óptica',
+                'Modelos de referencia OSI/ISO y TCP/IP',
+                'Direcciones MAC e IP: concepto y uso',
+                'Protocolos IP, TCP, ARP y DHCP',
+                'Enrutamiento: estático, VLSM y NAT',
+                'Dispositivos de red: hub, switch y router',
+                'Firewalls y filtrado de paquetes',
+                'Seguridad en redes: principios y principales riesgos',
+                'Criptografía: simétrica, asimétrica y cifrados clásicos',
+                'VPN: concepto, protocolos y diferencias con proxy',
+                'Aplicaciones y protocolos: HTTP, DNS, SSH, SFTP'
               ]
             },
             {
-              name: 'Metodologías de Desarrollo',
+              name: 'Ingles I',
               concepts: [
-                'Ciclo de vida del software (SDLC)',
-                'Metodologías ágiles: Scrum y Kanban',
-                'Testing: unitario, integración y aceptación',
-                'Documentación técnica y de usuario',
-                'Gestión de requisitos',
-                'Control de calidad y métricas'
+                'Lectura y comprensión de textos técnicos en informática',
+                'Identificación de cognados y falsos cognados',
+                'Vocabulario técnico básico en programación y redes',
+                'Estrategias de skimming y scanning para textos académicos',
+                'Uso de diccionarios técnicos y herramientas de traducción',
+                'Interpretación de instrucciones y especificaciones técnicas',
+                'Comprensión de documentación de software y hardware',
+                'Ingles tecnico '
               ]
             },
-            {
-              name: 'Programación Web I',
-              concepts: [
-                'HTML5 semántico y accesibilidad',
-                'CSS3: Grid, Flexbox y animaciones',
-                'JavaScript ES6+ y manipulación del DOM',
-                'Responsive design y mobile first',
-                'Bootstrap y frameworks CSS',
-                'Debugging y herramientas de desarrollo'
-              ]
-            }
+
           ]
         },
         {
@@ -165,49 +211,88 @@ export class AboutComponent {
           name: '4to Cuatrimestre',
           subjects: [
             {
-              name: 'Programación Avanzada',
-              concepts: ['Spring Framework', 'Spring Boot', 'APIs REST', 'Microservicios', 'Inyección de dependencias']
+              name: 'Ingles II',
+              concepts: ['Continuacion de Ingles I ']
             },
             {
-              name: 'Base de Datos II',
-              concepts: ['MySQL', 'Triggers', 'Procedures', 'Optimización', 'Transacciones', 'JPA/Hibernate']
+              name: 'Base de Datos',
+              concepts: [
+                'Visión general: naturaleza, propósito y características de los sistemas de bases de datos',
+                'Evolución de los sistemas de bases de datos y su interacción con sistemas operativos',
+                'Modelado de datos con el Modelo de Entidades y Relaciones Extendido (MERExt)',
+                'Interpretación y creación de modelos de datos con restricciones implícitas',
+                'Transformación de un MERExt a modelo relacional',
+                'Creación de esquemas de bases de datos con DDL en SQL',
+                'Uso de herramientas de modelado y gestión: Vertabelo y PostgreSQL',
+                'Consultas SQL parte 1: sentencias SELECT simples y funciones de agrupamiento',
+                'Consultas SQL parte 2: joins, subconsultas anidadas y correlacionadas',
+                'Restricciones de integridad: concepto, tipos y aplicación en SQL2',
+                'Implementación procedural de restricciones con PL/pgSQL (triggers, funciones, procedimientos)',
+                'Procesamiento y optimización de consultas en PostgreSQL',
+                'Vistas: creación y uso para simplificación y seguridad',
+                'Seguridad y control de acceso en bases de datos',
+                'Nociones de bases de datos NoSQL y sus diferencias con el modelo relacional'
+              ]
             },
             {
-              name: 'Programación Web II',
-              concepts: ['Angular', 'TypeScript', 'Components', 'Services', 'Routing', 'HTTP Client', 'RxJS']
+              name: 'Introduccion a las metodologias de desarrollo de software',
+              concepts: [
+                'Metodologías tradicionales y ágiles de desarrollo',
+                'Planeamiento con Poker Planning',
+                'Story Mapping: visualización y organización de funcionalidades',
+                'Gestión con Jira y documentación colaborativa con Confluence',
+                'Scrum: roles, eventos y artefactos',
+                'Guía Scrum oficial (en español e inglés)',
+                'Elaboración y gestión de User Stories',
+                'Diagramas UML: casos de uso, clases, secuencia, transición de estados, componentes y deployment',
+                'Kanban y gestión visual de tareas',
+                'Introducción a metodologías ágiles (MA)',
+              ]
             },
-            {
-              name: 'Redes y Comunicaciones',
-              concepts: ['Protocolos TCP/IP', 'HTTP/HTTPS', 'APIs', 'Seguridad web', 'Autenticación']
-            }
+
           ]
         }
       ]
     },
     {
       year: 3,
-      displayYear: 'Tercer Año (2025)',
+      displayYear: 'Tercer Año',
       semesters: [
         {
           number: 1,
           name: '5to Cuatrimestre',
           subjects: [
             {
-              name: 'Desarrollo de Aplicaciones',
-              concepts: ['Arquitectura MVC', 'Patrones de diseño', 'Clean Code', 'SOLID', 'Testing unitario']
+              name: 'Programacion III',
+              concepts: [
+                'Estructuras de datos avanzadas: listas, árboles binarios, árboles binarios de búsqueda (ABB), grafos',
+                'Tablas de acceso rápido y dispersión (hashing)',
+                'Recursión y su aplicación en algoritmos',
+                'Análisis de complejidad computacional: notación Big O, O(n²), y optimizaciones',
+                'Algoritmos de búsqueda: búsqueda exhaustiva, backtracking',
+                'Algoritmos de ordenamiento eficientes: Quick Sort y Merge Sort entre otros',
+                'Algoritmos voraces (Greedy) y su aplicación',
+                'Algoritmos de grafos: Dijkstra para caminos mínimos',
+                'Conceptos básicos de concurrencia: uso de threads, sincronización y acceso restringido',
+              ]
             },
             {
-              name: 'Seguridad Informática',
-              concepts: ['Criptografía', 'Autenticación', 'Autorización', 'JWT', 'OWASP', 'Vulnerabilidades web']
+              name: 'Interfaces de Usuario e Interacccion',
+              concepts: [
+                'Manipulación de imágenes y color en entornos gráficos (Canvas, JS)',
+                'Conceptos y prácticas de POO aplicados a eventos y formas en JavaScript',
+                'Filtros gráficos y efectos visuales aplicados a imágenes',
+                'Manejo de eventos en interfaces gráficas',
+                'Transformaciones visuales y animaciones con CSS y JavaScript',
+                'Efectos avanzados: Parallax Scrolling y gameloops para animaciones continuas',
+                'Detección y manejo de colisiones en animaciones y juegos',
+                'Principios de UX (Experiencia de Usuario), UI (Interfaz de Usuario) e IxD (Interacción Diseño)',
+                'Leyes y patrones de UX para mejorar la usabilidad',
+                'Metodologías y frameworks para diseño atómico (Atomic Design)',
+              ]
             },
-            {
-              name: 'Gestión de Proyectos',
-              concepts: ['Project Management', 'Agile', 'Kanban', 'Estimación', 'Riesgos', 'Calidad de software']
-            },
-            {
-              name: 'Interfaces de Usuario',
-              concepts: ['UX/UI Design', 'Usabilidad', 'Accesibilidad', 'Design Systems', 'Prototipado']
-            }
+
+
           ]
         },
         {
@@ -215,25 +300,39 @@ export class AboutComponent {
           name: '6to Cuatrimestre',
           subjects: [
             {
-              name: 'Proyecto Final',
-              concepts: ['Desarrollo integral', 'Full Stack', 'Deploy', 'DevOps básico', 'Documentación técnica']
+              name: 'Arquitecturas Web',
+              concepts: [
+                'Conceptos básicos de sistemas distribuidos y su importancia en proyectos complejos',
+                'Requerimientos no funcionales: escalabilidad, robustez, seguridad y mantenibilidad',
+                'Modelos de arquitecturas: Cliente-Servidor, Peer-to-Peer (P2P), Cloud Computing',
+                'Modelos y protocolos de comunicación: Sockets TCP/IP, Arquitectura Orientada a Servicios (SOA), Web Services',
+                'Modelos de implementación: frameworks, componentes, microservicios y Software como Servicio (SaaS)',
+                'Seguridad en sistemas distribuidos: autenticación de identidad, métodos de encriptación, SSL/TLS, HTTPS',
+                'Firma digital y mecanismos para asegurar integridad y autenticidad de datos',
+                'Introducción a arquitecturas web modernas y patrones de diseño para escalabilidad',
+                'Plataformas y herramientas para el despliegue y gestión de sistemas distribuidos'
+              ]
             },
             {
-              name: 'Práctica Profesional',
-              concepts: ['Experiencia laboral', 'Trabajo en equipo', 'Metodologías reales', 'Soft skills']
+              name: 'Tecnicas de Documentacion y Validacion de Software',
+              concepts: [
+                'Introducción a la documentación de software: importancia y tipos',
+                'Visión y definición de requerimientos (VD en Requerimientos)',
+                'Introducción al testing: conceptos, objetivos y tipos de pruebas',
+                'Test de unidad con frameworks: JUnit y TestNG',
+                'Desarrollo y validación (DV) en implementación de software',
+                'Documentación de APIs REST: buenas prácticas y herramientas',
+                'Automatización de pruebas (Automation)',
+                'Mutation testing: técnica avanzada para evaluar la calidad de las pruebas',
+                'Información general del curso y metodologías de estudio'
+              ]
             },
-            {
-              name: 'Tecnologías Emergentes',
-              concepts: ['Cloud Computing', 'Docker', 'CI/CD', 'Microservicios', 'APIs GraphQL']
-            },
-            {
-              name: 'Ética Profesional',
-              concepts: ['Responsabilidad profesional', 'Propiedad intelectual', 'Privacidad', 'Código de ética']
-            }
+        
           ]
         }
       ]
-    }
+    },
+
   ];
 
   expandedSemesters: Set<string> = new Set();
@@ -249,5 +348,45 @@ export class AboutComponent {
 
   isSemesterExpanded(yearIndex: number, semesterIndex: number): boolean {
     return this.expandedSemesters.has(`${yearIndex}-${semesterIndex}`);
+  }
+
+  ngOnInit() {
+    // Suscribirse a cambios de tema para actualizar los iconos
+    this.themeSubscription = this.themeService.currentTheme$.subscribe(() => {
+      // Solo una detección de cambios, sin delays adicionales
+      this.cdr.detectChanges();
+    });
+  }
+
+  ngAfterViewInit() {
+    // Inicializar AOS (Animate On Scroll) con configuración optimizada para mejor performance
+    setTimeout(() => {
+      AOS.init({
+        duration: 500,        // Reducido aún más para mejor performance
+        easing: 'ease-out',
+        once: true,
+        offset: 50,
+        disable: false,
+        startEvent: 'DOMContentLoaded',
+        initClassName: 'aos-init',
+        animatedClassName: 'aos-animate',
+        useClassNames: false,
+        disableMutationObserver: true,  // Deshabilitar para mejor performance
+        debounceDelay: 50,
+        throttleDelay: 99,
+        // Configuraciones adicionales para reducir requestAnimationFrame
+        mirror: false,
+        anchorPlacement: 'top-bottom'
+      });
+    }, 100); // Aumentado ligeramente para asegurar que el DOM esté completamente listo
+  }
+
+  ngOnDestroy() {
+    // Limpiar AOS al destruir el componente
+    AOS.refresh();
+    // Limpiar suscripción al tema
+    if (this.themeSubscription) {
+      this.themeSubscription.unsubscribe();
+    }
   }
 }

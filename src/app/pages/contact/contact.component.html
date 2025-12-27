@@ -12,41 +12,47 @@
         <h2>Información de Contacto</h2>
         <div class="contact-items">
           <div class="contact-item">
-            <div class="contact-icon">📧</div>
+            <div class="contact-icon"><i class="fa-regular fa-envelope contact-icon"></i></div>
             <div class="contact-details">
               <h3>Email</h3>
               <p class="email-row">
                 <span class="email-text">{{ contactEmail }}</span>
-                <button type="button" class="copy-btn" (click)="copyEmail()" [disabled]="copied" aria-label="Copiar email">
-                  📋
+                <button type="button" class="copy-btn" (click)="copyEmail()" [disabled]="copied"
+                  aria-label="Copiar email">
+                  <i class="fa-solid fa-copy "></i>
                 </button>
                 <span class="copied-msg" *ngIf="copied">Copiado</span>
               </p>
             </div>
           </div>
-          
+
           <div class="contact-item">
-            <div class="contact-icon">📍</div>
+            <div class="contact-icon"><i class="fa-solid fa-location-dot contact-icon"></i></div>
             <div class="contact-details">
               <h3>Ubicación</h3>
               <p>Buenos Aires, Argentina</p>
             </div>
           </div>
-          
+
           <div class="contact-item">
-            <div class="contact-icon">💼</div>
+            <div class="contact-icon"><i class="fa-solid fa-briefcase contact-icon"></i></div>
             <div class="contact-details">
               <h3>Disponibilidad</h3>
               <p>Abierto a nuevas oportunidades</p>
             </div>
           </div>
         </div>
-        
+
+        <div>
+ 
+
+        </div>
         <div class="social-links">
           <h3>Sígueme en redes</h3>
           <div class="social-icons">
             <a href="https://github.com/juanencabo" target="_blank" class="social-link">
-              <img src="https://cdn.simpleicons.org/github/white" alt="GitHub" class="social-icon" width="24" height="24">
+              <img src="https://cdn.simpleicons.org/github/white" alt="GitHub" class="social-icon" width="24"
+                height="24">
               <span>GitHub</span>
             </a>
             <a href="https://linkedin.com/in/juanencabo" target="_blank" class="social-link">
@@ -54,68 +60,50 @@
               <span>LinkedIn</span>
             </a>
             <a href="https://instagram.com/juanencabo" target="_blank" class="social-link">
-              <img src="https://cdn.simpleicons.org/instagram/white" alt="Instagram" class="social-icon" width="24" height="24">
+              <img src="https://cdn.simpleicons.org/instagram/white" alt="Instagram" class="social-icon" width="24"
+                height="24">
               <span>Instagram</span>
             </a>
           </div>
         </div>
       </div>
-      
+
       <div class="contact-form">
         <h2>Enviar Mensaje</h2>
         <form [formGroup]="contactForm" (ngSubmit)="onSubmit()">
           <div class="form-group">
             <label for="name">Nombre *</label>
-            <input 
-              type="text" 
-              id="name" 
-              formControlName="name"
-              placeholder="Tu nombre completo"
+            <input type="text" id="name" formControlName="name" placeholder="Tu nombre completo"
               [class.error]="isFieldInvalid('name')">
             <div class="error-message" *ngIf="isFieldInvalid('name')">
               El nombre es requerido
             </div>
           </div>
-          
+
           <div class="form-group">
             <label for="email">Email *</label>
-            <input 
-              type="email" 
-              id="email" 
-              formControlName="email"
-              placeholder="tu@email.com"
+            <input type="email" id="email" formControlName="email" placeholder="tu@email.com"
               [class.error]="isFieldInvalid('email')">
             <div class="error-message" *ngIf="isFieldInvalid('email')">
               Ingresa un email válido
             </div>
           </div>
-          
+
           <div class="form-group">
             <label for="subject">Asunto</label>
-            <input 
-              type="text" 
-              id="subject" 
-              formControlName="subject"
-              placeholder="Asunto del mensaje">
+            <input type="text" id="subject" formControlName="subject" placeholder="Asunto del mensaje">
           </div>
-          
+
           <div class="form-group">
             <label for="message">Mensaje *</label>
-            <textarea 
-              id="message" 
-              formControlName="message"
-              rows="6"
-              placeholder="Cuéntame sobre tu proyecto..."
+            <textarea id="message" formControlName="message" rows="6" placeholder="Cuéntame sobre tu proyecto..."
               [class.error]="isFieldInvalid('message')"></textarea>
             <div class="error-message" *ngIf="isFieldInvalid('message')">
               El mensaje es requerido
             </div>
           </div>
-          
-          <button 
-            type="submit" 
-            class="submit-btn"
-            [disabled]="contactForm.invalid || isSubmitting">
+
+          <button type="submit" class="submit-btn" [disabled]="contactForm.invalid || isSubmitting">
             <span *ngIf="!isSubmitting">Enviar Mensaje</span>
             <span *ngIf="isSubmitting">Enviando...</span>
           </button>

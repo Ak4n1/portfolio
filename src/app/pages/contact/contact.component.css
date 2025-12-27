@@ -1,3 +1,6 @@
+.contact-icon {
+  font-size: 20px;
+}
 .contact-hero {
   padding: 5rem 0 3rem;
   background: var(--background-hero);

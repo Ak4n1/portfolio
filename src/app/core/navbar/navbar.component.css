@@ -34,7 +34,7 @@
 }
 
 .nav-logo a {
-  color: var(--primary-color);
+  color: #00B894;
   text-decoration: none;
   font-size: 1.5rem;
   font-weight: 700;
@@ -119,13 +119,13 @@
     background: var(--background-dark);
     opacity: 0.98;
   }
-  
+
   /* Tema oscuro móvil */
   [data-theme="dark"] .nav-menu {
     background: var(--background-dark) !important;
     opacity: 0.98;
   }
-  
+
   /* Tema claro móvil */
   [data-theme="light"] .nav-menu {
     background: var(--background-light) !important;
@@ -210,6 +210,18 @@
 .theme-icon {
   font-size: 12px;
   line-height: 1;
+}
+
+.theme-icon.fa-moon::before {
+  content: "\f186";
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+}
+
+.theme-icon.fa-sun::before {
+  content: "\f185";
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
 }
 
 .theme-toggle:hover .theme-toggle-track {

@@ -131,11 +131,17 @@
 .tag {
   background: var(--border-color);
   color: var(--text-accent);
-  padding: 0.25rem 0.75rem;
+  padding: 0.3rem 0.7rem;
   border-radius: 15px;
   font-size: 0.8rem;
-  font-weight: 500;
   border: 1px solid var(--border-color);
+  transition: all 0.3s ease;
+}
+
+/* Light Theme Override */
+:host-context([data-theme='light']) .tag {
+  background: rgba(0, 184, 148, 0.1);
+  border: 1px solid rgba(0, 184, 148, 0.2);
 }
 
 .project-links {
@@ -176,6 +182,20 @@
 .project-link.demo:hover {
   background: var(--border-hover);
   border-color: var(--border-hover);
+}
+
+.project-link.view-more {
+  background: var(--button-primary);
+  color: var(--background-dark);
+  border: 1px solid var(--button-primary);
+  font-weight: 600;
+}
+
+.project-link.view-more:hover {
+  background: var(--border-hover);
+  border-color: var(--border-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-neon);
 }
 
 /* CTA Section */
@@ -341,6 +361,7 @@
     opacity: 0;
     transform: scale(0.9);
   }
+
   to {
     opacity: 1;
     transform: scale(1);
@@ -417,28 +438,28 @@
   .projects-title {
     font-size: 2.5rem;
   }
-  
+
   .filter-buttons {
     gap: 0.5rem;
   }
-  
+
   .filter-btn {
     padding: 0.5rem 1rem;
     font-size: 0.9rem;
   }
-  
+
   .projects-container {
     grid-template-columns: 1fr;
   }
-  
+
   .project-content {
     padding: 1.5rem;
   }
-  
+
   .project-links {
     flex-direction: column;
   }
-  
+
   .cta-content h2 {
     font-size: 2rem;
   }
