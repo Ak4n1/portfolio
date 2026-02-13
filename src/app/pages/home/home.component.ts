@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 // 🚀 OPTIMIZACIÓN: Eliminamos FontAwesome para ahorrar 100MB+
 import * as AOS from 'aos';
 import { HeroCanvasComponent } from '../../shared/hero-canvas/hero-canvas.component';
+import { HeroCanvasV2Component } from '../../shared/hero-canvas-v2/hero-canvas-v2.component';
 import { ThemeService } from '../../core/services/theme.service';
 
 interface User {
@@ -16,7 +17,7 @@ interface User {
   standalone: true,
     imports: [
     CommonModule,
-    HeroCanvasComponent
+    HeroCanvasV2Component
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
@@ -42,8 +43,8 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     // Manejo especial para Java que tiene iconos personalizados para cada tema
     if (tech.name === 'Java') {
       return theme === 'dark' 
-        ? '/assets/images/logos_stacks/javaicon.png'        // Blanco para tema oscuro
-        : '/assets/images/logos_stacks/javaicondark.png';   // Negro para tema claro
+        ? 'assets/images/logos_stacks/javaicon.png'        // Blanco para tema oscuro
+        : 'assets/images/logos_stacks/javaicondark.png';   // Negro para tema claro
     }
     
     // Para otros iconos personalizados, usar el customIcon si existe
@@ -140,13 +141,27 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    // Inicializar AOS (Animate On Scroll)
-    AOS.init({
-      duration: 800,
-      easing: 'ease-in-out',
-      once: true,
-      offset: 100
-    });
+    // Reinicializar AOS cada vez que se carga el componente
+    // Esto asegura que las animaciones funcionen al volver a la página
+    setTimeout(() => {
+      // Inicializar AOS si no está inicializado, o refrescar si ya lo está
+      try {
+        AOS.init({
+          duration: 800,
+          easing: 'ease-in-out',
+          once: true,
+          offset: 100
+        });
+      } catch (e) {
+        // Si ya está inicializado, solo refrescar
+        AOS.refresh();
+      }
+      
+      // Forzar refresco después de un pequeño delay para asegurar que los elementos estén renderizados
+      setTimeout(() => {
+        AOS.refresh();
+      }, 200);
+    }, 100);
   }
 
   ngOnDestroy() {

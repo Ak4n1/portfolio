@@ -1,22 +1,19 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-// 🚀 OPTIMIZACIÓN: Eliminamos FontAwesome para ahorrar 100MB+
 
 @Component({
   selector: 'app-contact',
   standalone: true,
   imports: [ReactiveFormsModule, CommonModule],
   templateUrl: './contact.component.html',
-  styleUrl: './contact.component.css'
+  styleUrl: './contact.component.css',
 })
 export class ContactComponent {
   contactForm: FormGroup;
   isSubmitting = false;
 
-  // Email de contacto mostrado y botón de copiar
   public contactEmail = 'encabojuan@gmail.com';
-  // 🚀 Iconos reemplazados por emojis simples
   public copied = false;
 
   constructor(private fb: FormBuilder) {
@@ -24,7 +21,7 @@ export class ContactComponent {
       name: ['', [Validators.required, Validators.minLength(2)]],
       email: ['', [Validators.required, Validators.email]],
       subject: [''],
-      message: ['', [Validators.required, Validators.minLength(10)]]
+      message: ['', [Validators.required, Validators.minLength(10)]],
     });
   }
 
@@ -59,11 +56,10 @@ export class ContactComponent {
         this.contactForm.reset();
         this.isSubmitting = false;
         alert('¡Mensaje enviado con éxito! Te responderé pronto.');
-      }, 2000);
+      }, 500);
     } else {
-      Object.keys(this.contactForm.controls).forEach(key => {
-        const control = this.contactForm.get(key);
-        control?.markAsTouched();
+      Object.keys(this.contactForm.controls).forEach((key) => {
+        this.contactForm.get(key)?.markAsTouched();
       });
     }
   }

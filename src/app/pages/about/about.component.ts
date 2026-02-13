@@ -60,8 +60,8 @@ export class AboutComponent implements OnInit, OnDestroy, AfterViewInit {
   getUniversityLogo(): string {
     const theme = this.themeService.getCurrentTheme();
     return theme === 'dark' 
-      ? '/assets/images/logos_universidad/blanco_transparente_300.png'  // Blanco para tema oscuro
-      : '/assets/images/logos_universidad/negro_transparente_250.png';  // Negro para tema claro
+      ? 'assets/images/logos_universidad/blanco_transparente_300.png'  // Blanco para tema oscuro
+      : 'assets/images/logos_universidad/negro_transparente_250.png';  // Negro para tema claro
   }
 
   academicTimeline: AcademicYear[] = [

@@ -42,7 +42,7 @@ export class PreloaderComponent implements OnInit, OnDestroy, AfterViewInit {
   public revealFrom: 'random' | 'start' | 'end' | number = 'random';
   public autoHideOnComplete = true;
   // Nuevo: retraso antes de iniciar el reveal (ms)
-  public revealStartDelayMs = 2000;
+  public revealStartDelayMs = 1000;
 
   // =====================
   // Estado interno
