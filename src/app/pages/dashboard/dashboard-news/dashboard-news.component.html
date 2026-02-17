@@ -1,0 +1,174 @@
+﻿<div class="dashboard-page">
+  <header class="dashboard-page-header">
+    <div>
+      <h1 class="dashboard-page-title">Noticias</h1>
+      <p class="dashboard-page-subtitle">Publica anuncios generales para el dashboard de usuarios</p>
+    </div>
+  </header>
+
+  <div class="news-admin-grid">
+    <section class="news-compose-card">
+      <div class="card-header">
+        <h2 class="card-title">
+          <i class="fas" [class.fa-pen-nib]="!editingNewsId()" [class.fa-pen]="editingNewsId()" aria-hidden="true"></i>
+          {{ editingNewsId() ? 'Editar noticia' : 'Nueva noticia' }}
+        </h2>
+      </div>
+
+      @if (saveError()) {
+      <p class="form-message form-message-error" role="alert">{{ saveError() }}</p>
+      }
+      @if (saveSuccess()) {
+      <p class="form-message form-message-success" role="status">{{ saveSuccess() }}</p>
+      }
+
+      <div class="form-grid">
+        <div class="field-group">
+          <label class="field-label" for="news-title">TITULO</label>
+          <input id="news-title" class="styled-input" type="text" maxlength="200" [ngModel]="title()"
+            (ngModelChange)="title.set($event)" placeholder="Ej: Nueva actualizacion del sitio" />
+        </div>
+
+        <div class="field-group field-group-content">
+          <label class="field-label">CONTENIDO (RICH TEXT)</label>
+          <div class="rich-editor-wrapper">
+            <div class="rich-editor-toolbar-row">
+              <ngx-editor-menu [editor]="editor" [toolbar]="toolbar"></ngx-editor-menu>
+            </div>
+            <ngx-editor [editor]="editor" [ngModel]="content()" (ngModelChange)="content.set($event)"
+              outputFormat="html" placeholder="Escribe la noticia con formato (titulos, listas, enlaces...).">
+            </ngx-editor>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn btn-primary" [disabled]="saving()" (click)="publishNews()">
+          <i class="fas" [class.fa-save]="editingNewsId()" [class.fa-broadcast-tower]="!editingNewsId()"
+            aria-hidden="true"></i>
+          @if (saving()) {
+          {{ editingNewsId() ? 'Guardando...' : 'Publicando...' }}
+          } @else {
+          {{ editingNewsId() ? 'Guardar cambios' : 'Publicar noticia' }}
+          }
+        </button>
+        <button type="button" class="btn btn-secondary" [disabled]="saving()" (click)="clearForm()">
+          <i class="fas fa-eraser" aria-hidden="true"></i>
+          {{ editingNewsId() ? 'Cancelar edicion' : 'Limpiar' }}
+        </button>
+      </div>
+    </section>
+
+    <section class="news-list-card">
+      <div class="card-header">
+        <h2 class="card-title"><i class="fas fa-list" aria-hidden="true"></i> Publicadas</h2>
+        <button type="button" class="btn btn-secondary btn-refresh" (click)="loadNews()" [disabled]="loading()">
+          <i class="fas fa-sync-alt" aria-hidden="true"></i> Recargar
+        </button>
+      </div>
+
+      @if (deleteError()) {
+      <p class="form-message form-message-error" role="alert">{{ deleteError() }}</p>
+      }
+      @if (deleteSuccess()) {
+      <p class="form-message form-message-success" role="status">{{ deleteSuccess() }}</p>
+      }
+
+      <div class="news-filters" aria-label="Filtros de noticias publicadas">
+        <div class="field-group">
+          <label class="field-label" for="news-search">BUSCAR</label>
+          <input id="news-search" class="styled-input" type="text" [ngModel]="searchText()"
+            (ngModelChange)="searchText.set($event)" (keyup.enter)="applyFilters()"
+            placeholder="Buscar por titulo o contenido" />
+        </div>
+
+        <div class="field-group">
+          <label class="field-label" for="news-from-date">DESDE</label>
+          <input id="news-from-date" class="styled-input" type="date" [ngModel]="fromDate()"
+            (ngModelChange)="fromDate.set($event)" />
+        </div>
+
+        <div class="field-group">
+          <label class="field-label" for="news-to-date">HASTA</label>
+          <input id="news-to-date" class="styled-input" type="date" [ngModel]="toDate()"
+            (ngModelChange)="toDate.set($event)" />
+        </div>
+
+        <div class="field-group field-group-filter-actions">
+          <label class="field-label">ACCIONES</label>
+          <div class="news-filter-actions">
+            <button type="button" class="btn btn-primary btn-filter-apply" (click)="applyFilters()" [disabled]="loading()">
+              <i class="fas fa-filter" aria-hidden="true"></i>
+              Aplicar
+            </button>
+            <button type="button" class="btn btn-secondary btn-filter-clear" (click)="clearFilters()"
+            [disabled]="!searchText() && !fromDate() && !toDate()">
+              <i class="fas fa-times" aria-hidden="true"></i>
+              Limpiar
+            </button>
+          </div>
+        </div>
+      </div>
+
+      @if (loading()) {
+      <div class="state-box">Cargando noticias...</div>
+      } @else if (loadError()) {
+      <div class="state-box state-box-error">{{ loadError() }}</div>
+      } @else if (newsItems().length === 0) {
+      <div class="state-box">{{ hasActiveFilters() ? 'No hay noticias que coincidan con los filtros.' : 'Todavia no hay noticias publicadas.' }}</div>
+      } @else {
+      <div class="news-list">
+        @for (news of newsItems(); track news.id) {
+        <article class="news-item" [class.news-item-editing]="isEditing(news.id)">
+          <header class="news-item-head">
+            <span class="news-date">{{ news.createdAt | date:'short' }}</span>
+            <div class="news-item-actions">
+              <button type="button" class="news-action-btn" [disabled]="saving() || isDeleting(news.id)"
+                (click)="startEdit(news)" title="Editar noticia" aria-label="Editar noticia">
+                <i class="fas fa-pen" aria-hidden="true"></i>
+              </button>
+              <button type="button" class="news-action-btn news-action-btn-delete" [disabled]="saving() || isDeleting(news.id)"
+                (click)="deleteNews(news)" title="Eliminar noticia" aria-label="Eliminar noticia">
+                @if (isDeleting(news.id)) {
+                <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
+                } @else {
+                <i class="fas fa-trash-alt" aria-hidden="true"></i>
+                }
+              </button>
+            </div>
+          </header>
+          <h3 class="news-item-title">{{ news.title }}</h3>
+          <div class="news-item-content" [innerHTML]="news.content"></div>
+        </article>
+        }
+      </div>
+      @if (totalPages() > 1) {
+      <div class="news-pagination">
+        <button type="button" class="btn btn-secondary" [disabled]="currentPage() === 0" (click)="goToPage(currentPage() - 1)">
+          <i class="fas fa-chevron-left" aria-hidden="true"></i>
+          Anterior
+        </button>
+        <div class="pag-info">
+          Pagina <strong>{{ currentPage() + 1 }}</strong> de {{ totalPages() }} // Total: {{ totalElements() }}
+        </div>
+        <button type="button" class="btn btn-secondary" [disabled]="currentPage() >= totalPages() - 1"
+          (click)="goToPage(currentPage() + 1)">
+          Siguiente
+          <i class="fas fa-chevron-right" aria-hidden="true"></i>
+        </button>
+      </div>
+      }
+      }
+    </section>
+  </div>
+</div>
+
+<app-confirm-modal
+  [visible]="deleteModalVisible()"
+  title="Eliminar noticia"
+  [message]="getDeleteModalMessage()"
+  type="danger"
+  confirmText="Eliminar"
+  cancelText="Cancelar"
+  (confirmed)="onDeleteModalConfirmed()"
+  (cancelled)="onDeleteModalCancelled()" />

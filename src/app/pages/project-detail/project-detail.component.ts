@@ -12,11 +12,14 @@ import { AuthStateService } from '../../core/services/auth-state.service';
 import { AnalyticsService } from '../../core/services/analytics/analytics.service';
 import { AnalyticsEventsService } from '../../core/services/analytics/analytics-events.service';
 import { Project } from '../../core/models/project.model';
+import { WebSocketService } from '../../core/services/websocket.service';
+import { WebSocketMessageType } from '../../core/models/websocket-message.model';
+import { ConfirmModalComponent } from '../../core/components/confirm-modal/confirm-modal.component';
 
 @Component({
   selector: 'app-project-detail',
   standalone: true,
-  imports: [CommonModule, FontAwesomeModule, RouterLink],
+  imports: [CommonModule, FontAwesomeModule, RouterLink, ConfirmModalComponent],
   templateUrl: './project-detail.component.html',
   styleUrl: './project-detail.component.css',
   animations: [
@@ -33,6 +36,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy, AfterViewCheck
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private authStateService = inject(AuthStateService);
+  private wsService = inject(WebSocketService);
   private analyticsService = inject(AnalyticsService);
   private analyticsEvents = inject(AnalyticsEventsService);
   private sanitizer = inject(DomSanitizer);
@@ -51,11 +55,15 @@ export class ProjectDetailComponent implements OnInit, OnDestroy, AfterViewCheck
     const state = this.authState();
     return !!state?.isAuthenticated && state?.user?.roles?.includes('ROLE_ADMIN');
   });
+  isAuthenticated = computed(() => !!this.authState()?.isAuthenticated);
 
   project: Project | null = null;
   relatedProjects: Project[] = [];
   loading = true;
   error = '';
+  likeLoading = false;
+  likeError = '';
+  loginModalVisible = false;
   currentImageIndex = 0;
   carouselInterval: ReturnType<typeof setInterval> | null = null;
 
@@ -94,6 +102,22 @@ export class ProjectDetailComponent implements OnInit, OnDestroy, AfterViewCheck
 
   ngOnInit() {
     console.log('[ProjectDetail] ngOnInit');
+    this.authStateService.authState.pipe(takeUntil(this.destroy$)).subscribe((state) => {
+      const projectId = this.project?.id;
+      if (!projectId) return;
+      if (state?.isAuthenticated) {
+        this.loadLikeStatus(projectId);
+      } else if (this.project) {
+        this.project.likedByUser = false;
+      }
+    });
+
+    this.wsService.messages.pipe(takeUntil(this.destroy$)).subscribe((msg) => {
+      if (msg.type === WebSocketMessageType.PROJECT_LIKED) {
+        this.handleProjectLikedEvent(msg.data);
+      }
+    });
+
     this.route.paramMap.pipe(
       switchMap((params) => {
         const idParam = params.get('id');
@@ -113,8 +137,11 @@ export class ProjectDetailComponent implements OnInit, OnDestroy, AfterViewCheck
         setTimeout(() => {
           this.project = p;
           this.loading = false;
+          this.likeLoading = false;
+          this.likeError = '';
           this.scrollTracked = false;
           this.scrollListenerAttached = false;
+          this.loadLikeStatus(p.id);
           this.initializeCarousel();
           this.loadRelatedProjects(p.id);
           this.cdr.detectChanges();
@@ -144,6 +171,78 @@ export class ProjectDetailComponent implements OnInit, OnDestroy, AfterViewCheck
           .slice(0, 3);
       }
     });
+  }
+
+  private loadLikeStatus(projectId: number): void {
+    if (!this.isAuthenticated()) {
+      if (this.project && this.project.id === projectId) {
+        this.project.likedByUser = false;
+      }
+      return;
+    }
+
+    this.projectService.getLikeStatus(projectId).subscribe({
+      next: (status) => {
+        if (!this.project || this.project.id !== projectId) return;
+        this.project.likedByUser = status.liked;
+        this.project.likesCount = status.likesCount;
+      },
+      error: () => {
+        // No bloquear la pantalla por error de estado de like
+      },
+    });
+  }
+
+  toggleLike(): void {
+    if (!this.project?.id || this.likeLoading) {
+      return;
+    }
+
+    if (!this.isAuthenticated()) {
+      this.likeError = '';
+      this.loginModalVisible = true;
+      return;
+    }
+
+    this.likeError = '';
+    this.likeLoading = true;
+    const projectId = this.project.id;
+
+    this.projectService.toggleLike(projectId).subscribe({
+      next: (res) => {
+        if (!this.project || this.project.id !== projectId) return;
+        this.project.likedByUser = res.liked;
+        this.project.likesCount = res.likesCount;
+        this.likeLoading = false;
+      },
+      error: () => {
+        this.likeError = 'No se pudo actualizar tu like.';
+        this.likeLoading = false;
+      },
+    });
+  }
+
+  onLoginModalCancelled(): void {
+    this.loginModalVisible = false;
+  }
+
+  onLoginModalConfirmed(): void {
+    this.loginModalVisible = false;
+    this.router.navigate(['/login'], {
+      queryParams: { returnUrl: this.router.url },
+    });
+  }
+
+  private handleProjectLikedEvent(data: unknown): void {
+    if (!this.project || !data || typeof data !== 'object') return;
+
+    const payload = data as { projectId?: unknown; likesCount?: unknown };
+    const projectId = payload.projectId;
+    const likesCount = payload.likesCount;
+    if (typeof projectId !== 'number' || typeof likesCount !== 'number') return;
+    if (this.project.id !== projectId) return;
+
+    this.project.likesCount = likesCount;
   }
 
   getImageUrl(url: string): string {

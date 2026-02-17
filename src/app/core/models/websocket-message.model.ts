@@ -5,6 +5,9 @@ export enum WebSocketMessageType {
   EMAIL_VERIFIED = 'EMAIL_VERIFIED',
   /** El backend envía este tipo cuando cambia el contador de no leídas (para actualizar la campanita). */
   NOTIFICATION_COUNT_UPDATED = 'NOTIFICATION_COUNT_UPDATED',
+  PROJECT_LIKED = 'PROJECT_LIKED',
+  ACTIVITY_LOGGED = 'ACTIVITY_LOGGED',
+  NEWS_BROADCASTED = 'NEWS_BROADCASTED',
   PING = 'PING',
   PONG = 'PONG',
   ACK = 'ACK',

@@ -5,6 +5,9 @@ import { trigger, transition, style, animate } from '@angular/animations';
 import { ProjectService } from '../../core/services/project.service';
 import { Project } from '../../core/models/project.model';
 import { AnalyticsEventsService } from '../../core/services/analytics/analytics-events.service';
+import { WebSocketService } from '../../core/services/websocket.service';
+import { WebSocketMessageType } from '../../core/models/websocket-message.model';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-projects',
@@ -24,6 +27,9 @@ import { AnalyticsEventsService } from '../../core/services/analytics/analytics-
 export class ProjectsComponent implements OnInit, OnDestroy {
   private projectService = inject(ProjectService);
   private analyticsEvents = inject(AnalyticsEventsService);
+  private wsService = inject(WebSocketService);
+
+  private wsSubscription: Subscription | null = null;
 
   projects: Project[] = [];
   categories: string[] = ['Todos'];
@@ -39,6 +45,12 @@ export class ProjectsComponent implements OnInit, OnDestroy {
   carouselStates: { [key: number]: { currentIndex: number; interval: ReturnType<typeof setInterval> | null } } = {};
 
   ngOnInit() {
+    this.wsSubscription = this.wsService.messages.subscribe((msg) => {
+      if (msg.type === WebSocketMessageType.PROJECT_LIKED) {
+        this.handleProjectLikedEvent(msg.data);
+      }
+    });
+
     this.projectService.list(true).subscribe({
       next: (data) => {
         this.projects = data;
@@ -85,7 +97,27 @@ export class ProjectsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    this.wsSubscription?.unsubscribe();
+    this.wsSubscription = null;
     this.stopAllCarousels();
+  }
+
+  private handleProjectLikedEvent(data: unknown): void {
+    if (!data || typeof data !== 'object') return;
+
+    const payload = data as { projectId?: unknown; likesCount?: unknown };
+    const projectId = payload.projectId;
+    const likesCount = payload.likesCount;
+    if (typeof projectId !== 'number' || typeof likesCount !== 'number') return;
+
+    this.updateLikesCountInList(this.projects, projectId, likesCount);
+    this.updateLikesCountInList(this.filteredProjects, projectId, likesCount);
+  }
+
+  private updateLikesCountInList(list: Project[], projectId: number, likesCount: number): void {
+    const target = list.find((p) => p.id === projectId);
+    if (!target) return;
+    target.likesCount = likesCount;
   }
 
   onProjectCardClick(project: Project): void {

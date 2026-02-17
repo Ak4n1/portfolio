@@ -1,5 +1,6 @@
-import { Injectable, inject, Injector } from '@angular/core';
+import { Injectable, inject, Injector, signal, computed } from '@angular/core';
 import { BehaviorSubject, firstValueFrom } from 'rxjs';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { AuthService, UserResponse } from './auth.service';
 
 export interface AuthState {
@@ -23,6 +24,9 @@ export class AuthStateService {
 
   private authStateSubject = new BehaviorSubject<AuthState>(this.initialState);
   readonly authState = this.authStateSubject.asObservable();
+
+  readonly userStateSignal = toSignal(this.authState, { initialValue: this.initialState });
+  readonly currentUser = computed(() => this.userStateSignal().user);
 
   constructor() {
     this.initializeAuthState();

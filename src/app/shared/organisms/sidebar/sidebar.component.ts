@@ -91,6 +91,7 @@ export class SidebarComponent implements OnInit {
       title: 'Gestión',
       items: [
         { label: 'Proyectos', icon: 'fas fa-folder-open', route: '/dashboard/projects' },
+        { label: 'Noticias', icon: 'fas fa-newspaper', route: '/dashboard/noticias' },
         { label: 'Usuarios', icon: 'fas fa-users', route: '/dashboard/usuarios' },
         { label: 'Ofertas', icon: 'fas fa-briefcase', route: '/dashboard/ofertas' },
         { label: 'Mensajes', icon: 'fas fa-address-book', route: '/dashboard/contactos' }
@@ -152,3 +153,4 @@ export class SidebarComponent implements OnInit {
     });
   }
 }
+

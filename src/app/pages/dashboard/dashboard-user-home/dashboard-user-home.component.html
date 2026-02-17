@@ -1,0 +1,173 @@
+<div class="dashboard-user-home">
+    <header class="hero-section">
+        <div class="welcome-box">
+            <span class="welcome-greeting">SYSTEM_ACCESS_GRANTED</span>
+            <h1 class="welcome-title">Hola, {{ user()?.firstName || 'Visitante' }}</h1>
+            <p class="welcome-description">
+                Bienvenido a mi portafolio. Este es mi espacio para construir, experimentar y mostrar
+                proyectos reales desarrollados con dedicación y aprendizaje autodidacta.
+                Cada aplicación que ves acá forma parte de mi camino en el mundo IT.
+            </p>
+            <div class="hero-actions">
+                <button type="button" class="btn-primary" (click)="downloadCV()">
+                    <i class="fas fa-file-download"></i> Descargar CV
+                </button>
+                <button type="button" class="btn-secondary" routerLink="/dashboard/proyectos">
+                    <i class="fas fa-code"></i> Ver Proyectos
+                </button>
+                <button type="button" class="btn-secondary" routerLink="/dashboard/notificaciones">
+                    <i class="fas fa-bell"></i> Ver Avisos
+                </button>
+            </div>
+        </div>
+
+        <div class="id-card-wrapper">
+            <div class="id-card">
+                <div class="id-card-header">
+                    <span class="id-brand">AK4N1_OS</span>
+                    <div class="id-chip"></div>
+                </div>
+                <div class="id-card-body">
+                    <div class="id-photo">
+                        <i class="fas fa-user-astronaut"></i>
+                    </div>
+                    <div class="id-info">
+                        <span class="id-name">{{ user()?.firstName }} {{ user()?.lastName }}</span>
+                        <span class="id-role">ACCESS_LEVEL: {{ accessLevel() }}</span>
+                    </div>
+                </div>
+                <div class="id-card-footer">
+                    <span>ID: 0x{{ user()?.id?.toString(16) || 'XXXX' }}</span>
+                    <span>EST: {{ user()?.createdAt | date:'yyyy' }}</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="dashboard-grid">
+        <section class="news-section">
+            <div class="section-header">
+                <h2 class="section-title"><i class="fas fa-broadcast-tower"></i> Noticias Generales</h2>
+            </div>
+            <div class="news-container">
+                @if (newsLoading()) {
+                <div class="news-empty">
+                    <p>Cargando noticias...</p>
+                </div>
+                } @else if (newsError()) {
+                <div class="news-empty">
+                    <p>{{ newsError() }}</p>
+                </div>
+                } @else {
+                @for (news of newsItems(); track news.id) {
+                <article class="news-card" [class]="getNewsPriorityClass(news)">
+                    <div class="news-header">
+                        <span class="news-date">{{ news.createdAt | date:'shortDate' }}</span>
+                    </div>
+                    <h3 class="news-title">{{ news.title }}</h3>
+                    <div class="news-content" [innerHTML]="news.content"></div>
+                </article>
+                } @empty {
+                <div class="news-empty">
+                    <p>No hay anuncios oficiales por el momento.</p>
+                </div>
+                }
+                }
+            </div>
+        </section>
+
+        <section class="activity-section">
+            <div class="section-header">
+                <h2 class="section-title"><i class="fas fa-terminal"></i> Terminal de Actividad</h2>
+            </div>
+            <div class="console-window">
+                <div class="console-header">
+                    <div class="console-controls">
+                        <span class="dot red"></span>
+                        <span class="dot yellow"></span>
+                        <span class="dot green"></span>
+                    </div>
+                    <span class="console-title">Live Activity Log</span>
+                </div>
+                <div class="console-body" #consoleBody>
+                    @for (log of activityLogs(); track $index) {
+                    <div class="console-line" [class]="log.type.toLowerCase()">
+                        <span class="timestamp">[{{ log.timestamp | date:'HH:mm:ss' }}]</span>
+                        <span class="tag">{{ log.type }}</span>
+                        <span class="message">{{ log.message }}</span>
+                    </div>
+                    }
+                </div>
+            </div>
+        </section>
+
+        <section class="notifications-section">
+            <div class="section-header">
+                <h2 class="section-title"><i class="fas fa-bell"></i> Avisos para Ti</h2>
+            </div>
+            <div class="notif-list">
+                @if (notificationsLoading()) {
+                <div class="news-empty">
+                    <p>Cargando avisos...</p>
+                </div>
+                } @else if (notificationsError()) {
+                <div class="news-empty">
+                    <p>{{ notificationsError() }}</p>
+                </div>
+                } @else {
+                @for (n of userNotifications(); track n.id) {
+                <article class="notif-card-mini">
+                    <div class="notif-meta">
+                        <span class="notif-type">{{ n.type }}</span>
+                        <span class="notif-time">{{ getRelativeTime(n.createdAt) }}</span>
+                    </div>
+                    <h3>{{ n.title }}</h3>
+                    <p>{{ n.message }}</p>
+                </article>
+                } @empty {
+                <div class="news-empty">
+                    <p>No tienes avisos sin leer.</p>
+                </div>
+                }
+                }
+            </div>
+        </section>
+    </div>
+
+    <section class="ranking-section">
+        <div class="section-header">
+            <h2 class="section-title"><i class="fas fa-star"></i> Proyectos Destacados</h2>
+        </div>
+
+        @if (projectsLoading()) {
+        <div class="news-empty">
+            <p>Cargando proyectos...</p>
+        </div>
+        } @else if (projectsError()) {
+        <div class="news-empty">
+            <p>{{ projectsError() }}</p>
+        </div>
+        } @else {
+        <div class="ranking-grid">
+            @for (project of popularProjects(); track project.id) {
+            <div class="popular-card">
+                <span class="rank-number">#{{ $index + 1 }}</span>
+                <div class="project-thumb">
+                    <i class="fas fa-project-diagram"></i>
+                </div>
+                <div class="project-info">
+                    <span class="project-name">{{ project.title }}</span>
+                    <div class="project-stats">
+                        <span><i class="fas fa-heart"></i> {{ project.likesCount || 0 }} likes</span>
+                    </div>
+                </div>
+                <button class="like-button-mini" [class.active]="project.likedByUser"
+                    [disabled]="loadingLike[project.id!]" (click)="toggleLike(project)" title="Like">
+                    <i class="fas fa-heart"></i>
+                </button>
+            </div>
+            }
+        </div>
+        }
+    </section>
+</div>

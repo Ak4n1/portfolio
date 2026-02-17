@@ -581,6 +581,71 @@
   opacity: 0.8;
 }
 
+.section-title-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.project-like-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+  user-select: none;
+  padding: 0.2rem 0.1rem;
+  border-radius: 999px;
+  transition: transform 0.15s ease, color 0.2s ease, opacity 0.2s ease;
+}
+
+.project-like-inline-count {
+  color: inherit;
+  font-size: 0.9rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.project-like-inline i {
+  font-size: 1.05rem;
+  line-height: 1;
+  color: color-mix(in srgb, var(--text-primary) 55%, transparent);
+  transition: color 0.2s ease, transform 0.15s ease;
+}
+
+.project-like-inline:hover {
+  color: var(--text-accent);
+}
+
+.project-like-inline:hover i {
+  color: var(--text-accent);
+  transform: scale(1.05);
+}
+
+.project-like-inline.active,
+.project-like-inline.active .project-like-inline-count {
+  color: var(--text-accent);
+}
+
+.project-like-inline.active i {
+  color: var(--text-accent);
+  text-shadow: var(--shadow-neon);
+}
+
+.project-like-inline.loading {
+  opacity: 0.6;
+  cursor: default;
+  pointer-events: none;
+}
+
+.project-like-error {
+  margin: -0.8rem 0 0.9rem;
+  font-size: 0.85rem;
+  color: var(--error);
+}
+
 /* Game Launcher specific styles */
 .project-info-grid {
   display: grid;

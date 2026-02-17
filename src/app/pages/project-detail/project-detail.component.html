@@ -72,12 +72,33 @@
                 <span class="section-title-line"></span>
                 Descripción del Proyecto
               </h2>
-              @if (isAdmin() && project) {
-                <a [routerLink]="['/dashboard/projects', project.id]" class="edit-project-button">
-                  <i class="fas fa-edit"></i> Editar proyecto
-                </a>
-              }
+              <div class="section-title-actions">
+                <div
+                  class="project-like-inline"
+                  [class.active]="project.likedByUser"
+                  [class.loading]="likeLoading"
+                  (click)="toggleLike()"
+                  role="button"
+                  tabindex="0"
+                  (keydown.enter)="toggleLike()"
+                  (keydown.space)="toggleLike(); $event.preventDefault()">
+                  <span class="project-like-inline-count">{{ project.likesCount || 0 }}</span>
+                  @if (likeLoading) {
+                    <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
+                  } @else {
+                    <i class="fas fa-heart" aria-hidden="true"></i>
+                  }
+                </div>
+                @if (isAdmin() && project) {
+                  <a [routerLink]="['/dashboard/projects', project.id]" class="edit-project-button">
+                    <i class="fas fa-edit"></i> Editar proyecto
+                  </a>
+                }
+              </div>
             </div>
+            @if (likeError) {
+              <p class="project-like-error">{{ likeError }}</p>
+            }
             <div class="project-description project-description-scroll" [innerHTML]="getSafeHtml(project.description)"></div>
 
             @if (project.features && project.features.trim()) {
@@ -194,3 +215,13 @@
     </div>
   </div>
 }
+
+<app-confirm-modal
+  [visible]="loginModalVisible"
+  title="Inicia sesion"
+  message="Para dar like necesitas iniciar sesion."
+  type="primary"
+  confirmText="Ir a login"
+  cancelText="Cancelar"
+  (confirmed)="onLoginModalConfirmed()"
+  (cancelled)="onLoginModalCancelled()" />

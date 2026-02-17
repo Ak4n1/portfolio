@@ -21,6 +21,16 @@ export interface Project {
   imageItems?: ProjectImageItem[];
   createdAt?: string;
   updatedAt?: string;
+  likesCount?: number;
+  likedByUser?: boolean;
+}
+
+export interface NewsBroadcast {
+  id: number;
+  title: string;
+  content: string;
+  priority: 'LOW' | 'MEDIUM' | 'HIGH';
+  createdAt: string;
 }
 
 export interface ProjectRequest {

@@ -106,6 +106,9 @@ export class WebSocketService {
         case WebSocketMessageType.ONLINE_USERS_COUNT:
         case WebSocketMessageType.EMAIL_VERIFIED:
         case WebSocketMessageType.NOTIFICATION_COUNT_UPDATED:
+        case WebSocketMessageType.PROJECT_LIKED:
+        case WebSocketMessageType.ACTIVITY_LOGGED:
+        case WebSocketMessageType.NEWS_BROADCASTED:
           this.messages$.next(message);
           break;
 

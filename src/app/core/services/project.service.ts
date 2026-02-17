@@ -74,4 +74,19 @@ export class ProjectService {
     if (url.startsWith('http')) return url;
     return `${API_BASE}${url.startsWith('/') ? '' : '/'}${url}`;
   }
+
+  toggleLike(projectId: number): Observable<{ projectId: number, liked: boolean, likesCount: number }> {
+    return this.http.post<{ projectId: number, liked: boolean, likesCount: number }>(
+      `${API_BASE}/api/projects/${projectId}/like`,
+      {},
+      { withCredentials: true }
+    );
+  }
+
+  getLikeStatus(projectId: number): Observable<{ projectId: number, liked: boolean, likesCount: number }> {
+    return this.http.get<{ projectId: number, liked: boolean, likesCount: number }>(
+      `${API_BASE}/api/projects/${projectId}/like/status`,
+      { withCredentials: true }
+    );
+  }
 }

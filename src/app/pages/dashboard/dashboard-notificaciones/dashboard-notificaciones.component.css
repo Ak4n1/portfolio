@@ -60,6 +60,8 @@
   border: 1px solid color-mix(in srgb, var(--color-primary) 12%, transparent);
   border-radius: 0.75rem;
   padding: 1.25rem 1.5rem;
+  box-shadow: 0 5px 10px rgba(0, 255, 195, 0.1);
+
 }
 
 .filter-card.z-top {
@@ -772,10 +774,11 @@
   gap: 1rem;
   padding: 1.25rem 1.25rem 1.25rem 2rem;
   border-radius: var(--border-radius-lg);
-  border: 1px solid var(--color-border);
-  background: var(--color-surface);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 12%, transparent);
+  background: color-mix(in srgb, var(--color-primary) 6%, var(--background-dark));
   transition: box-shadow 0.2s, background 0.2s;
   cursor: pointer;
+  box-shadow: 0 5px 10px rgba(0, 255, 195, 0.1);
 }
 
 .notif-card:hover {

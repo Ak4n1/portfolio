@@ -1,0 +1,567 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.dashboard-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: var(--spacing-xl);
+  color: var(--color-text-primary);
+}
+
+.dashboard-page-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+}
+
+.dashboard-page-title {
+  margin: 0 0 0.35rem;
+  font-size: clamp(1.7rem, 4vw, 2.25rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.dashboard-page-subtitle {
+  margin: 0;
+  color: var(--color-text-secondary);
+}
+
+.news-admin-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--spacing-xl);
+}
+
+.news-compose-card,
+.news-list-card {
+  border-radius: 0.85rem;
+  border: 1px solid color-mix(in srgb, var(--color-primary) 15%, transparent);
+  background: color-mix(in srgb, var(--color-primary) 6%, var(--background-dark));
+  padding: 1.1rem;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.card-title {
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.card-title i {
+  color: var(--color-primary);
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.9rem;
+}
+
+.field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.field-group-content {
+  grid-column: 1 / -1;
+}
+
+.field-label {
+  font-size: 0.73rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+}
+
+.styled-input {
+  width: 100%;
+  min-height: 2.5rem;
+  padding: 0.6rem 0.75rem;
+  border-radius: 0.55rem;
+  border: 1px solid color-mix(in srgb, var(--color-primary) 22%, transparent);
+  background: color-mix(in srgb, var(--color-primary) 4%, var(--background-dark));
+  color: var(--color-text-primary);
+}
+
+.styled-input:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.rich-editor-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  min-height: 280px;
+}
+
+.rich-editor-toolbar-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  background: color-mix(in srgb, var(--color-primary) 8%, var(--background-dark));
+  border: 1px solid color-mix(in srgb, var(--color-primary) 12%, transparent);
+  border-bottom: none;
+  border-radius: var(--border-radius-md) var(--border-radius-md) 0 0;
+}
+
+.rich-editor-toolbar-row ngx-editor-menu {
+  flex: 1;
+  min-width: 0;
+}
+
+:host-context([data-theme='light']) .rich-editor-toolbar-row {
+  background: color-mix(in srgb, var(--color-text-primary) 8%, transparent);
+  border-color: var(--border-color);
+}
+
+.rich-editor-wrapper ::ng-deep .NgxEditor,
+.rich-editor-wrapper ::ng-deep .NgxEditor__Wrapper,
+.rich-editor-wrapper ::ng-deep ngx-editor-menu {
+  --ngx-editor-background-color: #1c2422;
+  --ngx-editor-text-color: var(--color-text-primary);
+  --ngx-editor-placeholder-color: var(--color-text-secondary);
+  --ngx-editor-border-color: rgba(0, 255, 204, 0.25);
+  --ngx-editor-wrapper-border-color: rgba(0, 255, 204, 0.25);
+  --ngx-editor-menubar-bg-color: #1c2422;
+  --ngx-editor-blockquote-color: var(--color-text-secondary);
+  --ngx-editor-popup-bg-color: #1c2422;
+  --ngx-editor-menu-item-hover-bg-color: var(--color-primary-light);
+  --ngx-editor-menu-item-active-color: var(--color-primary);
+  --ngx-editor-menu-item-active-bg-color: var(--color-primary-light);
+  --ngx-editor-seperator-color: rgba(255, 255, 255, 0.2);
+}
+
+.rich-editor-wrapper ::ng-deep .NgxEditor__MenuBar {
+  background-color: #1c2422 !important;
+  color: var(--color-text-primary) !important;
+  border-bottom-color: rgba(0, 255, 204, 0.25) !important;
+}
+
+.rich-editor-wrapper ::ng-deep .NgxEditor__MenuBar .NgxEditor__MenuItem--Icon,
+.rich-editor-wrapper ::ng-deep .NgxEditor__MenuBar .NgxEditor__Dropdown,
+.rich-editor-wrapper ::ng-deep .NgxEditor__MenuBar .NgxEditor__Dropdown--Text {
+  color: rgb(255, 255, 255) !important;
+}
+
+.rich-editor-wrapper ::ng-deep .NgxEditor__MenuBar svg {
+  fill: rgb(255, 255, 255) !important;
+}
+
+.rich-editor-wrapper ::ng-deep .NgxEditor__MenuBar button,
+.rich-editor-wrapper ::ng-deep .NgxEditor__MenuBar [role="button"] {
+  color: inherit;
+}
+
+.rich-editor-wrapper ::ng-deep ngx-editor {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.rich-editor-wrapper ::ng-deep .NgxEditor {
+  border-radius: 0 0 var(--border-radius-md) var(--border-radius-md);
+  border: 1px solid rgba(0, 255, 204, 0.25);
+  background-color: #1c2422 !important;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.rich-editor-wrapper ::ng-deep .NgxEditor__Wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.rich-editor-wrapper {
+  overflow-x: hidden;
+}
+
+.rich-editor-wrapper ::ng-deep .NgxEditor__Content {
+  flex: 1;
+  min-height: 220px;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  max-width: 100%;
+  padding: 12px 16px !important;
+  overflow-x: hidden;
+}
+
+.rich-editor-wrapper ::ng-deep .NgxEditor__Content .ProseMirror,
+.rich-editor-wrapper ::ng-deep .ProseMirror {
+  padding: 0 !important;
+  overflow-x: hidden;
+}
+
+.rich-editor-wrapper ::ng-deep .NgxEditor__Content ol,
+.rich-editor-wrapper ::ng-deep .NgxEditor__Content ul,
+.rich-editor-wrapper ::ng-deep .ProseMirror ol,
+.rich-editor-wrapper ::ng-deep .ProseMirror ul {
+  padding-left: 1.5em;
+  padding-inline-start: 1.5em;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.rich-editor-wrapper ::ng-deep .NgxEditor__Content ol,
+.rich-editor-wrapper ::ng-deep .NgxEditor__Content ul,
+.rich-editor-wrapper ::ng-deep .NgxEditor__Content li,
+.rich-editor-wrapper ::ng-deep .NgxEditor__Content p,
+.rich-editor-wrapper ::ng-deep .ProseMirror ol,
+.rich-editor-wrapper ::ng-deep .ProseMirror ul,
+.rich-editor-wrapper ::ng-deep .ProseMirror li,
+.rich-editor-wrapper ::ng-deep .ProseMirror p {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  max-width: 100%;
+}
+
+:host-context([data-theme='light']) .rich-editor-wrapper ::ng-deep .NgxEditor,
+:host-context([data-theme='light']) .rich-editor-wrapper ::ng-deep .NgxEditor__Wrapper,
+:host-context([data-theme='light']) .rich-editor-wrapper ::ng-deep ngx-editor-menu {
+  --ngx-editor-background-color: color-mix(in srgb, var(--color-text-primary) 8%, transparent);
+  --ngx-editor-text-color: rgb(0, 0, 0);
+  --ngx-editor-placeholder-color: rgb(108, 117, 125);
+  --ngx-editor-menubar-bg-color: color-mix(in srgb, var(--color-text-primary) 8%, transparent);
+  --ngx-editor-popup-bg-color: rgb(255, 255, 255);
+  --ngx-editor-menu-item-hover-bg-color: rgb(241, 241, 241);
+  --ngx-editor-menu-item-active-color: rgb(26, 115, 232);
+  --ngx-editor-menu-item-active-bg-color: rgb(232, 240, 254);
+  --ngx-editor-seperator-color: rgb(204, 204, 204);
+}
+
+:host-context([data-theme='light']) .rich-editor-wrapper ::ng-deep .NgxEditor {
+  background-color: color-mix(in srgb, var(--color-text-primary) 8%, transparent) !important;
+  border-color: color-mix(in srgb, var(--color-text-primary) 25%, transparent) !important;
+}
+
+:host-context([data-theme='light']) .rich-editor-wrapper ::ng-deep .NgxEditor__Content,
+:host-context([data-theme='light']) .rich-editor-wrapper ::ng-deep .NgxEditor__Content .ProseMirror,
+:host-context([data-theme='light']) .rich-editor-wrapper ::ng-deep .ProseMirror {
+  background-color: color-mix(in srgb, var(--color-text-primary) 8%, transparent) !important;
+  color: rgb(0, 0, 0) !important;
+}
+
+:host-context([data-theme='light']) .rich-editor-wrapper ::ng-deep .NgxEditor__MenuBar {
+  background-color: color-mix(in srgb, var(--color-text-primary) 8%, transparent) !important;
+  color: rgb(0, 0, 0) !important;
+  border-bottom-color: color-mix(in srgb, var(--color-text-primary) 25%, transparent) !important;
+}
+
+:host-context([data-theme='light']) .rich-editor-wrapper ::ng-deep .NgxEditor__MenuBar .NgxEditor__MenuItem--Icon,
+:host-context([data-theme='light']) .rich-editor-wrapper ::ng-deep .NgxEditor__MenuBar .NgxEditor__Dropdown,
+:host-context([data-theme='light']) .rich-editor-wrapper ::ng-deep .NgxEditor__MenuBar .NgxEditor__Dropdown--Text {
+  color: rgb(0, 0, 0) !important;
+}
+
+:host-context([data-theme='light']) .rich-editor-wrapper ::ng-deep .NgxEditor__MenuBar svg {
+  fill: rgb(0, 0, 0) !important;
+}
+
+.form-actions {
+  margin-top: 1rem;
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  min-height: 2.6rem;
+  padding: 0.55rem 1rem;
+  border-radius: var(--border-radius-md);
+  border: 2px solid transparent;
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+}
+
+.btn-primary {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-primary-contrast, #0a0f0e);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--color-primary) 90%, white);
+}
+
+.btn-secondary {
+  background: transparent;
+  border-color: color-mix(in srgb, var(--color-primary) 60%, transparent);
+  color: var(--color-primary);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: var(--color-primary-light);
+}
+
+.btn-refresh {
+  min-height: 2.2rem;
+  padding: 0.45rem 0.75rem;
+  font-size: 0.74rem;
+}
+
+.btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.form-message {
+  margin: 0 0 0.75rem;
+  border-radius: 0.55rem;
+  padding: 0.55rem 0.7rem;
+  font-size: 0.88rem;
+}
+
+.form-message-error {
+  border: 1px solid color-mix(in srgb, #ef4444 42%, transparent);
+  background: color-mix(in srgb, #ef4444 14%, transparent);
+  color: #ef4444;
+}
+
+.form-message-success {
+  border: 1px solid color-mix(in srgb, #22c55e 42%, transparent);
+  background: color-mix(in srgb, #22c55e 14%, transparent);
+  color: #22c55e;
+}
+
+.news-filters {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) repeat(2, minmax(0, 1fr)) auto;
+  gap: 0.75rem;
+  margin: 0 0 0.95rem;
+}
+
+.field-group-filter-actions {
+  justify-content: flex-end;
+}
+
+.news-filter-actions {
+  display: flex;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+}
+
+.btn-filter-apply,
+.btn-filter-clear {
+  min-height: 2.5rem;
+  padding: 0.45rem 0.85rem;
+  font-size: 0.74rem;
+  white-space: nowrap;
+}
+
+.state-box {
+  border-radius: 0.65rem;
+  border: 1px solid color-mix(in srgb, var(--color-primary) 15%, transparent);
+  background: color-mix(in srgb, var(--color-primary) 5%, var(--background-dark));
+  padding: 0.8rem;
+  color: var(--color-text-secondary);
+}
+
+.state-box-error {
+  border-color: color-mix(in srgb, #ef4444 36%, transparent);
+  color: #ef4444;
+}
+
+.news-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-height: 78vh;
+  overflow-y: auto;
+  padding-right: 0.25rem;
+  min-width: 0;
+}
+
+.news-item {
+  border-radius: 0.7rem;
+  border: 1px solid color-mix(in srgb, var(--color-primary) 14%, transparent);
+  background: color-mix(in srgb, var(--color-primary) 5%, var(--background-dark));
+  padding: 0.8rem;
+  min-width: 0;
+  overflow: hidden;
+  padding-left: 30px;
+}
+
+.news-item-editing {
+  border-color: color-mix(in srgb, var(--color-primary) 45%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-primary) 28%, transparent);
+}
+
+.news-item-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  margin-bottom: 0.35rem;
+}
+
+.news-date {
+  font-size: 0.76rem;
+  color: var(--color-text-secondary);
+}
+
+.news-item-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  opacity: 0.65;
+  transition: opacity 0.2s;
+}
+
+.news-item:hover .news-item-actions,
+.news-item:focus-within .news-item-actions {
+  opacity: 1;
+}
+
+.news-action-btn {
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  background: none;
+  border: none;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  border-radius: var(--border-radius-sm);
+  transition: color 0.2s, background 0.2s;
+}
+
+.news-action-btn:hover:not(:disabled) {
+  color: var(--color-primary);
+  background: color-mix(in srgb, var(--color-primary) 14%, transparent);
+}
+
+.news-action-btn-delete:hover:not(:disabled) {
+  color: var(--color-logout-hover-text, #ef4444);
+}
+
+.news-action-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.news-item-title {
+  margin: 0 0 0.35rem;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.news-item-content {
+  font-size: 0.92rem;
+  line-height: 1.45;
+  color: var(--color-text-secondary);
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.news-item-content :where(p, ul, ol, blockquote, pre) {
+  margin: 0.25rem 0 0.55rem;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.news-item-content :where(h1, h2, h3, h4) {
+  margin: 0.35rem 0 0.4rem;
+  color: var(--color-text-primary);
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.news-item-content a {
+  color: var(--color-primary);
+  text-decoration: underline;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.news-item-content :where(img, video, iframe, table) {
+  max-width: 100%;
+  height: auto;
+}
+
+.news-item-content pre,
+.news-item-content code {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.news-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 0.9rem;
+  flex-wrap: wrap;
+}
+
+.pag-info {
+  font-size: 0.84rem;
+  color: var(--color-text-secondary);
+}
+
+@media (max-width: 1080px) {
+  .news-admin-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .news-filters {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .field-group-filter-actions {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 720px) {
+  .dashboard-page {
+    padding: var(--spacing-lg) var(--spacing-md);
+    gap: var(--spacing-lg);
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .news-filters {
+    grid-template-columns: 1fr;
+  }
+}

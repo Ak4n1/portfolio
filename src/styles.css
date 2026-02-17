@@ -355,3 +355,7 @@ main.dashboard-main {
     padding-top: 0;
   }
 }
+
+.cyber-card {
+  box-shadow: var(--shadow-card);
+}
