@@ -1,0 +1,71 @@
+<div class="dashboard-page">
+  <div class="dashboard-page-header">
+    <div>
+      <h1 class="dashboard-page-title">Proyectos</h1>
+      <p class="dashboard-page-subtitle">Administra los proyectos de tu portafolio</p>
+    </div>
+    <a routerLink="/dashboard/projects/new" class="btn-create">+ Nuevo proyecto</a>
+  </div>
+
+  <div class="dashboard-page-content">
+    @if (loading) {
+      <div class="loading-state">
+        <div class="loading-spinner"></div>
+        <p>Cargando proyectos...</p>
+      </div>
+    } @else if (error) {
+      <div class="error-state">
+        <p>{{ error }}</p>
+        <button type="button" class="btn-retry" (click)="loadProjects()">Reintentar</button>
+      </div>
+    } @else if (projects.length === 0) {
+      <div class="empty-state">
+        <p>Aún no hay proyectos. Crea el primero.</p>
+        <a routerLink="/dashboard/projects/new" class="btn-create-inline">+ Nuevo proyecto</a>
+      </div>
+    } @else {
+      <div class="projects-grid">
+        @for (p of projects; track p.id) {
+          <div class="project-card">
+            <div class="project-card-image">
+              @if (getProjectImageUrls(p).length > 0) {
+                <img [src]="getImageUrl(getProjectImageUrls(p)[0])" [alt]="p.title" />
+              } @else {
+                <div class="project-card-placeholder">
+                  <i [class]="getCategoryIcon(p.category)" class="project-icon-fa" aria-hidden="true"></i>
+                </div>
+              }
+              <div class="project-card-actions">
+                <div class="project-card-actions-row">
+                  <a [routerLink]="['/project', p.id]" class="btn-view" title="Ver">Ver</a>
+                  <a [routerLink]="['/dashboard/projects', p.id]" class="btn-edit" title="Editar">Editar</a>
+                </div>
+                <button type="button" class="btn-delete" (click)="deleteProject(p.id, p.title, $event)" title="Eliminar">Eliminar</button>
+              </div>
+            </div>
+            <div class="project-card-body">
+              <h3 class="project-card-title">{{ p.title }}</h3>
+              @if (p.shortDescription?.trim()) {
+                <p class="project-card-short-desc">{{ p.shortDescription?.trim() }}</p>
+              }
+              <span class="project-card-category">{{ p.category }}</span>
+              @if (p.stacks && p.stacks.length > 0) {
+                <div class="project-card-stacks">
+                  @for (s of p.stacks.slice(0, 4); track s) {
+                    <span class="stack-tag">{{ s }}</span>
+                  }
+                  @if (p.stacks.length > 4) {
+                    <span class="stack-tag stack-more">+{{ p.stacks.length - 4 }}</span>
+                  }
+                </div>
+              }
+              @if (!p.visible) {
+                <span class="badge-hidden">Oculto</span>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>

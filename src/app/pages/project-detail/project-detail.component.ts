@@ -1,26 +1,22 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewChecked, inject, computed, ChangeDetectorRef, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { trigger, transition, style, animate } from '@angular/animations';
+import { Subject, switchMap, takeUntil } from 'rxjs';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faGamepad, faPlug, faDesktop, faServer } from '@fortawesome/free-solid-svg-icons';
-
-interface Project {
-  id: number;
-  title: string;
-  description: string;
-  icon: string;
-  tags: string[];
-  category: string;
-  github?: string;
-  demo?: string;
-  images?: string[];
-}
+import { ProjectService } from '../../core/services/project.service';
+import { AuthStateService } from '../../core/services/auth-state.service';
+import { AnalyticsService } from '../../core/services/analytics/analytics.service';
+import { AnalyticsEventsService } from '../../core/services/analytics/analytics-events.service';
+import { Project } from '../../core/models/project.model';
 
 @Component({
   selector: 'app-project-detail',
   standalone: true,
-  imports: [CommonModule, FontAwesomeModule],
+  imports: [CommonModule, FontAwesomeModule, RouterLink],
   templateUrl: './project-detail.component.html',
   styleUrl: './project-detail.component.css',
   animations: [
@@ -32,112 +28,148 @@ interface Project {
     ])
   ]
 })
-export class ProjectDetailComponent implements OnInit, OnDestroy {
-  project: Project | null = null;
-  currentImageIndex = 0;
-  carouselInterval: any;
+export class ProjectDetailComponent implements OnInit, OnDestroy, AfterViewChecked {
+  private projectService = inject(ProjectService);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private authStateService = inject(AuthStateService);
+  private analyticsService = inject(AnalyticsService);
+  private analyticsEvents = inject(AnalyticsEventsService);
+  private sanitizer = inject(DomSanitizer);
+  private cdr = inject(ChangeDetectorRef);
+  private ngZone = inject(NgZone);
+  private destroy$ = new Subject<void>();
 
-  // Modal properties
+  private scrollTracked = false;
+  private scrollListenerAttached = false;
+
+  /** Cache para evitar recalcular SafeHtml en cada ciclo de change detection */
+  private _safeHtmlCache = new Map<string, SafeHtml>();
+
+  private authState = toSignal(this.authStateService.authState, { initialValue: null });
+  isAdmin = computed(() => {
+    const state = this.authState();
+    return !!state?.isAuthenticated && state?.user?.roles?.includes('ROLE_ADMIN');
+  });
+
+  project: Project | null = null;
+  relatedProjects: Project[] = [];
+  loading = true;
+  error = '';
+  currentImageIndex = 0;
+  carouselInterval: ReturnType<typeof setInterval> | null = null;
+
   isModalOpen = false;
   selectedImage = '';
 
-  // FontAwesome icons
   faGamepad = faGamepad;
   faPlug = faPlug;
   faDesktop = faDesktop;
   faServer = faServer;
 
-  // Método para obtener el icono según el proyecto
-  getProjectIcon(projectId: number) {
-    switch (projectId) {
-      case 1: return faGamepad; // L2 Terra Web
-      case 2: return faPlug; // Terra API
-      case 3: return faDesktop; // Game Launcher
-      case 4: return faServer; // L2Jmobius Server
-      default: return faGamepad;
+  /** Permite estilos inline y br codificados (&lt;br&gt;). Con cache para no bloquear CD. */
+  getSafeHtml(html: string | undefined): SafeHtml {
+    const s = html || '';
+    const cached = this._safeHtmlCache.get(s);
+    if (cached) return cached;
+    const processed = s.replace(/&lt;br\s*\/?&gt;/gi, '<br>');
+    const safe = this.sanitizer.bypassSecurityTrustHtml(processed);
+    this._safeHtmlCache.set(s, safe);
+    return safe;
+  }
+
+  onProjectLinkClick(type: 'github' | 'demo'): void {
+    if (this.project) {
+      this.analyticsEvents.trackClickSocial(type, 'project_detail', this.project.id);
     }
   }
 
-  projects: Project[] = [
-    {
-      id: 1,
-      title: 'L2 Terra Web',
-      description: 'Plataforma web completa desarrollada en Angular 19.2.0 + Spring Boot para servidor privado de Lineage 2 basado en L2Jmobius Classic. Las funcionalidades principales se detallan a continuación.',
-      icon: '',
-      tags: ['Angular 19.2.0', 'TypeScript', 'Spring Boot', 'JWT', 'MercadoPago', 'Firebase', 'Discord SDK', 'Kick.com API', 'N8N', 'MySQL'],
-      category: 'Frontend',
-      github: 'https://github.com/Jeep12/web-terra',
-      demo: 'https://l2terra.online',
-      images: ['assets/images/terra-web/bg1.jpg', 'assets/images/terra-web/bg2.jpg', 'assets/images/terra-web/bg3.jpg', 'assets/images/terra-web/bg4.jpg', 'assets/images/terra-web/bg5.jpg', 'assets/images/terra-web/bg6.jpg', 'assets/images/terra-web/bg7.jpg', 'assets/images/terra-web/bg8.jpg']
-    },
-    {
-      id: 2,
-      title: 'Terra API',
-      description: 'API REST completa para L2Terra con gestión de cuentas maestras, verificación por email, market offline, estadísticas de personajes y sistema de seguridad con JWT y rate limiting.',
-      icon: '🔌',
-      tags: ['Spring Boot 3.4.4', 'Java 17', 'JWT', 'MariaDB', 'PayPal SDK', 'MercadoPago SDK', 'Firebase', 'WebSocket', 'Rate Limiting'],
-      category: 'Backend',
-      github: 'https://github.com/juanencabo/terra-api',
-      images: ['assets/images/terra-api/bgweb3.png', 'assets/images/terra-api/bgweb2.png', 'assets/images/terra-api/bgweb1.png']
-    },
-    {
-      id: 3,
-      title: 'Game Launcher',
-      description: 'Launcher desktop para Lineage 2 Terra desarrollado con Electron. Permite descargar y actualizar el juego, consultar rankings PvP en tiempo real, acceder a patch notes y validar la instalación del cliente. Incluye sistema de reparación de archivos, ventana sin marco con System Tray, y estadísticas del servidor. Planeado migrar a JavaFX en el futuro.',
-      icon: '🎮',
-      tags: ['Electron', 'JavaScript', 'Desktop', 'Game'],
-      category: 'Desktop',
-      github: 'https://github.com/juanencabo/game-launcher',
-      demo: 'https://github.com/juanencabo/game-launcher/releases',
-      images: ['assets/images/terra-launcher/launcherlogin.png', 'assets/images/terra-launcher/launcherpanel.png', 'assets/images/terra-launcher/launcherpanel2.png']
-    },
-    {
-      id: 4,
-      title: 'L2Jmobius Server',
-      description: 'Terra es un proyecto personal de desarrollo de un servidor online multijugador, construido sobre <a href="https://l2jmobius.org/" target="_blank">L2JMobius</a>, un core open-source de servidor escrito en Java que implementa la lógica base de un MMORPG. L2JMobius provee una implementación funcional inicial, pensada para ser modificada y extendida, no un producto final. A partir de esta base, desarrollo un servidor propio, incorporando modificaciones al core original y funcionalidades personalizadas, desplegado en un entorno Linux real (Ubuntu 22.04).',
-      icon: '🖥️',
-      tags: ['Java', 'L2Jmobius', 'VPS', 'Linux', 'Infrastructure'],
-      category: 'Backend',
-      github: 'https://github.com/juanencabo/l2jmobius-server',
-      images: ['assets/images/l2jmobius-server/bgweb3.png', 'assets/images/l2jmobius-server/bgweb2.png', 'assets/images/l2jmobius-server/bgweb1.png']
-    }
-
-  ];
-
-  constructor(
-    private route: ActivatedRoute,
-    private router: Router
-  ) { }
+  getProjectIcon(project: Project) {
+    const cat = (project.category || '').toLowerCase();
+    if (cat.includes('backend') || cat.includes('api')) return faPlug;
+    if (cat.includes('desktop')) return faDesktop;
+    if (cat.includes('server')) return faServer;
+    return faGamepad;
+  }
 
   ngOnInit() {
-    this.route.params.subscribe(params => {
-      const projectId = +params['id'];
-      this.project = this.projects.find(p => p.id === projectId) || null;
-
-      if (!this.project) {
-        this.router.navigate(['/projects']);
-        return;
-      }
-
-      this.initializeCarousel();
+    console.log('[ProjectDetail] ngOnInit');
+    this.route.paramMap.pipe(
+      switchMap((params) => {
+        const idParam = params.get('id');
+        const projectId = idParam ? +idParam : 0;
+        console.log('[ProjectDetail] paramMap emit, idParam:', idParam, 'projectId:', projectId);
+        this.loading = true;
+        this.error = '';
+        this.currentImageIndex = 0;
+        return this.projectService.getById(projectId);
+      }),
+      takeUntil(this.destroy$)
+    ).subscribe({
+      next: (p) => {
+        console.log('[ProjectDetail] getById success:', p?.id, p?.title);
+        this._safeHtmlCache.clear();
+        // Diferir actualización para evitar bloquear el hilo principal durante CD
+        setTimeout(() => {
+          this.project = p;
+          this.loading = false;
+          this.scrollTracked = false;
+          this.scrollListenerAttached = false;
+          this.initializeCarousel();
+          this.loadRelatedProjects(p.id);
+          this.cdr.detectChanges();
+        }, 0);
+      },
+      error: (err) => {
+        console.error('[ProjectDetail] getById error:', err);
+        this.project = null;
+        this.loading = false;
+        if (err?.name === 'TimeoutError') {
+          this.error = 'La solicitud tardó demasiado. Comprueba que el servidor (puerto 8080) esté en ejecución.';
+        } else {
+          this.error = err?.error?.message || 'Error al cargar el proyecto';
+        }
+      },
+      complete: () => console.log('[ProjectDetail] subscribe complete')
     });
   }
 
+  private loadRelatedProjects(excludeId: number): void {
+    const current = this.project;
+    if (!current) return;
+    this.projectService.list(true).subscribe({
+      next: (list) => {
+        const sameCategory = list.filter((p) => p.id !== excludeId && p.category === current.category);
+        this.relatedProjects = (sameCategory.length > 0 ? sameCategory : list.filter((p) => p.id !== excludeId))
+          .slice(0, 3);
+      }
+    });
+  }
+
+  getImageUrl(url: string): string {
+    return this.projectService.getImageUrl(url);
+  }
+
   ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
     this.stopCarousel();
   }
 
   initializeCarousel() {
-    if (this.project && this.project.images && this.project.images.length > 1) {
-      this.carouselInterval = setInterval(() => {
-        this.nextImage();
-      }, 4000);
+    if (this.project?.images && this.project.images.length > 1) {
+      this.ngZone.runOutsideAngular(() => {
+        this.carouselInterval = setInterval(() => {
+          this.ngZone.run(() => this.nextImage());
+        }, 4000);
+      });
     }
   }
 
   stopCarousel() {
     if (this.carouselInterval) {
       clearInterval(this.carouselInterval);
+      this.carouselInterval = null;
     }
   }
 
@@ -170,8 +202,9 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
   }
 
   getCurrentImage(): string {
-    if (this.project && this.project.images) {
-      return this.project.images[this.currentImageIndex];
+    if (this.project?.images?.length) {
+      const url = this.project.images[this.currentImageIndex];
+      return url ? this.getImageUrl(url) : '';
     }
     return '';
   }
@@ -182,11 +215,6 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
 
   goToProject(projectId: number) {
     this.router.navigate(['/project', projectId]);
-  }
-
-  getRelatedProjects(): Project[] {
-    if (!this.project) return [];
-    return this.projects.filter(p => p.id !== this.project!.id).slice(0, 3);
   }
 
   // Modal methods
@@ -224,5 +252,40 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
       this.prevImage();
       this.selectedImage = this.getCurrentImage();
     }
+  }
+
+  ngAfterViewChecked(): void {
+    if (this.project && !this.scrollTracked) {
+      this.setupScrollTracking();
+    }
+  }
+
+  private setupScrollTracking(): void {
+    if (this.scrollTracked || this.scrollListenerAttached) return;
+    const el = document.querySelector('.project-description-scroll') as HTMLElement | null;
+    if (!el) return;
+    if (el.scrollHeight <= el.clientHeight) {
+      this.scrollTracked = true;
+      this.trackScrollComplete();
+      return;
+    }
+    this.scrollListenerAttached = true;
+    const handler = (): void => {
+      const { scrollTop, scrollHeight, clientHeight } = el;
+      if (scrollTop + clientHeight >= scrollHeight - 20) {
+        el.removeEventListener('scroll', handler);
+        this.scrollTracked = true;
+        this.trackScrollComplete();
+      }
+    };
+    el.addEventListener('scroll', handler);
+  }
+
+  private trackScrollComplete(): void {
+    if (!this.project) return;
+    this.analyticsService.trackEvent('project_scroll_complete', {
+      project_id: this.project.id,
+      project_title: this.project.title
+    });
   }
 }

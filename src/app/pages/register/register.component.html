@@ -1,0 +1,6 @@
+<section class="auth-page">
+  <div class="auth-container">
+    <p class="auth-error" *ngIf="serverError">{{ serverError }}</p>
+    <app-register-form (submitForm)="onSubmit($event)"></app-register-form>
+  </div>
+</section>

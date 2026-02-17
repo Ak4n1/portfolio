@@ -1,19 +1,10 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { trigger, transition, style, animate } from '@angular/animations';
-
-interface Project {
-  id: number;
-  title: string;
-  description: string;
-  icon: string;
-  tags: string[];
-  category: string;
-  github?: string;
-  demo?: string;
-  images?: string[];
-}
+import { ProjectService } from '../../core/services/project.service';
+import { Project } from '../../core/models/project.model';
+import { AnalyticsEventsService } from '../../core/services/analytics/analytics-events.service';
 
 @Component({
   selector: 'app-projects',
@@ -31,70 +22,86 @@ interface Project {
   ]
 })
 export class ProjectsComponent implements OnInit, OnDestroy {
-  // Modal properties
+  private projectService = inject(ProjectService);
+  private analyticsEvents = inject(AnalyticsEventsService);
+
+  projects: Project[] = [];
+  categories: string[] = ['Todos'];
+  selectedCategory = 'Todos';
+  filteredProjects: Project[] = [];
+  loading = true;
+  error = '';
+
   isModalOpen = false;
   selectedImage = '';
   selectedProject: Project | null = null;
 
-  // Carousel properties
-  carouselStates: { [key: number]: { currentIndex: number; interval: any } } = {};
-
-  projects: Project[] = [
-    {
-      id: 1,
-      title: 'L2 Terra Web',
-      description: 'Plataforma web completa desarrollada en Angular para servidor privado de Lineage 2 basado en L2Jmobius Classic. Incluye autenticación, pagos, marketplace offline y sistema de streaming.',
-      icon: '🎮',
-      tags: ['Angular', 'Spring Boot', 'JWT', 'MercadoPago', 'Firebase', 'N8N'],
-      category: 'Frontend',
-      github: 'https://github.com/juanencabo/l2terra-web',
-      demo: 'https://l2terra.online',
-      images: ['assets/images/terra-web/bg1.jpg', 'assets/images/terra-web/bg2.jpg', 'assets/images/terra-web/bg3.jpg', 'assets/images/terra-web/bg4.jpg', 'assets/images/terra-web/bg5.jpg', 'assets/images/terra-web/bg6.jpg', 'assets/images/terra-web/bg7.jpg', 'assets/images/terra-web/bg8.jpg']
-    },
-    {
-      id: 2,
-      title: 'Terra API',
-      description: 'API REST monolítica desarrollada en Spring Boot 3.4.4 para servidor privado de Lineage 2 basado en L2Jmobius Classic. Incluye autenticación JWT, gestión de personajes, pagos con PayPal y MercadoPago, marketplace offline y sistema de notificaciones.',
-      icon: '🔌',
-      tags: ['Spring Boot', 'Java', 'JWT', 'MariaDB', 'PayPal', 'MercadoPago', 'Firebase', 'WebSocket'],
-      category: 'Backend',
-      github: 'https://github.com/juanencabo/terra-api',
-      images: ['assets/images/terra-api/bgweb3.png', 'assets/images/terra-api/bgweb2.png', 'assets/images/terra-api/bgweb1.png']
-    },
-    {
-      id: 3,
-      title: 'Game Launcher',
-      description: 'Aplicación desktop desarrollada con Electron para L2Terra. Incluye descarga y actualización del juego, rankings PvP, patch notes y sistema de autenticación.',
-      icon: '🎮',
-      tags: ['Electron', 'JavaScript', 'Desktop', 'Game'],
-      category: 'Desktop',
-      github: 'https://github.com/juanencabo/game-launcher',
-      demo: 'https://github.com/juanencabo/game-launcher/releases',
-      images: ['assets/images/terra-launcher/launcherlogin.png', 'assets/images/terra-launcher/launcherpanel.png','assets/images/terra-launcher/launcherpanel2.png']
-    },
-    {
-      id: 4,
-      title: 'L2Jmobius Server',
-      description: 'Servidor L2Jmobius Classic 3.0 completo con core personalizado, datapack optimizado y sistema de infraestructura en VPS con N8N para automatización.',
-      icon: '🖥️',
-      tags: ['Java', 'L2Jmobius', 'VPS', 'Linux', 'Infrastructure'],
-      category: 'Backend',
-      github: 'https://github.com/juanencabo/l2jmobius-server',
-      images: ['assets/images/l2jmobius-server/bgweb3.png', 'assets/images/l2jmobius-server/bgweb2.png', 'assets/images/l2jmobius-server/bgweb1.png']
-    }
-  ];
-
-  categories: string[] = ['Todos', 'Frontend', 'Backend', 'Desktop'];
-  selectedCategory: string = 'Todos';
-  filteredProjects: Project[] = [];
+  carouselStates: { [key: number]: { currentIndex: number; interval: ReturnType<typeof setInterval> | null } } = {};
 
   ngOnInit() {
-    this.filterProjects('Todos');
-    this.initializeCarousels();
+    this.projectService.list(true).subscribe({
+      next: (data) => {
+        this.projects = data;
+        const cats = [...new Set(data.map((p) => p.category))].sort();
+        this.categories = ['Todos', ...cats];
+        this.filterProjects('Todos');
+        this.initializeCarousels();
+        this.loading = false;
+      },
+      error: (err) => {
+        this.error = err?.error?.message || 'Error loading projects';
+        this.loading = false;
+      }
+    });
+  }
+
+  getImageUrl(url: string): string {
+    return this.projectService.getImageUrl(url);
+  }
+
+  /** URLs de imágenes: usa images o imageItems como fallback */
+  getProjectImageUrls(project: Project): string[] {
+    if (project.images?.length) return project.images;
+    if (project.imageItems?.length) return project.imageItems.map(i => i.url);
+    return [];
+  }
+
+  /** Para tarjetas: usa descripción breve o texto plano truncado de la descripción completa */
+  getCardDescription(project: Project): string {
+    if (project.shortDescription?.trim()) return project.shortDescription.trim();
+    const text = (project.description || '').replace(/<[^>]*>/g, '').trim();
+    return text.length > 200 ? text.slice(0, 197) + '...' : text;
+  }
+
+  getCategoryIcon(category: string): string {
+    const c = (category || '').toLowerCase();
+    if (c.includes('frontend')) return 'fas fa-code';
+    if (c.includes('backend')) return 'fas fa-server';
+    if (c.includes('desktop')) return 'fas fa-desktop';
+    if (c.includes('fullstack')) return 'fas fa-layer-group';
+    if (c.includes('mobile')) return 'fas fa-mobile-alt';
+    if (c.includes('devops')) return 'fas fa-cogs';
+    return 'fas fa-folder';
   }
 
   ngOnDestroy() {
     this.stopAllCarousels();
+  }
+
+  onProjectCardClick(project: Project): void {
+    this.analyticsEvents.trackClickProjectCard(project.id, project.title);
+  }
+
+  onProjectGithubClick(project: Project): void {
+    this.analyticsEvents.trackClickSocial('github', 'project_card', project.id);
+  }
+
+  onProjectDemoClick(project: Project): void {
+    this.analyticsEvents.trackClickSocial('demo', 'project_card', project.id);
+  }
+
+  onCtaContactClick(): void {
+    this.analyticsEvents.trackClickCtaContact('projects_page');
   }
 
   // Filter methods
@@ -110,12 +117,11 @@ export class ProjectsComponent implements OnInit, OnDestroy {
   // Carousel methods
   initializeCarousels() {
     this.projects.forEach(project => {
-      if (project.images && project.images.length > 1) {
+      const urls = this.getProjectImageUrls(project);
+      if (urls.length > 0) {
         this.carouselStates[project.id] = {
           currentIndex: 0,
-          interval: setInterval(() => {
-            this.nextImage(project.id);
-          }, 4000)
+          interval: urls.length > 1 ? setInterval(() => this.nextImage(project.id), 4000) : null
         };
       }
     });
@@ -140,7 +146,7 @@ export class ProjectsComponent implements OnInit, OnDestroy {
   resumeCarousel(projectId: number) {
     const project = this.projects.find(p => p.id === projectId);
     const state = this.carouselStates[projectId];
-    if (project && project.images && project.images.length > 1 && state && !state.interval) {
+    if (project && this.getProjectImageUrls(project).length > 1 && state && !state.interval) {
       state.interval = setInterval(() => {
         this.nextImage(projectId);
       }, 4000);
@@ -150,18 +156,18 @@ export class ProjectsComponent implements OnInit, OnDestroy {
   nextImage(projectId: number) {
     const state = this.carouselStates[projectId];
     const project = this.projects.find(p => p.id === projectId);
-    if (state && project && project.images) {
-      state.currentIndex = (state.currentIndex + 1) % project.images.length;
+    const urls = project ? this.getProjectImageUrls(project) : [];
+    if (state && urls.length) {
+      state.currentIndex = (state.currentIndex + 1) % urls.length;
     }
   }
 
   prevImage(projectId: number) {
     const state = this.carouselStates[projectId];
     const project = this.projects.find(p => p.id === projectId);
-    if (state && project && project.images) {
-      state.currentIndex = state.currentIndex === 0 
-        ? project.images.length - 1 
-        : state.currentIndex - 1;
+    const urls = project ? this.getProjectImageUrls(project) : [];
+    if (state && urls.length) {
+      state.currentIndex = state.currentIndex === 0 ? urls.length - 1 : state.currentIndex - 1;
     }
   }
 
@@ -175,22 +181,23 @@ export class ProjectsComponent implements OnInit, OnDestroy {
   getCurrentImage(projectId: number): string {
     const state = this.carouselStates[projectId];
     const project = this.projects.find(p => p.id === projectId);
-    if (state && project && project.images) {
-      return project.images[state.currentIndex];
-    }
-    return '';
+    const urls = project ? this.getProjectImageUrls(project) : [];
+    if (urls.length === 0) return '';
+    const index = state?.currentIndex ?? 0;
+    const url = urls[index];
+    return url ? this.getImageUrl(url) : '';
   }
 
   getCurrentIndex(projectId: number): number {
     const state = this.carouselStates[projectId];
-    return state ? state.currentIndex : 0;
+    return state?.currentIndex ?? 0;
   }
 
   // Modal methods
   openModal(project: Project) {
-    const currentImage = this.getCurrentImage(project.id);
-    if (currentImage) {
-      this.selectedImage = currentImage;
+    const url = this.getCurrentImage(project.id);
+    if (url) {
+      this.selectedImage = url;
       this.selectedProject = project;
       this.isModalOpen = true;
       document.body.style.overflow = 'hidden';
@@ -206,7 +213,7 @@ export class ProjectsComponent implements OnInit, OnDestroy {
     
     // Resume all carousels
     this.projects.forEach(project => {
-      if (project.images && project.images.length > 1) {
+      if (this.getProjectImageUrls(project).length > 1) {
         this.resumeCarousel(project.id);
       }
     });

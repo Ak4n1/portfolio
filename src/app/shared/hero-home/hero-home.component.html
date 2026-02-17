@@ -1,0 +1,117 @@
+<div class="hero-home">
+  <!-- Canvas animado de fondo (sin texto) -->
+  <app-hero-canvas class="hero-home-canvas"></app-hero-canvas>
+  <!-- Grid background -->
+  <div class="hero-home-bg"></div>
+
+  <!-- Decorative terminal (derecha, desktop) -->
+  <div class="hero-home-terminal">
+    <p>&gt; inicializando sistema...</p>
+    <p>&gt; cargando módulos: angular, spring, java</p>
+    <p>&gt; obteniendo datos_juan_encabo...</p>
+    <p>&gt; estado: [Disponible]</p>
+    <p>&gt; ubicación: remoto_global</p>
+    <p>&gt; tipo: full_stack_developer</p>
+    <p>&gt; _</p>
+    <div class="hero-home-terminal-code">
+      <p>const portafolio = &#123;</p>
+      <p>&nbsp;&nbsp;version: '2024',</p>
+      <p>&nbsp;&nbsp;stack: ['Angular', 'Spring Boot', 'Java'],</p>
+      <p>&nbsp;&nbsp;bases_datos: ['PostgreSQL', 'MariaDB']</p>
+      <p>&#125;</p>
+    </div>
+  </div>
+
+  <div class="hero-home-content">
+    <!-- Título -->
+    <div class="hero-home-titles">
+      <h1 class="hero-home-title-primary">JUAN</h1>
+      <div class="hero-home-titles-row">
+        <h1 class="hero-home-title-outline">ENCABO</h1>
+        <div class="hero-home-badge">
+          <div class="hero-home-badge-header">
+            <span class="hero-home-badge-dot"></span>
+            <span class="hero-home-badge-label">Estado</span>
+          </div>
+          <p>DISPONIBLE PARA FREELANCE Y OPORTUNIDADES FULL-TIME</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contenido -->
+    <div class="hero-home-body">
+      <div class="hero-home-intro">
+        <p class="hero-home-subtitle">
+          Desarrollador <span class="hero-home-accent">Full-Stack</span>.
+          Construyo interfaces digitales de alto rendimiento con Angular, Spring Boot y bases de datos SQL.
+        </p>
+        <div class="hero-home-buttons">
+          <a routerLink="/projects" class="hero-home-btn hero-home-btn-primary" (click)="onCtaProjects()">
+            Ver proyectos
+            <span class="material-symbols-outlined">arrow_outward</span>
+          </a>
+          <a routerLink="/contact" class="hero-home-btn hero-home-btn-outline" (click)="onCtaContact()">
+            Contacto
+          </a>
+        </div>
+      </div>
+
+      <!-- Cards de tecnologías -->
+      <div class="hero-home-tech-cards">
+        <div class="hero-home-tech-card">
+          <span class="material-symbols-outlined hero-home-tech-icon">terminal</span>
+          <h4>BACKEND</h4>
+          <p>Spring Boot, Java, APIs REST</p>
+        </div>
+        <div class="hero-home-tech-card hero-home-tech-card-offset">
+          <span class="material-symbols-outlined hero-home-tech-icon">layers</span>
+          <h4>FRONTEND</h4>
+          <p>Angular, TypeScript, JavaScript</p>
+        </div>
+        <div class="hero-home-tech-card hero-home-tech-card-offset-2">
+          <span class="material-symbols-outlined hero-home-tech-icon">database</span>
+          <h4>BASES DE DATOS</h4>
+          <p>PostgreSQL, MariaDB, SQL</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Skill ticker -->
+  <div class="hero-home-ticker">
+    <div class="hero-home-ticker-inner">
+      <div class="hero-home-ticker-track">
+        <span>Angular</span>
+        <span class="material-symbols-outlined">blur_on</span>
+        <span>Spring Boot</span>
+        <span class="material-symbols-outlined">blur_on</span>
+        <span>Java</span>
+        <span class="material-symbols-outlined">blur_on</span>
+        <span>PostgreSQL</span>
+        <span class="material-symbols-outlined">blur_on</span>
+        <span>MariaDB</span>
+        <span class="material-symbols-outlined">blur_on</span>
+        <span>SQL</span>
+        <span class="material-symbols-outlined">blur_on</span>
+        <span>TypeScript</span>
+        <span class="material-symbols-outlined">blur_on</span>
+      </div>
+      <div class="hero-home-ticker-track">
+        <span>Angular</span>
+        <span class="material-symbols-outlined">blur_on</span>
+        <span>Spring Boot</span>
+        <span class="material-symbols-outlined">blur_on</span>
+        <span>Java</span>
+        <span class="material-symbols-outlined">blur_on</span>
+        <span>PostgreSQL</span>
+        <span class="material-symbols-outlined">blur_on</span>
+        <span>MariaDB</span>
+        <span class="material-symbols-outlined">blur_on</span>
+        <span>SQL</span>
+        <span class="material-symbols-outlined">blur_on</span>
+        <span>TypeScript</span>
+        <span class="material-symbols-outlined">blur_on</span>
+      </div>
+    </div>
+  </div>
+</div>

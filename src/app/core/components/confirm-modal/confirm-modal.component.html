@@ -1,0 +1,29 @@
+@if (visible) {
+  <div class="confirm-modal-overlay" (click)="onOverlayClick()">
+    <div class="confirm-modal" [class.confirm-modal-danger]="type === 'danger'" [class.confirm-modal-warning]="type === 'warning'" [class.confirm-modal-primary]="type === 'primary'" (click)="onContentClick($event)">
+      <div class="confirm-modal-icon" [class.danger]="type === 'danger'" [class.warning]="type === 'warning'" [class.primary]="type === 'primary'">
+        @switch (type) {
+          @case ('danger') {
+            <i class="fas fa-exclamation-triangle"></i>
+          }
+          @case ('warning') {
+            <i class="fas fa-question-circle"></i>
+          }
+          @default {
+            <i class="fas fa-info-circle"></i>
+          }
+        }
+      </div>
+      <h3 class="confirm-modal-title">{{ title }}</h3>
+      <p class="confirm-modal-message">{{ message }}</p>
+      <div class="confirm-modal-actions">
+        <button type="button" class="confirm-modal-btn confirm-modal-btn-cancel" (click)="onCancel()">
+          {{ cancelText }}
+        </button>
+        <button type="button" class="confirm-modal-btn confirm-modal-btn-confirm" [class.btn-danger]="type === 'danger'" [class.btn-warning]="type === 'warning'" [class.btn-primary]="type === 'primary'" (click)="onConfirm()">
+          {{ confirmText }}
+        </button>
+      </div>
+    </div>
+  </div>
+}

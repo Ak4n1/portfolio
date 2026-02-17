@@ -1,0 +1,493 @@
+/* Dashboard Header - colores como resto de la web, fijo en top 0 */
+.dashboard-header {
+  width: 100%;
+  height: var(--header-height);
+  min-height: var(--header-height);
+  background: var(--background-hero) !important;
+  border-bottom: 1px solid var(--border-color);
+  padding: 0 var(--spacing-xl);
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  flex-shrink: 0;
+  box-shadow: var(--shadow-card);
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.dashboard-header-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-lg);
+  width: 100%;
+}
+
+.dashboard-header-left {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  flex: 1;
+}
+
+.dashboard-header-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0 var(--spacing-md);
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: 0.625rem var(--spacing-lg);
+  border-radius: var(--border-radius-md);
+  background-color: transparent;
+  color: var(--text-secondary);
+  font-size: var(--font-size-body-small);
+  font-weight: var(--font-weight-medium);
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: var(--font-family);
+  white-space: nowrap;
+  position: relative;
+}
+
+.nav-link:hover {
+  background-color: var(--color-background-hover);
+  color: var(--text-primary);
+}
+
+.nav-link:hover i {
+  color: var(--color-primary);
+}
+
+.nav-link:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: -2px;
+}
+
+.nav-link i {
+  font-size: var(--font-size-body-large);
+  width: 1.5rem;
+  text-align: center;
+  color: inherit;
+  transition: color 0.2s ease;
+}
+
+.nav-link-text {
+  flex: 1;
+}
+
+.nav-link-active {
+  background-color: var(--color-primary-light);
+  color: var(--color-primary);
+  font-weight: var(--font-weight-semibold);
+  box-shadow: inset 0 -3px 0 var(--color-primary);
+}
+
+.nav-link-active i {
+  color: var(--color-primary);
+}
+
+.sidebar-toggle-mobile {
+  display: none;
+  width: 44px;
+  height: 44px;
+  background-color: transparent;
+  border: none;
+  color: var(--text-primary);
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--border-radius-md);
+  transition: all 0.2s ease;
+  font-size: var(--font-size-body-large);
+}
+
+.sidebar-toggle-mobile:hover {
+  background-color: var(--color-background-hover);
+  color: var(--color-primary);
+}
+
+.sidebar-toggle-mobile:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.dashboard-header-right {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  flex-shrink: 0;
+}
+
+/* --- Notificaciones (campanita + dropdown) - tema claro/oscuro --- */
+.notifications-wrapper {
+  position: relative;
+}
+
+.notifications-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  background: none;
+  border: none;
+  border-radius: var(--border-radius-md);
+  color: var(--color-primary);
+  font-size: 1.25rem;
+  cursor: pointer;
+  transition: box-shadow 0.2s ease;
+  position: relative;
+  box-shadow: none;
+}
+
+.notifications-trigger:hover {
+  box-shadow: 0 0 12px color-mix(in srgb, var(--color-primary) 60%, transparent),
+              0 0 24px color-mix(in srgb, var(--color-primary) 30%, transparent);
+}
+
+.notifications-trigger:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.notifications-trigger[aria-expanded="true"] {
+  color: var(--color-primary);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--color-primary) 60%, transparent),
+              0 0 24px color-mix(in srgb, var(--color-primary) 30%, transparent);
+}
+
+.notifications-badge {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #fff;
+  background-color: #dc2626;
+  border-radius: 9999px;
+  line-height: 1;
+}
+
+.notifications-dropdown {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 8px);
+  left: auto;
+  width: min(360px, calc(100vw - 2rem));
+  max-height: min(420px, 70vh);
+  background: var(--background-hero);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+  overflow: hidden;
+  animation: notificationsDropdownIn 0.2s ease;
+}
+
+@keyframes notificationsDropdownIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* En móvil el dropdown está centrado con translateX(-50%); la animación debe conservarlo */
+@keyframes notificationsDropdownInMobile {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+.notifications-dropdown-header {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--border-color);
+  background: var(--color-surface);
+}
+
+.notifications-dropdown-title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.notifications-header-link {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  font-family: inherit;
+  flex-shrink: 0;
+}
+
+.notifications-header-link:hover {
+  text-decoration: underline;
+}
+
+.notifications-dropdown-body {
+  flex: 1;
+  min-height: 120px;
+  max-height: 320px;
+  overflow-y: auto;
+  padding: 0.5rem 0;
+}
+
+.notifications-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 2rem 1.5rem;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+.notifications-empty i {
+  font-size: 2rem;
+  opacity: 0.6;
+}
+
+.notifications-empty p {
+  margin: 0;
+  font-size: 0.9375rem;
+}
+
+.notifications-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.notifications-list li {
+  margin: 0;
+  padding: 0;
+}
+
+.notifications-list-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.25rem;
+  width: 100%;
+  padding: 0.75rem 1.25rem;
+  text-align: left;
+  font-family: inherit;
+  font-size: 0.875rem;
+  color: var(--text-primary);
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--border-color);
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.notifications-list-item:last-of-type {
+  border-bottom: none;
+}
+
+.notifications-list-item:hover {
+  background: var(--color-background-hover);
+}
+
+.notifications-list-item.unread {
+  background: var(--color-primary-light);
+}
+
+.notifications-list-item.unread:hover {
+  background: var(--color-primary-light);
+  filter: brightness(0.97);
+}
+
+.notifications-item-title {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.notifications-item-message {
+  color: var(--text-secondary);
+  font-size: 0.8125rem;
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.notifications-item-time {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  margin-top: 0.125rem;
+}
+
+.notifications-dropdown-footer {
+  flex-shrink: 0;
+  padding: 0.75rem 1.25rem;
+  border-top: 1px solid var(--border-color);
+  background: var(--color-surface);
+  text-align: center;
+}
+
+.notifications-footer-link {
+  display: inline-block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: color 0.2s ease;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  font-family: inherit;
+}
+
+.notifications-footer-link:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .notifications-dropdown {
+    position: fixed;
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+    top: calc(var(--header-height-mobile, 56px) + 8px);
+    max-height: 65vh;
+    animation: notificationsDropdownInMobile 0.2s ease;
+  }
+
+  .notifications-trigger {
+    width: 44px;
+    height: 44px;
+  }
+}
+
+.dashboard-header-separator {
+  width: 1px;
+  height: var(--spacing-xl);
+  background-color: var(--border-color);
+  margin: 0 var(--spacing-sm);
+}
+
+.dashboard-header-date {
+  font-size: var(--font-size-body-small);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-secondary);
+}
+
+/* Theme toggle - a la izquierda de la fecha */
+.dashboard-header-theme {
+  cursor: pointer;
+  padding: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: var(--spacing-sm);
+}
+
+.theme-track {
+  width: 2.5rem;
+  height: 1.375rem;
+  background: var(--background-light);
+  border: 2px solid var(--border-color);
+  border-radius: 9999px;
+  position: relative;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.theme-track.active {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.theme-thumb {
+  position: absolute;
+  top: 50%;
+  left: 2px;
+  transform: translateY(-50%);
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 50%;
+  background: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: left 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.theme-track.active .theme-thumb {
+  left: 1.125rem;
+  background: var(--background-dark);
+}
+
+.theme-icon {
+  font-size: 0.625rem;
+  line-height: 1;
+}
+
+@media (max-width: 768px) {
+  .dashboard-header {
+    height: var(--header-height-mobile);
+    min-height: var(--header-height-mobile);
+    padding: 0 var(--spacing-md);
+    z-index: 1001;
+  }
+
+  .dashboard-header-content {
+    width: 100%;
+    min-height: 44px;
+  }
+
+  .dashboard-header-left {
+    gap: var(--spacing-sm);
+  }
+
+  .sidebar-toggle-mobile {
+    display: flex;
+  }
+
+  .dashboard-header-nav {
+    padding: 0;
+  }
+
+  .nav-link {
+    padding: 0.5rem 0.75rem;
+    font-size: var(--font-size-body-small);
+  }
+}

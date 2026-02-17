@@ -1,0 +1,56 @@
+<aside class="sidebar" [class.open]="isOpen" role="navigation" aria-label="Menú lateral">
+  <div class="sidebar-overlay" (click)="closeSidebar()" [class.open]="isOpen"></div>
+
+  <div class="sidebar-content" #sidebarContent>
+    <div class="sidebar-brand">
+      <div class="sidebar-brand-inner">
+        <div class="sidebar-brand-icon" aria-hidden="true">
+          <i class="fas fa-terminal"></i>
+        </div>
+        <span class="sidebar-brand-title">Portafolio</span>
+      </div>
+      <button type="button" class="sidebar-close" (click)="closeSidebar()" aria-label="Cerrar menú">
+        <i class="fas fa-times" aria-hidden="true"></i>
+      </button>
+    </div>
+
+    <nav class="sidebar-nav">
+      @for (section of menuSections; track section.title) {
+      <div class="sidebar-section">
+        <p class="sidebar-section-title">{{ section.title }}</p>
+        <div class="sidebar-section-items">
+          @for (item of section.items; track item.route) {
+          <div class="sidebar-nav-item-wrapper" [class.active]="isActiveRoute(item.route)">
+            <a [routerLink]="item.route" routerLinkActive="sidebar-link-active"
+              [routerLinkActiveOptions]="{ exact: false }" class="sidebar-link" (click)="closeSidebar()"
+              [attr.aria-label]="item.label">
+              <i [class]="item.icon" aria-hidden="true"></i>
+              <span class="sidebar-link-text">{{ item.label }}</span>
+            </a>
+          </div>
+          }
+        </div>
+      </div>
+      }
+    </nav>
+
+    <div class="sidebar-footer">
+      <a routerLink="/dashboard/configuracion" class="sidebar-account-link" (click)="closeSidebar()"
+        routerLinkActive="sidebar-link-active" [routerLinkActiveOptions]="{ exact: false }">
+        <i class="fas fa-cog" aria-hidden="true"></i>
+        <span>Configuración</span>
+      </a>
+      <div class="sidebar-user-card">
+        <div class="sidebar-avatar" aria-hidden="true">{{ initials() }}</div>
+        <div class="sidebar-user-info">
+          <p class="sidebar-user-name">{{ displayName() }}</p>
+          <p class="sidebar-user-role">{{ userEmail() }}</p>
+        </div>
+      </div>
+      <button type="button" class="sidebar-logout" (click)="logout()" aria-label="Cerrar sesión">
+        <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
+        <span>Salir</span>
+      </button>
+    </div>
+  </div>
+</aside>

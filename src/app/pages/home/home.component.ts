@@ -1,10 +1,8 @@
 import { Component, OnInit, OnDestroy, AfterViewInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
 // 🚀 OPTIMIZACIÓN: Eliminamos FontAwesome para ahorrar 100MB+
 import * as AOS from 'aos';
-import { HeroCanvasComponent } from '../../shared/hero-canvas/hero-canvas.component';
-import { HeroCanvasV2Component } from '../../shared/hero-canvas-v2/hero-canvas-v2.component';
+import { HeroHomeComponent } from '../../shared/hero-home/hero-home.component';
 import { ThemeService } from '../../core/services/theme.service';
 
 interface User {
@@ -17,7 +15,7 @@ interface User {
   standalone: true,
     imports: [
     CommonModule,
-    HeroCanvasV2Component
+    HeroHomeComponent
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
@@ -28,7 +26,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   private cdr = inject(ChangeDetectorRef);
   private themeSubscription?: any;
 
-  constructor(private router: Router) {}
+  constructor() {}
 
   // Getter para obtener el color de iconos según el tema actual
   get iconColor(): string {
@@ -120,14 +118,6 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   private showHeroCopied() {
     this.copiedHero = true;
     setTimeout(() => (this.copiedHero = false), 2000);
-  }
-
-  onCanvasButtonClick(action: string) {
-    if (action === 'projects') {
-      this.router.navigate(['/projects']);
-    } else if (action === 'contact') {
-      this.router.navigate(['/contact']);
-    }
   }
 
 

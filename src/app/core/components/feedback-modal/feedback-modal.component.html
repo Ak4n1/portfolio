@@ -1,0 +1,25 @@
+@if (visible) {
+  <div class="feedback-modal-overlay" (click)="onOverlayClick()">
+    <div class="feedback-modal" [class.feedback-modal-success]="type === 'success'" [class.feedback-modal-error]="type === 'error'" (click)="onContentClick($event)">
+      <div class="feedback-modal-icon" [class.success]="type === 'success'" [class.error]="type === 'error'">
+        @if (type === 'success') {
+          <i class="fas fa-check-circle"></i>
+        } @else {
+          <i class="fas fa-exclamation-circle"></i>
+        }
+      </div>
+      <h3 class="feedback-modal-title">{{ title }}</h3>
+      <p class="feedback-modal-message">{{ message }}</p>
+      <div class="feedback-modal-actions">
+        @if (showSecondaryButton) {
+          <button type="button" class="feedback-modal-btn feedback-modal-btn-secondary" (click)="onSecondaryClick()">
+            <i class="fas fa-external-link-alt"></i> {{ secondaryButtonText }}
+          </button>
+        }
+        <button type="button" class="feedback-modal-btn" [class.btn-success]="type === 'success'" [class.btn-error]="type === 'error'" (click)="onAccept()">
+          {{ buttonText }}
+        </button>
+      </div>
+    </div>
+  </div>
+}

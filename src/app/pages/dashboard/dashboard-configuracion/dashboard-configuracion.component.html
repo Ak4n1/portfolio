@@ -1,0 +1,166 @@
+<div class="config-page">
+  <!-- Page Header -->
+  <header class="config-header">
+    <div class="config-header-inner">
+      <div class="config-header-titles">
+        <h1 class="config-title">
+          <span class="config-title-accent">/</span>Configuración
+        </h1>
+        <p class="config-subtitle">Personaliza tu entorno de desarrollo y preferencias de seguridad.</p>
+      </div>
+
+    </div>
+  </header>
+
+  <div class="config-grid">
+    <!-- Left Column -->
+    <div class="config-main">
+      <!-- Datos de la cuenta -->
+      <section class="cyber-card config-section">
+        <div class="config-section-header">
+          <span class="material-symbols-outlined config-section-icon">account_circle</span>
+          <h2 class="config-section-title">Datos de la cuenta</h2>
+        </div>
+        @if (profile(); as p) {
+        <form [formGroup]="profileForm" (ngSubmit)="saveProfile()" class="config-form">
+          <div class="config-form-grid">
+            <div class="config-field">
+              <label class="config-label">Nombre</label>
+              <input formControlName="firstName" class="config-input" type="text" />
+            </div>
+            <div class="config-field">
+              <label class="config-label">Apellido</label>
+              <input formControlName="lastName" class="config-input" type="text" />
+            </div>
+            <div class="config-field config-field-full">
+              <label class="config-label">Email (solo lectura)</label>
+              <div class="config-input-wrap config-input-readonly">
+                <input formControlName="email" class="config-input" type="email" readonly />
+                <span class="material-symbols-outlined config-input-icon">lock</span>
+              </div>
+            </div>
+          </div>
+          <div class="config-section-footer">
+            <div class="config-badge">
+              <span class="material-symbols-outlined config-badge-icon">calendar_today</span>
+              <span class="config-badge-text">Miembro desde: {{ memberSinceFormatted() }}</span>
+            </div>
+            <button type="submit" class="config-btn-primary"
+              [disabled]="profileForm.invalid || profileForm.pristine || savingProfile()">
+              Guardar Cambios
+            </button>
+          </div>
+        </form>
+        } @else if (loadError()) {
+        <p class="config-error">{{ loadError() }}</p>
+        } @else {
+        <p class="config-muted">Cargando...</p>
+        }
+      </section>
+
+      <!-- Seguridad -->
+      <section class="cyber-card config-section">
+        <div class="config-section-header">
+          <span class="material-symbols-outlined config-section-icon">shield_lock</span>
+          <h2 class="config-section-title">Seguridad</h2>
+        </div>
+        <form [formGroup]="passwordForm" (ngSubmit)="updatePassword()" class="config-form">
+          <div class="config-field">
+            <label class="config-label">Contraseña actual</label>
+            <div class="config-input-wrap">
+              <input formControlName="currentPassword" class="config-input"
+                [type]="showCurrentPassword() ? 'text' : 'password'" placeholder="••••••••••••" />
+              <button type="button" class="config-password-toggle" (click)="toggleCurrentPassword()"
+                [attr.aria-label]="showCurrentPassword() ? 'Ocultar contraseña' : 'Ver contraseña'">
+                <i class="fas" [class.fa-eye]="!showCurrentPassword()" [class.fa-eye-slash]="showCurrentPassword()"></i>
+              </button>
+            </div>
+          </div>
+          <div class="config-form-row">
+            <div class="config-field">
+              <label class="config-label">Nueva contraseña</label>
+              <div class="config-input-wrap">
+                <input formControlName="newPassword" class="config-input"
+                  [type]="showNewPassword() ? 'text' : 'password'" placeholder="Escribe tu nueva contraseña" />
+                <button type="button" class="config-password-toggle" (click)="toggleNewPassword()"
+                  [attr.aria-label]="showNewPassword() ? 'Ocultar contraseña' : 'Ver contraseña'">
+                  <i class="fas" [class.fa-eye]="!showNewPassword()" [class.fa-eye-slash]="showNewPassword()"></i>
+                </button>
+              </div>
+            </div>
+            <div class="config-field">
+              <label class="config-label">Confirmar nueva contraseña</label>
+              <div class="config-input-wrap">
+                <input formControlName="confirmPassword" class="config-input"
+                  [type]="showConfirmPassword() ? 'text' : 'password'" placeholder="Repite la contraseña" />
+                <button type="button" class="config-password-toggle" (click)="toggleConfirmPassword()"
+                  [attr.aria-label]="showConfirmPassword() ? 'Ocultar contraseña' : 'Ver contraseña'">
+                  <i class="fas" [class.fa-eye]="!showConfirmPassword()"
+                    [class.fa-eye-slash]="showConfirmPassword()"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          @if (passwordForm.get('confirmPassword')?.touched && passwordForm.hasError('passwordMismatch')) {
+          <p class="config-field-error">Las contraseñas no coinciden.</p>
+          }
+          <div class="config-password-actions">
+            <button type="submit" class="config-btn-outline" [disabled]="passwordForm.invalid || savingPassword()">
+              Actualizar Contraseña
+            </button>
+            <button type="button" class="config-btn-outline" (click)="goToForgotPassword()">
+              ¿Olvidaste tu contraseña?
+            </button>
+          </div>
+        </form>
+        <div class="config-danger-zone">
+          <p>Advertencia: Esta acción no se puede deshacer.</p>
+          <button type="button" class="config-btn-danger" (click)="openDisableAccountModal()">
+            Deshabilitar cuenta
+          </button>
+        </div>
+      </section>
+    </div>
+
+    <!-- Right Column -->
+    <aside class="config-sidebar">
+      <!-- Notificaciones -->
+      <section class="cyber-card config-section">
+        <div class="config-section-header">
+          <span class="material-symbols-outlined config-section-icon">mail</span>
+          <h2 class="config-section-title">Notificaciones</h2>
+        </div>
+        <div class="config-notif">
+          <div class="config-notif-row">
+            <span class="config-notif-label">Alertas por email</span>
+            <label class="config-switch">
+              <input type="checkbox" [checked]="receiveEmails()" (change)="toggleReceiveEmails($event)" />
+              <span class="config-switch-slider"></span>
+            </label>
+          </div>
+          @if (receiveEmailsError()) {
+          <p class="config-field-error config-notif-error">{{ receiveEmailsError() }}</p>
+          }
+          <div class="config-notif-info">
+            <p>Recibirás correos sobre anuncios, actualizaciones y recordatorios. Los correos transaccionales
+              (seguridad, verificación) son obligatorios y no se pueden desactivar.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Ayuda -->
+      <section class="config-help-card">
+        <span class="material-symbols-outlined config-help-icon">support_agent</span>
+        <h3 class="config-help-title">¿Necesitas ayuda?</h3>
+        <p class="config-help-text">Si tienes problemas con tu cuenta o seguridad, contacta con nuestro equipo.</p>
+        <a [routerLink]="['/contact']" class="config-help-link">
+          Contactar <span class="material-symbols-outlined config-help-arrow">arrow_forward</span>
+        </a>
+      </section>
+    </aside>
+  </div>
+</div>
+
+<app-confirm-modal [visible]="confirmDisableVisible()" title="Deshabilitar cuenta" [message]="confirmDisableMessage()"
+  type="danger" confirmText="Deshabilitar" cancelText="Cancelar" (confirmed)="onConfirmDisableAccount()"
+  (cancelled)="closeDisableAccountModal()" />

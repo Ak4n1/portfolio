@@ -76,14 +76,15 @@ export class HeroCanvasV2Component implements AfterViewInit, OnDestroy {
   private gridRows = 0;
   private gridSquares: GridSquare[] = [];
 
-  // Colores según tema (modo oscuro/claro). El texto siempre igual (aqua) en ambos modos.
+  // Colores según tema (modo oscuro/claro). El texto usa el color primario del tema.
   private getThemeColors(): { gradientStart: string; gradientEnd: string; hoverAndBorder: string; textColor: string } {
     const isDark = this.themeService.getCurrentTheme() === 'dark';
-    const textColor = '#00ffc3'; // Mismo texto y borde de texto en modo claro y oscuro
+    const textColor = this.themeService.getPrimaryColor();
+    const cfg = this.themeService.getCurrentThemeConfig().colors;
     if (isDark) {
-      return { gradientStart: '#1A1A1A', gradientEnd: '#0F0F0F', hoverAndBorder: '#00ffc3', textColor };
+      return { gradientStart: cfg.backgroundLight, gradientEnd: cfg.backgroundDark, hoverAndBorder: textColor, textColor };
     }
-    return { gradientStart: '#f0f0f0', gradientEnd: '#e0e0e0', hoverAndBorder: '#1a1a1a', textColor };
+    return { gradientStart: cfg.backgroundDark, gradientEnd: cfg.backgroundLight, hoverAndBorder: cfg.sectionTitle, textColor };
   }
 
   // Estado del mouse

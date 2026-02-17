@@ -1,0 +1,388 @@
+/* Hero Home - estilo brutalista similar a code.html */
+.hero-home {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  padding: 2rem 1.5rem;
+  overflow: hidden;
+}
+
+/* Canvas de fondo - partículas y gradientes animados */
+.hero-home-canvas {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.hero-home-canvas ::ng-deep canvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+}
+
+.hero-home-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background-image: radial-gradient(var(--color-border) 1px, transparent 1px);
+  background-size: 40px 40px;
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+/* Terminal decorativo */
+.hero-home-terminal {
+  position: absolute;
+  top: 6rem;
+  right: -5rem;
+  width: 600px;
+  max-width: 90vw;
+  opacity: 0.2;
+  pointer-events: none;
+  transform: rotate(12deg);
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .hero-home-terminal {
+    display: block;
+  }
+}
+
+.hero-home-terminal,
+.hero-home-terminal-code {
+  font-family: 'Fira Code', 'Consolas', monospace;
+  font-size: 0.75rem;
+  color: var(--primary-color);
+  background: var(--background-light);
+  border: 2px solid var(--primary-color);
+  border-radius: 0.5rem;
+  padding: 1rem;
+}
+
+.hero-home-terminal-code {
+  margin-top: 1rem;
+  opacity: 0.6;
+}
+
+.hero-home-terminal p,
+.hero-home-terminal-code p {
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Contenido principal */
+.hero-home-content {
+  max-width: 1440px;
+  margin: 0 auto;
+  width: 100%;
+  position: relative;
+  z-index: 10;
+}
+
+/* Títulos */
+.hero-home-titles {
+  position: relative;
+  margin-bottom: 3rem;
+  user-select: none;
+}
+
+.hero-home-title-primary {
+  font-size: clamp(3.5rem, 12vw, 12rem);
+  font-weight: 900;
+  line-height: 0.8;
+  letter-spacing: -0.05em;
+  color: var(--primary-color);
+  margin: 0;
+}
+
+.hero-home-titles-row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-top: -0.5rem;
+}
+
+@media (min-width: 768px) {
+  .hero-home-titles-row {
+    flex-direction: row;
+    align-items: flex-end;
+    margin-top: -2.5rem;
+  }
+}
+
+.hero-home-title-outline {
+  font-size: clamp(3.5rem, 12vw, 12rem);
+  font-weight: 900;
+  line-height: 0.8;
+  letter-spacing: -0.05em;
+  margin: 0;
+  -webkit-text-stroke: 2px var(--primary-color);
+  color: transparent;
+}
+
+/* Badge de estado */
+.hero-home-badge {
+  background: var(--background-light);
+  border: 2px solid var(--primary-color);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  max-width: 320px;
+  margin-left: 0;
+  margin-bottom: 0;
+}
+
+@media (min-width: 768px) {
+  .hero-home-badge {
+    transform: rotate(6deg);
+    margin-left: 2.5rem;
+    margin-bottom: 0;
+  }
+}
+
+.hero-home-badge-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.hero-home-badge-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--primary-color);
+  border-radius: 50%;
+  animation: hero-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes hero-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.hero-home-badge-label {
+  font-size: 0.625rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--primary-color);
+}
+
+.hero-home-badge p {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+/* Cuerpo del hero */
+.hero-home-body {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+@media (min-width: 1024px) {
+  .hero-home-body {
+    grid-template-columns: 5fr 7fr;
+    gap: 2rem;
+    margin-top: 3rem;
+  }
+}
+
+.hero-home-intro {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.hero-home-subtitle {
+  font-size: clamp(1.25rem, 2.5vw, 1.875rem);
+  font-weight: 500;
+  line-height: 1.3;
+  color: var(--text-primary);
+  opacity: 0.9;
+  margin: 0;
+}
+
+.hero-home-accent {
+  color: var(--primary-color);
+  font-style: italic;
+}
+
+.hero-home-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.hero-home-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 2rem;
+  font-size: 1.125rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  text-decoration: none;
+  border-radius: 0.25rem;
+  transition: transform 0.2s ease;
+  cursor: pointer;
+  border: 2px solid transparent;
+}
+
+.hero-home-btn-primary {
+  background: var(--primary-color);
+  color: var(--background-dark);
+}
+
+.hero-home-btn-primary:hover {
+  transform: translate(2px, -2px);
+}
+
+.hero-home-btn-outline {
+  border-color: rgba(255, 255, 255, 0.2);
+  color: var(--text-primary);
+}
+
+.hero-home-btn-outline:hover {
+  border-color: var(--primary-color);
+}
+
+:host-context([data-theme="light"]) .hero-home-btn-outline {
+  border-color: rgba(0, 0, 0, 0.2);
+}
+
+:host-context([data-theme="light"]) .hero-home-btn-outline:hover {
+  border-color: var(--primary-color);
+}
+
+/* Cards de tecnologías */
+.hero-home-tech-cards {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .hero-home-tech-cards {
+    grid-template-columns: repeat(3, 1fr);
+    padding-left: 2rem;
+  }
+}
+
+.hero-home-tech-card {
+  background: var(--background-light);
+  border: 1px solid var(--border-color);
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  transition: border-color 0.2s ease;
+}
+
+.hero-home-tech-card:hover {
+  border-color: var(--primary-color);
+}
+
+.hero-home-tech-card:hover h4 {
+  color: var(--primary-color);
+}
+
+.hero-home-tech-card-offset {
+  transform: translateY(2rem);
+}
+
+.hero-home-tech-card-offset-2 {
+  grid-column: span 2;
+  transform: translateY(4rem);
+}
+
+@media (min-width: 768px) {
+  .hero-home-tech-card-offset-2 {
+    grid-column: span 1;
+    
+  }
+}
+
+.hero-home-tech-icon {
+  font-size: 2rem;
+  color: var(--primary-color);
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.hero-home-tech-card h4 {
+  font-size: 1.25rem;
+  font-weight: 900;
+  margin: 0 0 0.25rem 0;
+  color: var(--text-primary);
+  transition: color 0.2s ease;
+}
+
+.hero-home-tech-card p {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  margin: 0;
+  font-weight: 500;
+}
+
+/* Skill ticker */
+.hero-home-ticker {
+  margin-top: 3rem;
+  border-top: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+  background: var(--background-light);
+  padding: 1rem 0;
+  overflow: hidden;
+}
+
+@media (min-width: 768px) {
+  .hero-home-ticker {
+    margin-top: 5rem;
+  }
+}
+
+.hero-home-ticker-inner {
+  display: flex;
+  gap: 2.5rem;
+  width: max-content;
+  animation: hero-marquee 30s linear infinite;
+  opacity: 0.6;
+}
+
+.hero-home-ticker-track {
+  display: flex;
+  align-items: center;
+  gap: 2.5rem;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.hero-home-ticker-track span:not(.material-symbols-outlined) {
+  font-size: 1.5rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+}
+
+.hero-home-ticker-track .material-symbols-outlined {
+  color: var(--primary-color);
+  font-size: 1.5rem;
+}
+
+@keyframes hero-marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}

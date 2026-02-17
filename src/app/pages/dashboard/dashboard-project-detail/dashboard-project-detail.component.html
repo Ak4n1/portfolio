@@ -1,0 +1,217 @@
+<div class="dashboard-page">
+  <div class="dashboard-page-header">
+    <button type="button" class="btn-back" (click)="goBack()">
+      <i class="fas fa-arrow-left"></i> Volver
+    </button>
+    <h1 class="dashboard-page-title">{{ id ? 'Editar proyecto' : 'Nuevo proyecto' }}</h1>
+  </div>
+
+  @if (loading) {
+    <div class="loading-state">
+      <div class="loading-spinner"></div>
+      <p>Cargando...</p>
+    </div>
+  } @else {
+    <form class="project-form" (ngSubmit)="save()" #f="ngForm">
+      @if (error) {
+        <div class="form-error">{{ error }}</div>
+      }
+
+      <div class="form-layout">
+        <!-- Columna izquierda: una card -->
+        <div class="form-column form-column-left">
+          <div class="form-card">
+            <div class="form-group">
+              <label for="title">Título *</label>
+              <input id="title" name="title" type="text" [(ngModel)]="form.title" required maxlength="200"
+                placeholder="Título del proyecto" />
+            </div>
+
+            <div class="form-group">
+              <label for="shortDescription">Descripción breve (para las tarjetas)</label>
+              <textarea id="shortDescription" name="shortDescription" [(ngModel)]="form.shortDescription"
+                placeholder="Una frase o párrafo corto que se verá en la lista de proyectos (texto plano)"
+                rows="3" maxlength="500"></textarea>
+            </div>
+
+            <div class="form-group form-group-editor">
+              <label for="description">Descripción completa (para el detalle) *</label>
+              <div class="rich-editor-wrapper NgxEditor__Wrapper">
+                <div class="rich-editor-toolbar-row">
+                  <ngx-editor-menu [editor]="editor" [toolbar]="editorToolbar"></ngx-editor-menu>
+                  <button type="button" class="editor-toolbar-btn" (mousedown)="insertLineBreak($event)" title="Insertar salto de línea (hr)">
+                    <i class="fas fa-arrows-alt-v"></i> Salto
+                  </button>
+                  <button type="button" class="editor-reset-btn" (click)="resetEditor()" title="Vaciar editor">
+                    <i class="fas fa-eraser"></i>
+                  </button>
+                </div>
+                <ngx-editor
+                  [editor]="editor"
+                  [(ngModel)]="form.description"
+                  name="description"
+                  outputFormat="html"
+                  placeholder="Escribe la descripción del proyecto con formato (negrita, listas, enlaces...)"
+                ></ngx-editor>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Columna derecha: 3 cards -->
+        <div class="form-column form-column-right">
+          <div class="form-card">
+            <div class="form-group">
+              <label>Categoría *</label>
+              <select name="category" [(ngModel)]="form.category" required #categorySelect class="custom-select-hidden">
+                @for (c of categories; track c) {
+                  <option [value]="c">{{ c }}</option>
+                }
+              </select>
+              <div class="custom-select" [class.open]="categoryOpen" (click)="$event.stopPropagation()">
+                <button type="button" class="custom-select-trigger" (click)="categoryOpen = !categoryOpen"
+                  [attr.aria-expanded]="categoryOpen" aria-haspopup="listbox">
+                  <span>{{ form.category }}</span>
+                  <i class="fas fa-chevron-down custom-select-chevron"></i>
+                </button>
+                <ul class="custom-select-dropdown" role="listbox">
+                  @for (c of categories; track c) {
+                    <li role="option" [class.selected]="form.category === c"
+                      (click)="form.category = c; categoryOpen = false">
+                      {{ c }}
+                    </li>
+                  }
+                </ul>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="github">URL de GitHub</label>
+              <input id="github" name="github" type="url" [(ngModel)]="form.github"
+                placeholder="https://github.com/..." />
+            </div>
+            <div class="form-group">
+              <label for="demo">URL de demo</label>
+              <input id="demo" name="demo" type="url" [(ngModel)]="form.demo"
+                placeholder="https://..." />
+            </div>
+
+            <div class="form-group form-group-checkbox">
+              <br>
+              <label>
+                <input type="checkbox" [(ngModel)]="form.visible" name="visible" />
+                Visible (mostrar en la página pública)
+              </label>
+            </div>
+          </div>
+
+          <div class="form-card">
+            <div class="form-group">
+              <label for="displayOrder">Orden de visualización</label>
+              <input id="displayOrder" name="displayOrder" type="number" [(ngModel)]="form.displayOrder"
+                min="0" />
+            </div>
+
+            <div class="form-group chip-group">
+              <label for="tag-input">Tags</label>
+              <div class="chip-input-row">
+                <input id="tag-input" type="text" [(ngModel)]="tagInput" name="tagInput"
+                  placeholder="Agregar tag..." (keydown.enter)="addTag($event)" />
+                <button type="button" class="btn-add-chip" (click)="addTag($event)" title="Agregar">+</button>
+              </div>
+              @if (form.tags && form.tags.length > 0) {
+                <div class="chip-list">
+                  @for (tag of form.tags; track tag) {
+                    <span class="chip">
+                      {{ tag }}
+                      <button type="button" class="chip-remove" (click)="removeTag(tag)" title="Quitar">×</button>
+                    </span>
+                  }
+                </div>
+              }
+            </div>
+
+            <div class="form-group chip-group">
+              <label for="stack-input">Stack tecnológico</label>
+              <div class="chip-input-row">
+                <input id="stack-input" type="text" [(ngModel)]="stackInput" name="stackInput"
+                  placeholder="Agregar stack..." (keydown.enter)="addStack($event)" />
+                <button type="button" class="btn-add-chip" (click)="addStack($event)" title="Agregar">+</button>
+              </div>
+              @if (form.stacks && form.stacks.length > 0) {
+                <div class="chip-list">
+                  @for (stack of form.stacks; track stack) {
+                    <span class="chip">
+                      {{ stack }}
+                      <button type="button" class="chip-remove" (click)="removeStack(stack)" title="Quitar">×</button>
+                    </span>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+
+          <div class="form-card form-card-images">
+            <div class="form-section form-section-images">
+              <h3 class="form-section-title">Imágenes (JPG, PNG, WEBP, máx. 5 MB)</h3>
+              @if (!id) {
+                <p class="form-section-hint">Guarda el proyecto primero para poder añadir imágenes.</p>
+              } @else {
+                @if (uploadError) {
+                  <div class="form-error">{{ uploadError }}</div>
+                }
+                <div class="images-upload-area">
+                  <label class="upload-label">
+                    <input type="file" accept="image/jpeg,image/jpg,image/png,image/webp" (change)="onFileSelected($event)" [disabled]="uploading" />
+                    @if (uploading) {
+                      <span><i class="fas fa-spinner fa-spin"></i> Subiendo...</span>
+                    } @else {
+                      <span><i class="fas fa-cloud-upload-alt"></i> Arrastra o haz clic para subir</span>
+                    }
+                  </label>
+                </div>
+                @if (imageItems.length > 0) {
+                  <div class="images-preview">
+                    @for (item of imageItems; track item.id) {
+                      <div class="image-preview-item">
+                        <img [src]="getImageUrl(item.url)" [alt]="form.title" />
+                        <button type="button" class="btn-remove-image" (click)="removeImage(item)" title="Quitar">×</button>
+                      </div>
+                    }
+                  </div>
+                } @else {
+                  <p class="images-empty">Aún no hay imágenes. Sube la primera.</p>
+                }
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn-cancel" (click)="goBack()">Cancelar</button>
+        <button type="submit" class="btn-save" [disabled]="saving || !f.valid">
+          {{ saving ? 'Guardando...' : 'Guardar' }}
+        </button>
+      </div>
+    </form>
+  }
+</div>
+
+<app-feedback-modal
+  [visible]="showSuccessModal"
+  type="success"
+  title="¡Guardado!"
+  [message]="modalMessage"
+  secondaryButtonText="Ver proyecto"
+  [secondaryButtonRoute]="id ? ['/project', id.toString()] : null"
+  (closed)="closeSuccessModal()">
+</app-feedback-modal>
+
+<app-feedback-modal
+  [visible]="showErrorModal"
+  type="error"
+  title="Error"
+  [message]="modalMessage"
+  (closed)="closeErrorModal()">
+</app-feedback-modal>

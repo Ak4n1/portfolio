@@ -23,9 +23,9 @@ body {
 
 /* Variables CSS - Se configuran dinámicamente por ThemeService */
 :root {
-  --primary-color: rgb(0, 255, 195);
+  --primary-color: rgb(2, 163, 126);
   /* Verde cian brillante */
-  --secondary-color: rgb(255, 0, 255);
+  --secondary-color: rgb(0, 255, 195);
   /* Magenta brillante */
   --background-dark: rgb(15, 15, 15);
   /* Negro profundo */
@@ -37,10 +37,11 @@ body {
   /* Gris claro */
   --text-muted: rgb(136, 136, 136);
   /* Gris medio */
-  --border-color: rgba(0, 255, 195, 0.2);
+  --border-color: color-mix(in srgb, var(--primary-color) 20%, transparent);
   /* Verde cian transparente */
-  --shadow-neon: 0 0 20px rgba(0, 255, 195, 0.3);
+  --shadow-neon: 0 0 20px color-mix(in srgb, var(--primary-color) 30%, transparent);
   /* Sombra verde cian */
+  --selection-bg: color-mix(in srgb, var(--primary-color) 30%, transparent);
   --icon-color: white;
   /* Color para iconos Simple Icons */
   --tech-item-bg: rgba(26, 26, 26, 0.8);
@@ -50,20 +51,59 @@ body {
   --theme-transition-duration: 0;
   --theme-transition-delay: 0;
   --theme-transition-timing: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Dashboard (igual que sistema_turnos) */
+  --sidebar-width: 280px;
+  --header-height: 64px;
+  --header-height-mobile: 56px;
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+  --font-size-body-small: 0.875rem;
+  --font-size-body: 1rem;
+  --font-size-body-large: 1.125rem;
+  --font-size-h2: 1.5rem;
+  --font-weight-bold: 700;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --letter-spacing-tight: -0.02em;
+  --border-radius-md: 0.5rem;
+  --border-radius-sm: 0.25rem;
+  --border-radius-lg: 0.75rem;
+  --border-radius-xl: 1rem;
+  --border-radius-full: 9999px;
+  --color-primary: var(--primary-color);
+  --color-primary-light: color-mix(in srgb, var(--primary-color) 15%, transparent);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-border: var(--border-color);
+  --color-background-hover: rgba(255, 255, 255, 0.05);
+  --color-active-indicator: var(--primary-color);
+  --color-header-border: var(--border-color);
+  --color-surface: rgba(255, 255, 255, 0.03);
+  --color-overlay: rgba(0, 0, 0, 0.5);
+  --color-shadow: rgba(0, 0, 0, 0.2);
+  --color-logout-hover-bg: rgba(231, 76, 60, 0.15);
+  --color-logout-hover-text: #e74c3c;
+  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
-/* Tema claro - aplicado automáticamente */
+/* Tema claro - aplicado por ThemeService; estos refuerzan si hace falta */
 [data-theme="light"] {
-  --scrollbar-track: rgb(246, 247, 248);
+  --scrollbar-track: rgb(218, 222, 228);
   --scrollbar-thumb: linear-gradient(45deg, var(--primary-color), var(--primary-color));
-  --selection-bg: rgba(0, 184, 148, 0.3);
+  --selection-bg: color-mix(in srgb, var(--primary-color) 25%, transparent);
+  --color-background-hover: color-mix(in srgb, var(--primary-color) 8%, transparent);
+  --color-primary-light: color-mix(in srgb, var(--primary-color) 12%, transparent);
 }
 
 /* Tema oscuro - valores por defecto */
 [data-theme="dark"] {
   --scrollbar-track: rgb(15, 15, 15);
   --scrollbar-thumb: linear-gradient(45deg, var(--primary-color), var(--primary-color));
-  --selection-bg: rgba(0, 255, 195, 0.3);
+  --selection-bg: color-mix(in srgb, var(--primary-color) 30%, transparent);
 }
 
 /* Transiciones suaves para cambio de tema */
@@ -176,9 +216,24 @@ textarea:focus {
   box-shadow: var(--shadow-neon);
 }
 
+/* Fix para el fondo de autocompletado del navegador */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: var(--color-text-primary);
+  /* Usamos una sombra interna para tapar el fondo blanco/amarillo del navegador */
+  box-shadow: 0 0 0 1000px color-mix(in srgb, var(--color-text-primary) 8%, var(--background-dark)) inset !important;
+  transition: background-color 5000s ease-in-out 0s;
+  caret-color: var(--color-text-primary);
+  /* Evitar bordes blancos del navegador */
+  border: 1px solid color-mix(in srgb, var(--color-text-primary) 25%, transparent) !important;
+}
+
 /* Estilos para selección de texto */
 ::selection {
-  background: var(--selection-bg, rgba(0, 255, 195, 0.3));
+  background: var(--selection-bg);
   color: var(--text-primary);
 }
 
@@ -187,6 +242,16 @@ main {
   min-height: 100vh;
   padding-top: 70px;
   /* Para compensar el navbar fijo */
+}
+
+/* Dashboard: sin navbar, contenido desde top 0 */
+main.dashboard-main {
+  padding-top: 0;
+  padding-bottom: 0;
+  min-height: 100vh;
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
 }
 
 /* Utilidades */
@@ -284,5 +349,9 @@ main {
 
   main {
     padding-top: 60px;
+  }
+
+  main.dashboard-main {
+    padding-top: 0;
   }
 }

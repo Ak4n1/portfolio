@@ -1,29 +1,117 @@
-<nav class="navbar">
+<nav class="nav-bar" [class.nav-bar--light]="!isDarkMode">
   <div class="nav-container">
-    <div class="nav-logo">
-      <a routerLink="/home">Juan Encabo</a>
-    </div>
-    
-    <div class="nav-menu" [class.active]="isMenuOpen">
-      <a routerLink="/home" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="closeMenu()">Inicio</a>
-      <a routerLink="/about" routerLinkActive="active" (click)="closeMenu()">Sobre mí</a>
-      <a routerLink="/projects" routerLinkActive="active" (click)="closeMenu()">Proyectos</a>
-      <a routerLink="/contact" routerLinkActive="active" (click)="closeMenu()">Contacto</a>
-      
-      <!-- Theme Toggle Switch -->
-      <div class="theme-toggle" (click)="toggleTheme()" [attr.aria-label]="isDarkMode ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'">
-        <div class="theme-toggle-track" [class.active]="isDarkMode">
-          <div class="theme-toggle-thumb">
-            <span class="theme-icon">{{ isDarkMode ? '🌙' : '☀️' }}</span>
+    <div class="nav-row">
+      <!-- Brand / Logo (referencia code_logado) -->
+      <a routerLink="/home" class="nav-brand">
+        <div class="nav-brand-icon">
+          <span class="material-symbols-outlined nav-brand-icon-symbol" style="font-variation-settings: 'FILL' 1">terminal</span>
+        </div>
+        <div class="nav-brand-text">
+          <span class="nav-brand-title">Juan Encabo</span>
+          <span class="nav-brand-sub">Full Stack Dev</span>
+        </div>
+      </a>
+
+      <!-- Navigation Links (desktop) - estilo code_logado con subrayado -->
+      <div class="nav-links-desktop" [class.active]="isMenuOpen">
+        <a routerLink="/home" routerLinkActive="nav-link--active" [routerLinkActiveOptions]="{exact: true}" (click)="closeMenu()" class="nav-link">
+          Inicio
+          <span class="nav-link-underline"></span>
+        </a>
+        <a routerLink="/about" routerLinkActive="nav-link--active" (click)="closeMenu()" class="nav-link">
+          Sobre mí
+          <span class="nav-link-underline"></span>
+        </a>
+        <a routerLink="/projects" routerLinkActive="nav-link--active" (click)="closeMenu()" class="nav-link">
+          Proyectos
+          <span class="nav-link-underline"></span>
+        </a>
+        <a routerLink="/contact" routerLinkActive="nav-link--active" (click)="closeMenu()" class="nav-link">
+          Contacto
+          <span class="nav-link-underline"></span>
+        </a>
+      </div>
+
+      <!-- User Section / Auth (referencia code_logado: bienvenido + avatar + status) -->
+      <div class="nav-right">
+        @if (isAuthLoading()) {
+          <!-- No mostrar botones guest hasta resolver sesión; evita parpadeo al F5 -->
+        }
+        @else if (!isLoggedIn()) {
+          <a routerLink="/login" (click)="closeMenu()" class="nav-btn nav-btn--outline">Ingresar</a>
+          <a routerLink="/register" (click)="closeMenu()" class="nav-btn nav-btn--primary">Registrarse</a>
+        }
+        @if (!isAuthLoading() && isLoggedIn() && user()) {
+          <div class="nav-user">
+            <div class="nav-user-greeting">
+              <span class="nav-user-welcome">Bienvenido,</span>
+              <span class="nav-user-name">{{ user()?.firstName }}</span>
+            </div>
+            <div class="nav-avatar-wrap" (click)="toggleDropdown($event)">
+              <div class="nav-avatar">
+                <span class="nav-avatar-initials">{{ userInitials() }}</span>
+              </div>
+              <div class="nav-avatar-status"></div>
+              @if (dropdownOpen) {
+                <div class="nav-dropdown" (click)="$event.stopPropagation()">
+                  <div class="nav-dropdown-header">
+                    <span class="nav-dropdown-name">{{ user()?.firstName }} {{ user()?.lastName }}</span>
+                    <span class="nav-dropdown-email">{{ user()?.email }}</span>
+                  </div>
+                  <a routerLink="/dashboard" (click)="closeDropdown()" class="nav-dropdown-item">
+                    <span class="material-symbols-outlined nav-dropdown-icon">dashboard</span> Ir al panel
+                  </a>
+                  <a routerLink="/dashboard/configuracion" (click)="closeDropdown()" class="nav-dropdown-item">
+                    <span class="material-symbols-outlined nav-dropdown-icon">settings</span> Configuración
+                  </a>
+                  <div class="nav-dropdown-divider"></div>
+                  <button type="button" (click)="onLogout()" class="nav-dropdown-item nav-dropdown-logout">
+                    <span class="material-symbols-outlined nav-dropdown-icon">logout</span> Cerrar sesión
+                  </button>
+                </div>
+              }
+            </div>
+          </div>
+        }
+
+        <!-- Theme toggle -->
+        <div class="nav-theme" (click)="toggleTheme()" [attr.aria-label]="isDarkMode ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'">
+          <div class="nav-theme-track" [class.active]="isDarkMode">
+            <div class="nav-theme-thumb">
+              <span class="nav-theme-icon">{{ isDarkMode ? '🌙' : '☀️' }}</span>
+            </div>
           </div>
         </div>
       </div>
+
+      <!-- Hamburger móvil -->
+      <button type="button" class="nav-hamburger" (click)="toggleMenu()" aria-label="Menú">
+        <span class="material-symbols-outlined">menu</span>
+      </button>
     </div>
-    
-    <div class="nav-toggle" (click)="toggleMenu()">
-      <span></span>
-      <span></span>
-      <span></span>
+  </div>
+
+  <!-- Menú móvil (mismo contenido que desktop, estilo code_logado) -->
+  <div class="nav-mobile" [class.active]="isMenuOpen">
+    <a routerLink="/home" routerLinkActive="nav-link--active" [routerLinkActiveOptions]="{exact: true}" (click)="closeMenu()" class="nav-mobile-link">Inicio</a>
+    <a routerLink="/about" routerLinkActive="nav-link--active" (click)="closeMenu()" class="nav-mobile-link">Sobre mí</a>
+    <a routerLink="/projects" routerLinkActive="nav-link--active" (click)="closeMenu()" class="nav-mobile-link">Proyectos</a>
+    <a routerLink="/contact" routerLinkActive="nav-link--active" (click)="closeMenu()" class="nav-mobile-link">Contacto</a>
+    @if (isAuthLoading()) {
+      <!-- No mostrar guest hasta resolver sesión -->
+    }
+    @else if (!isLoggedIn()) {
+      <a routerLink="/login" (click)="closeMenu()" class="nav-mobile-link nav-mobile-btn">Ingresar</a>
+      <a routerLink="/register" (click)="closeMenu()" class="nav-mobile-link nav-mobile-btn nav-mobile-btn--primary">Registrarse</a>
+    }
+    @if (!isAuthLoading() && isLoggedIn() && user()) {
+      <div class="nav-mobile-user">
+        <span class="nav-user-welcome">Bienvenido, {{ user()?.firstName }}</span>
+        <button type="button" (click)="onLogout(); closeMenu()" class="nav-mobile-link nav-dropdown-logout">Cerrar sesión</button>
+      </div>
+    }
+    <div class="nav-mobile-theme" (click)="toggleTheme()">
+      <span>{{ isDarkMode ? 'Modo claro' : 'Modo oscuro' }}</span>
     </div>
   </div>
 </nav>

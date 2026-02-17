@@ -1,0 +1,33 @@
+<section class="auth-page">
+  <div class="auth-container">
+    <h2 class="auth-title">Verifica tu email</h2>
+
+    @if (showSuccessMessage) {
+      <p class="auth-success">¡Cuenta creada! Revisa tu correo para verificar.</p>
+    }
+    @if (fromLogin) {
+      <p class="auth-info">Tu email no está verificado. Para ingresar, verifica primero.</p>
+    }
+
+    @if (email) {
+      <p class="auth-message">Hemos enviado un email de verificación a <strong>{{ email }}</strong></p>
+      <p class="auth-hint">Revisa tu bandeja de entrada y carpeta de spam. Haz clic en el enlace del email.</p>
+
+      @if (resendSuccess) {
+        <p class="auth-success">Se ha reenviado el email de verificación.</p>
+      }
+      @if (resendError) {
+        <p class="auth-error">{{ resendError }}</p>
+      }
+
+      <div class="auth-actions">
+        <button type="button" class="btn-secondary" (click)="resendVerificationEmail()" [disabled]="isResending">
+          {{ isResending ? 'Enviando...' : 'Reenviar Email' }}
+        </button>
+        <button type="button" class="btn-submit" (click)="goToLogin()">Ingresar</button>
+      </div>
+    } @else {
+      <p class="auth-message">No se recibió el email. <a routerLink="/login">Volver al login</a></p>
+    }
+  </div>
+</section>

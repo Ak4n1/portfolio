@@ -1,0 +1,307 @@
+<div class="ofertas-page">
+  <!-- Header -->
+  <div class="config-header">
+    <div class="config-header-inner">
+      <div class="config-header-titles">
+        <h1 class="config-title">
+          <span class="config-title-accent">Ofertas</span> laborales
+        </h1>
+        <p class="config-subtitle">Busca ofertas de trabajo que coincidan con tu perfil y recibí alertas por email.</p>
+      </div>
+      <div class="header-actions">
+        <button class="config-btn-primary search-btn" (click)="searchNow()" [disabled]="searching()">
+          <i class="fas" [class.fa-search]="!searching()" [class.fa-spinner]="searching()"
+            [class.fa-spin]="searching()"></i>
+          {{ searching() ? 'Buscando...' : 'Buscar ahora' }}
+        </button>
+        <button class="config-btn-outline search-btn" (click)="sendEmail()"
+          [disabled]="sendingEmail() || offers().length === 0">
+          <i class="fas" [class.fa-envelope]="!sendingEmail()" [class.fa-spinner]="sendingEmail()"
+            [class.fa-spin]="sendingEmail()"></i>
+          {{ sendingEmail() ? 'Enviando...' : 'Enviar email' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search feedback -->
+  @if (searchMessage()) {
+  <div class="search-feedback cyber-card">
+    <i class="fas fa-info-circle"></i>
+    <span>{{ searchMessage() }}</span>
+  </div>
+  }
+
+  <div class="config-grid">
+    <!-- ===== MAIN COLUMN ===== -->
+    <div class="config-main">
+
+      <!-- Última búsqueda -->
+      @if (lastRun()) {
+      <div class="cyber-card last-run-card">
+        <div class="config-section-header">
+          <i class="fas fa-clock config-section-icon"></i>
+          <h2 class="config-section-title">Última búsqueda</h2>
+        </div>
+        <div class="last-run-stats">
+          <div class="stat-item">
+            <span class="stat-value">{{ formatDate(lastRun()!.runAt) }}</span>
+            <span class="stat-label">Fecha</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-value">{{ lastRun()!.offersFound }}</span>
+            <span class="stat-label">Encontradas</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-value">{{ lastRun()!.offersSent }}</span>
+            <span class="stat-label">Nuevas enviadas</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-value">
+              <i class="fas" [class.fa-check-circle]="lastRun()!.emailSent"
+                [class.fa-times-circle]="!lastRun()!.emailSent"
+                [style.color]="lastRun()!.emailSent ? 'var(--color-primary)' : '#f87171'"></i>
+            </span>
+            <span class="stat-label">Email</span>
+          </div>
+        </div>
+      </div>
+      }
+
+      <!-- Ofertas recientes -->
+      <div class="cyber-card">
+        <div class="config-section-header">
+          <i class="fas fa-briefcase config-section-icon"></i>
+          <h2 class="config-section-title">Ofertas recientes</h2>
+        </div>
+
+        @if (offers().length === 0) {
+        <p class="empty-text">No hay ofertas todavía. Hacé clic en "Buscar ahora" para comenzar.</p>
+        } @else {
+        <div class="offers-list">
+          @for (offer of offers(); track offer.id) {
+          <div class="offer-card">
+            <div class="offer-header">
+              <h3 class="offer-title">
+                @if (offer.url) {
+                <a [href]="offer.url" target="_blank" rel="noopener">{{ offer.title }}</a>
+                } @else {
+                {{ offer.title }}
+                }
+              </h3>
+              <span class="offer-source">{{ offer.source }}</span>
+            </div>
+            <div class="offer-meta">
+              @if (offer.company) {
+              <span class="offer-meta-item"><i class="fas fa-building"></i> {{ offer.company }}</span>
+              }
+              @if (offer.location) {
+              <span class="offer-meta-item"><i class="fas fa-map-marker-alt"></i> {{ offer.location }}</span>
+              }
+              @if (offer.salary) {
+              <span class="offer-meta-item offer-salary"><i class="fas fa-dollar-sign"></i> {{ offer.salary }}</span>
+              }
+              @if (offer.date) {
+              <span class="offer-meta-item"><i class="fas fa-calendar"></i> {{ offer.date }}</span>
+              }
+            </div>
+            @if (offer.tags && offer.tags.length) {
+            <div class="offer-tags">
+              @for (tag of offer.tags; track tag) {
+              <span class="offer-tag">{{ tag }}</span>
+              }
+            </div>
+            }
+          </div>
+          }
+        </div>
+        }
+      </div>
+
+      <!-- Reglas de alerta -->
+      <div class="cyber-card">
+        <div class="config-section-header">
+          <i class="fas fa-bell config-section-icon"></i>
+          <h2 class="config-section-title">Reglas de alerta</h2>
+        </div>
+        <p class="section-desc">Definí combinaciones de keywords (AND). Una oferta entra al email si matchea al menos
+          una regla activa.</p>
+
+        <!-- Add rule form -->
+        <div class="inline-form">
+          <input class="config-input" [(ngModel)]="newRuleName" placeholder="Nombre (ej: Java + Spring)" />
+          <input class="config-input" [(ngModel)]="newRuleKeywords" placeholder="Keywords separadas por coma" />
+          <button class="config-btn-primary btn-sm" (click)="addRule()"
+            [disabled]="!newRuleName.trim() || !newRuleKeywords.trim()">
+            <i class="fas fa-plus"></i> Agregar
+          </button>
+        </div>
+
+        @if (rules().length === 0) {
+        <p class="empty-text">No hay reglas configuradas.</p>
+        } @else {
+        <div class="rules-list">
+          @for (rule of rules(); track rule.id) {
+          <div class="rule-item" [class.rule-inactive]="!rule.active">
+            @if (editingRuleId === rule.id) {
+            <!-- Edit mode -->
+            <div class="inline-form">
+              <input class="config-input" [(ngModel)]="editRuleName" placeholder="Nombre" />
+              <input class="config-input" [(ngModel)]="editRuleKeywords" placeholder="Keywords" />
+              <button class="config-btn-primary btn-sm" (click)="saveEditRule()"><i class="fas fa-check"></i></button>
+              <button class="config-btn-outline btn-sm" (click)="cancelEditRule()"><i class="fas fa-times"></i></button>
+            </div>
+            } @else {
+            <!-- View mode -->
+            <div class="rule-content">
+              <div class="rule-header-row">
+                <label class="config-switch">
+                  <input type="checkbox" [checked]="rule.active" (change)="toggleRuleActive(rule)" />
+                  <span class="config-switch-slider"></span>
+                </label>
+                <strong class="rule-name">{{ rule.name }}</strong>
+              </div>
+              <div class="offer-tags">
+                @for (kw of rule.keywords; track kw) {
+                <span class="offer-tag">{{ kw }}</span>
+                }
+              </div>
+            </div>
+            <div class="rule-actions">
+              <button class="btn-icon" (click)="startEditRule(rule)" title="Editar"><i class="fas fa-pen"></i></button>
+              <button class="btn-icon btn-icon-danger" (click)="deleteRule(rule.id)" title="Eliminar"><i
+                  class="fas fa-trash"></i></button>
+            </div>
+            }
+          </div>
+          }
+        </div>
+        }
+      </div>
+    </div>
+
+    <!-- ===== SIDEBAR COLUMN ===== -->
+    <div class="config-sidebar">
+
+      <!-- Frecuencia de alertas -->
+      <div class="cyber-card">
+        <div class="config-section-header">
+          <i class="fas fa-clock config-section-icon"></i>
+          <h2 class="config-section-title">Frecuencia</h2>
+        </div>
+        <p class="section-desc">¿Cada cuánto buscamos ofertas y enviamos el digest por email?</p>
+        <div class="interval-options">
+          @for (opt of intervalOptions; track opt.value) {
+          <button class="interval-btn" [class.interval-active]="alertIntervalHours() === opt.value"
+            (click)="updateInterval(opt.value)">
+            {{ opt.label }}
+          </button>
+          }
+        </div>
+      </div>
+
+      <!-- Filtros -->
+      <div class="cyber-card">
+        <div class="config-section-header">
+          <i class="fas fa-filter config-section-icon"></i>
+          <h2 class="config-section-title">Filtros</h2>
+        </div>
+        <p class="section-desc">Filtrá las ofertas por país e idioma.</p>
+
+        <div class="filter-fields">
+          <div class="config-field">
+            <label class="config-label">País</label>
+            <input class="config-input" [value]="filterCountry()"
+              (change)="updateFilterCountry($any($event.target).value)"
+              placeholder="Ej: Argentina (vacío = sin filtro)" />
+          </div>
+          <div class="config-field">
+            <label class="config-label">Idioma</label>
+            <div class="interval-options">
+              @for (lang of languageOptions; track lang.value) {
+              <button class="interval-btn" [class.interval-active]="filterLanguage() === lang.value"
+                (click)="updateFilterLanguage(lang.value)">
+                {{ lang.label }}
+              </button>
+              }
+            </div>
+          </div>
+
+          <div class="config-field">
+            <label class="config-label">Fuente</label>
+            <div class="custom-select" [class.open]="filterSourceOpen()" (click)="$event.stopPropagation()">
+              <button type="button" class="custom-select-trigger" (click)="filterSourceOpen.set(!filterSourceOpen())"
+                [attr.aria-expanded]="filterSourceOpen()" aria-haspopup="listbox">
+                <span>{{ getFilterSourceLabel() }}</span>
+                <i class="fas fa-chevron-down custom-select-chevron" aria-hidden="true"></i>
+              </button>
+              <ul class="custom-select-dropdown" role="listbox">
+                @for (src of sourceOptions; track src.value) {
+                <li role="option" [class.selected]="filterSource() === src.value"
+                  (click)="updateFilterSource(src.value); filterSourceOpen.set(false)">
+                  {{ src.label }}
+                </li>
+                }
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mis stacks -->
+      <div class="cyber-card">
+        <div class="config-section-header">
+          <i class="fas fa-layer-group config-section-icon"></i>
+          <h2 class="config-section-title">Mis stacks</h2>
+        </div>
+        <p class="section-desc">Tecnologías que usamos como keywords para buscar ofertas.</p>
+
+        <!-- Add skill form -->
+        <div class="skill-add-form">
+          <input class="config-input" [(ngModel)]="newSkillName" placeholder="Tecnología (ej: Angular)" />
+          <input class="config-input skill-cat-input" [(ngModel)]="newSkillCategory"
+            placeholder="Categoría (opcional)" />
+          <button class="config-btn-primary btn-sm btn-full" (click)="addSkill()" [disabled]="!newSkillName.trim()">
+            <i class="fas fa-plus"></i> Agregar
+          </button>
+        </div>
+
+        @if (skills().length === 0) {
+        <p class="empty-text">No hay stacks cargados.</p>
+        } @else {
+        <div class="skills-list">
+          @for (skill of skills(); track skill.id) {
+          <div class="skill-item">
+            @if (editingSkillId === skill.id) {
+            <div class="skill-edit-form">
+              <input class="config-input" [(ngModel)]="editSkillName" />
+              <input class="config-input skill-cat-input" [(ngModel)]="editSkillCategory" placeholder="Categoría" />
+              <div class="skill-edit-actions">
+                <button class="config-btn-primary btn-sm" (click)="saveEditSkill()"><i
+                    class="fas fa-check"></i></button>
+                <button class="config-btn-outline btn-sm" (click)="cancelEditSkill()"><i
+                    class="fas fa-times"></i></button>
+              </div>
+            </div>
+            } @else {
+            <div class="skill-content">
+              <span class="skill-name">{{ skill.name }}</span>
+              @if (skill.category) {
+              <span class="skill-category">{{ skill.category }}</span>
+              }
+            </div>
+            <div class="skill-actions">
+              <button class="btn-icon" (click)="startEditSkill(skill)" title="Editar"><i
+                  class="fas fa-pen"></i></button>
+              <button class="btn-icon btn-icon-danger" (click)="deleteSkill(skill.id)" title="Eliminar"><i
+                  class="fas fa-trash"></i></button>
+            </div>
+            }
+          </div>
+          }
+        </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>

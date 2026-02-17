@@ -1,0 +1,268 @@
+<div class="usuarios-page">
+  <!-- Page Header (estilo Stich: título con acento + subtítulo + badges) -->
+  <header class="usuarios-header">
+    <div class="header-top">
+      <div class="header-titles">
+        <h1 class="usuarios-title">Gestión de <span class="title-accent">Usuarios</span></h1>
+        <p class="usuarios-subtitle">Administre accesos, roles y estados del sistema.</p>
+      </div>
+      <div class="header-badges">
+        <div class="stat-badge">
+          <span class="stat-badge-label">Total</span>
+          <span class="stat-badge-value">{{ totalElements() }}</span>
+        </div>
+        <div class="stat-badge stat-badge-online">
+          <span class="stat-badge-label">En línea</span>
+          <span class="stat-badge-value">
+            <i class="fas fa-circle online-dot" aria-hidden="true"></i> {{ onlineUsersCount() }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  @if (error()) {
+    <div class="usuarios-error" role="alert">{{ error() }}</div>
+  }
+
+  <!-- Controls Bar (búsqueda + Filtros) -->
+  <div class="controls-bar">
+    <label class="search-wrap">
+      <i class="fas fa-search search-icon" aria-hidden="true"></i>
+      <input
+        type="text"
+        class="search-input"
+        placeholder="Buscar por nombre, email o rol..."
+        [ngModel]="searchInput()"
+        (ngModelChange)="searchInput.set($event)"
+        (keyup.enter)="applySearch()" />
+    </label>
+    <div class="controls-actions">
+      <button type="button" class="btn-control" (click)="applySearch()">
+        <i class="fas fa-search"></i> Buscar
+      </button>
+      <button type="button" class="btn-control" (click)="openFiltersModal()">
+        <i class="fas fa-filter"></i> Filtros
+      </button>
+    </div>
+  </div>
+
+  <!-- Table Card -->
+  <div class="table-card">
+    @if (loading()) {
+      <p class="usuarios-loading">Cargando usuarios...</p>
+    } @else {
+      <div class="table-scroll">
+        <table class="usuarios-table" aria-label="Lista de usuarios">
+          <thead>
+            <tr>
+              <th>Usuario</th>
+              <th>Email</th>
+              <th>Rol</th>
+              <th>Estado</th>
+              <th>Verificado</th>
+              <th>En línea</th>
+              <th>Fecha</th>
+              <th class="th-actions">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (user of users(); track user.id) {
+              <tr class="table-row" [class.row-disabled]="!user.enabled">
+                <td>
+                  <div class="user-cell">
+                    <div class="user-avatar" [class.avatar-online]="isUserOnline(user.email)">
+                      {{ getInitials(user) }}
+                    </div>
+                    <div class="user-info">
+                      <span class="user-name">{{ user.firstName }} {{ user.lastName }}</span>
+                      <span class="user-id">ID: {{ user.id }}</span>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="email-cell">{{ user.email }}</span></td>
+                <td>
+                  @for (r of getRolesList(user); track r) {
+                    <span class="badge" [class.badge-role-admin]="r === 'ROLE_ADMIN'" [class.badge-role-user]="r === 'ROLE_USER'">{{ getRoleLabel(r) }}</span>
+                  }
+                </td>
+                <td>
+                  <div class="status-cell">
+                    @if (user.enabled) {
+                      <span class="status-dot status-active"></span>
+                      <span class="status-label">Activo</span>
+                    } @else {
+                      <span class="status-dot status-inactive"></span>
+                      <span class="status-label status-label-inactive">Inactivo</span>
+                    }
+                  </div>
+                </td>
+                <td>
+                  @if (user.emailVerified) {
+                    <span class="badge badge-success">Sí</span>
+                  } @else {
+                    <span class="badge badge-warning">No</span>
+                  }
+                </td>
+                <td>
+                  @if (isUserOnline(user.email)) {
+                    <span class="badge badge-online"><i class="fas fa-circle online-dot"></i> En línea</span>
+                  } @else {
+                    <span class="badge badge-offline">Desconectado</span>
+                  }
+                </td>
+                <td><span class="date-cell">{{ formatDate(user.createdAt) }}</span></td>
+                <td class="actions-cell">
+                  @if (actionLoadingFor() === user.id) {
+                    <span class="action-loading"><i class="fas fa-spinner fa-spin"></i></span>
+                  } @else {
+                    <div class="action-buttons">
+                      @if (user.enabled) {
+                        <button type="button" class="btn-action btn-action-warn" (click)="openConfirmDisable(user)" title="Deshabilitar">
+                          <i class="fas fa-user-slash"></i>
+                        </button>
+                      } @else {
+                        <button type="button" class="btn-action btn-action-ok" (click)="openConfirmEnable(user)" title="Habilitar">
+                          <i class="fas fa-user-check"></i>
+                        </button>
+                      }
+                      @if (!user.emailVerified) {
+                        <button type="button" class="btn-action" (click)="openConfirmResendVerification(user)" title="Reenviar verificación">
+                          <i class="fas fa-envelope"></i>
+                        </button>
+                      }
+                      <button type="button" class="btn-action" (click)="openConfirmSendPasswordReset(user)" title="Recuperar contraseña">
+                        <i class="fas fa-key"></i>
+                      </button>
+                      <div class="roles-dropdown" (click)="$event.stopPropagation()">
+                        <button type="button" class="btn-action" (click)="toggleRolesMenu(user.id)" [attr.aria-expanded]="rolesMenuOpenFor() === user.id" title="Cambiar rol">
+                          <i class="fas fa-user-tag"></i>
+                        </button>
+                        @if (rolesMenuOpenFor() === user.id) {
+                          <ul class="roles-menu">
+                            <li><button type="button" (click)="openConfirmSetRoles(user.id, ['ROLE_USER'])">Usuario</button></li>
+                            <li><button type="button" (click)="openConfirmSetRoles(user.id, ['ROLE_ADMIN'])">Administrador</button></li>
+                          </ul>
+                        }
+                      </div>
+                      <button type="button" class="btn-action" (click)="goToSendNotification(user)" title="Enviar notificación">
+                        <i class="fas fa-bell"></i>
+                      </button>
+                    </div>
+                  }
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="8" class="empty-cell">No hay usuarios o no coinciden con la búsqueda.</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+
+  <!-- Pagination -->
+  @if (!loading() && (totalPages() > 1 || totalElements() > 0)) {
+    <nav class="pagination-bar" aria-label="Paginación">
+      <p class="pagination-summary">Página {{ currentPage() + 1 }} de {{ totalPages() }} // Total: {{ totalElements() }}</p>
+      <div class="pagination-buttons">
+        <button type="button" class="btn-pagination" [disabled]="currentPage() === 0" (click)="goToPage(currentPage() - 1)">
+          Anterior
+        </button>
+        <button type="button" class="btn-pagination" [disabled]="currentPage() >= totalPages() - 1" (click)="goToPage(currentPage() + 1)">
+          Siguiente
+        </button>
+      </div>
+    </nav>
+  }
+</div>
+
+<!-- Modal de confirmación reutilizable -->
+<app-confirm-modal
+  [visible]="confirmModalVisible()"
+  [title]="confirmModalTitle()"
+  [message]="confirmModalMessage()"
+  [type]="confirmModalType()"
+  [confirmText]="confirmModalConfirmText()"
+  cancelText="Cancelar"
+  (confirmed)="onConfirmModalConfirmed()"
+  (cancelled)="onConfirmModalCancelled()" />
+
+<!-- Modal de filtros -->
+@if (filtersModalVisible()) {
+  <div class="filters-modal-overlay" (click)="closeFiltersModal()">
+    <div class="filters-modal" (click)="$event.stopPropagation(); onFiltersModalClick($event)">
+      <div class="filters-modal-header">
+        <h3 class="filters-modal-title">Filtros</h3>
+        <button type="button" class="filters-modal-close" (click)="closeFiltersModal()" aria-label="Cerrar">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="filters-modal-body">
+        <p class="filters-modal-hint">La búsqueda se realiza con el campo superior. Aquí puedes filtrar por rol, estado y en línea.</p>
+        <div class="filters-form">
+          <label class="filter-field">
+            <span class="filter-label">Rol</span>
+            <div class="custom-select" [class.open]="roleFilterOpen()" (click)="$event.stopPropagation()">
+              <button type="button" class="custom-select-trigger" (click)="openOnlyRoleFilter()"
+                [attr.aria-expanded]="roleFilterOpen()" aria-haspopup="listbox">
+                <span>{{ getRoleFilterLabel() }}</span>
+                <i class="fas fa-chevron-down custom-select-chevron" aria-hidden="true"></i>
+              </button>
+              <ul class="custom-select-dropdown" role="listbox">
+                @for (opt of roleFilterOptions; track opt.value) {
+                  <li role="option" [class.selected]="filterRoleInput() === opt.value"
+                    (click)="onFilterRoleChoice(opt.value); $event.stopPropagation()">
+                    {{ opt.label }}
+                  </li>
+                }
+              </ul>
+            </div>
+          </label>
+          <label class="filter-field">
+            <span class="filter-label">Estado</span>
+            <div class="custom-select" [class.open]="enabledFilterOpen()" (click)="$event.stopPropagation()">
+              <button type="button" class="custom-select-trigger" (click)="openOnlyEnabledFilter()"
+                [attr.aria-expanded]="enabledFilterOpen()" aria-haspopup="listbox">
+                <span>{{ getEnabledFilterLabel() }}</span>
+                <i class="fas fa-chevron-down custom-select-chevron" aria-hidden="true"></i>
+              </button>
+              <ul class="custom-select-dropdown" role="listbox">
+                @for (opt of enabledFilterOptions; track opt.value) {
+                  <li role="option" [class.selected]="filterEnabledSelectValue() === opt.value"
+                    (click)="onFilterEnabledChoice(opt.value); $event.stopPropagation()">
+                    {{ opt.label }}
+                  </li>
+                }
+              </ul>
+            </div>
+          </label>
+          <label class="filter-field">
+            <span class="filter-label">En línea</span>
+            <div class="custom-select" [class.open]="onlineFilterOpen()" (click)="$event.stopPropagation()">
+              <button type="button" class="custom-select-trigger" (click)="openOnlyOnlineFilter()"
+                [attr.aria-expanded]="onlineFilterOpen()" aria-haspopup="listbox">
+                <span>{{ getOnlineFilterLabel() }}</span>
+                <i class="fas fa-chevron-down custom-select-chevron" aria-hidden="true"></i>
+              </button>
+              <ul class="custom-select-dropdown" role="listbox">
+                @for (opt of onlineFilterOptions; track opt.value) {
+                  <li role="option" [class.selected]="filterOnlineOnlyOptionValue() === opt.value"
+                    (click)="onFilterOnlineChoice(opt.value); $event.stopPropagation()">
+                    {{ opt.label }}
+                  </li>
+                }
+              </ul>
+            </div>
+          </label>
+        </div>
+        <div class="filters-modal-actions">
+          <button type="button" class="btn-control" (click)="clearFilters()">Limpiar</button>
+          <button type="button" class="btn-control btn-primary" (click)="applyFilters()">Aplicar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+}

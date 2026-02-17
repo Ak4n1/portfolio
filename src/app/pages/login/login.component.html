@@ -1,0 +1,10 @@
+<section class="auth-page">
+  <div class="auth-container">
+    <p class="auth-error" *ngIf="serverError">{{ serverError }}</p>
+    <app-login-form (submitForm)="onSubmit($event)" (close)="onClose()"></app-login-form>
+    <p class="auth-footer">
+      ¿No tienes cuenta? <a routerLink="/register">Registrarse</a><br>
+      <a routerLink="/forgot-password">¿Olvidaste tu contraseña?</a>
+    </p>
+  </div>
+</section>

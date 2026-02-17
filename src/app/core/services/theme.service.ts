@@ -65,7 +65,7 @@ export const THEME_CONFIGS: Record<string, ThemeConfig> = {
     colors: {
       // Colores principales
       primary: 'rgb(0, 255, 195)',        // Verde cian brillante
-      secondary: 'rgb(255, 0, 255)',      // Magenta brillante
+      secondary: 'rgb(0, 255, 195)',      // Mismo que primary (sin violeta)
       accent: 'rgb(0, 255, 195)',         // Acento - mismo que primary
 
       // Backgrounds
@@ -121,54 +121,54 @@ export const THEME_CONFIGS: Record<string, ThemeConfig> = {
     colors: {
       // Colores principales
       primary: 'rgb(0, 184, 148)',        // Verde esmeralda
-      secondary: 'rgb(108, 92, 231)',     // Púrpura azulado
+      secondary: 'rgb(0, 184, 148)',      // Mismo que primary (sin violeta)
       accent: 'rgb(0, 184, 148)',         // Acento - mismo que primary
 
-      // Backgrounds
-      backgroundDark: 'rgb(240, 242, 245)', // Gris muy claro suave (antes blanco puro)
-      backgroundLight: 'rgb(235, 238, 242)', // Gris claro suave
-      backgroundCard: 'rgba(0, 0, 0, 0.05)', // Fondo de tarjetas
-      backgroundHero: 'linear-gradient(135deg, rgb(240, 242, 245) 0%, rgb(235, 238, 242) 100%)', // Fondo hero
-      backgroundSection: 'rgb(245, 247, 250)', // Fondo de secciones alternas (gris muy claro)
+      // Backgrounds: grises suaves, sin blanco puro (menos fatiga visual)
+      backgroundDark: 'rgb(228, 231, 235)',   // Gris claro suave (fondo principal)
+      backgroundLight: 'rgb(218, 222, 228)',  // Gris un poco más marcado (secundario)
+      backgroundCard: 'rgba(0, 0, 0, 0.04)',  // Fondo de tarjetas
+      backgroundHero: 'linear-gradient(135deg, rgb(228, 231, 235) 0%, rgb(218, 222, 228) 100%)',
+      backgroundSection: 'rgb(222, 226, 231)', // Secciones alternas (gris medio-claro)
 
       // Textos
       textPrimary: 'rgb(45, 52, 54)',     // Casi negro
-      textSecondary: 'rgb(99, 110, 114)', // Gris oscuro
-      textMuted: 'rgb(148, 163, 184)',    // Gris claro
-      textAccent: 'rgb(0, 184, 148)',     // Texto de acento
+      textSecondary: 'rgb(99, 110, 114)',  // Gris oscuro
+      textMuted: 'rgb(128, 142, 155)',    // Gris medio
+      textAccent: 'rgb(0, 184, 148)',      // Texto de acento
 
       // Títulos y headings
-      titlePrimary: 'rgb(15, 15, 15)',   // Títulos principales
+      titlePrimary: 'rgb(30, 35, 38)',    // Títulos principales
       titleSecondary: 'rgb(45, 52, 54)',  // Títulos secundarios
-      sectionTitle: 'rgb(0, 0, 0)',   // Títulos de sección
+      sectionTitle: 'rgb(25, 28, 30)',    // Títulos de sección
 
       // Bordes y sombras
-      borderColor: 'rgba(34, 36, 35, 0.2)', // Verde esmeralda transparente
-      borderHover: 'rgba(0, 184, 148, 0.5)', // Borde en hover
-      shadowNeon: '0 0 20px rgba(0, 184, 148, 0.3)', // Sombra verde esmeralda
-      shadowCard: '0 10px 30px rgba(0, 184, 148, 0.1)', // Sombra de tarjetas
+      borderColor: 'rgba(34, 36, 35, 0.18)',
+      borderHover: 'rgba(0, 184, 148, 0.5)',
+      shadowNeon: '0 0 20px rgba(0, 184, 148, 0.2)',
+      shadowCard: '0 10px 30px rgba(0, 184, 148, 0.08)',
 
       // Estados
-      success: 'rgb(34, 197, 94)',        // Verde éxito
-      warning: 'rgb(245, 158, 11)',       // Amarillo advertencia
-      error: 'rgb(239, 68, 68)',          // Rojo error
-      info: 'rgb(59, 130, 246)',          // Azul información
+      success: 'rgb(34, 197, 94)',
+      warning: 'rgb(245, 158, 11)',
+      error: 'rgb(239, 68, 68)',
+      info: 'rgb(59, 130, 246)',
 
       // Elementos específicos
-      iconColor: 'rgb(45, 52, 54)',       // Iconos oscuros para fondo claro
-      techItemBg: 'rgba(0, 0, 0, 0.05)',  // Fondo de tech items
-      linkColor: 'rgb(0, 184, 148)',      // Color de enlaces
-      linkHover: 'rgb(0, 150, 120)',      // Color de enlaces en hover
-      buttonPrimary: 'rgb(0, 184, 148)',  // Botones primarios
-      buttonSecondary: 'rgba(0, 0, 0, 0.05)', // Botones secundarios
+      iconColor: 'rgb(45, 52, 54)',
+      techItemBg: 'rgba(0, 0, 0, 0.04)',
+      linkColor: 'rgb(0, 184, 148)',
+      linkHover: 'rgb(0, 150, 120)',
+      buttonPrimary: 'rgb(0, 184, 148)',
+      buttonSecondary: 'rgba(0, 0, 0, 0.05)',
 
       // Progress bars y elementos de UI
-      progressBg: 'rgba(0, 0, 0, 0.1)',   // Fondo de progress bars
-      progressFill: 'linear-gradient(45deg, rgb(0, 184, 148), rgb(0, 150, 120))', // Relleno de progress
+      progressBg: 'rgba(0, 0, 0, 0.08)',
+      progressFill: 'linear-gradient(45deg, rgb(0, 184, 148), rgb(0, 150, 120))',
 
       // Overlays y modales
-      overlayBg: 'rgba(0, 0, 0, 0.5)',    // Fondo de overlays
-      modalBg: 'rgba(255, 255, 255, 0.95)' // Fondo de modales
+      overlayBg: 'rgba(0, 0, 0, 0.5)',
+      modalBg: 'rgba(235, 238, 242, 0.98)'  // Gris suave en lugar de blanco puro
     }
   }
 };
@@ -268,6 +268,16 @@ export class ThemeService implements OnDestroy {
   // Helpers para obtener colores específicos
   getPrimaryColor(): string {
     return this.getCurrentThemeConfig().colors.primary;
+  }
+
+  /** Convierte el color primario a rgba con la opacidad dada (0-1) */
+  getPrimaryColorRgba(alpha: number): string {
+    const rgb = this.getPrimaryColor();
+    const match = rgb.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
+    if (match) {
+      return `rgba(${match[1]}, ${match[2]}, ${match[3]}, ${alpha})`;
+    }
+    return rgb;
   }
 
   getSecondaryColor(): string {

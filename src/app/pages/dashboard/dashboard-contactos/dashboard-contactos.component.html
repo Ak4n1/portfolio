@@ -1,0 +1,242 @@
+<div class="contact-dashboard-container">
+    <div class="management-main">
+        <aside class="management-sidebar">
+            <div class="sidebar-header">
+                <h1 class="management-title">Contactos</h1>
+                <p class="management-subtitle">Filtra y gestiona los mensajes de contacto</p>
+            </div>
+
+            <div class="filter-card">
+                <label class="filter-label" for="contact-search">BUSCAR</label>
+                <div class="search-box">
+                    <i class="fas fa-search search-icon" aria-hidden="true"></i>
+                    <input class="search-input" id="contact-search" type="text" placeholder="Nombre, email o asunto..."
+                        [ngModel]="searchText()" (ngModelChange)="searchText.set($event)"
+                        (keyup.enter)="applyFilters()" />
+                </div>
+            </div>
+
+            <div class="filter-card">
+                <label class="filter-label">RANGO DE FECHA</label>
+                <div class="date-inputs">
+                    <div class="date-group">
+                        <span class="date-label">Desde</span>
+                        <input type="date" class="styled-input" [ngModel]="dateFrom()"
+                            (ngModelChange)="onDateFromChange($event)" aria-label="Desde" />
+                    </div>
+                    <div class="date-group">
+                        <span class="date-label">Hasta</span>
+                        <input type="date" class="styled-input" [ngModel]="dateTo()"
+                            (ngModelChange)="onDateToChange($event)" aria-label="Hasta" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="filter-card" [class.z-top]="readFilterOpen()">
+                <label class="filter-label">ESTADO</label>
+                <div class="custom-select" [class.open]="readFilterOpen()" (click)="$event.stopPropagation()">
+                    <button type="button" class="custom-select-trigger" (click)="readFilterOpen.set(!readFilterOpen())"
+                        [attr.aria-expanded]="readFilterOpen()" aria-haspopup="listbox">
+                        <span>{{ getReadFilterLabel() }}</span>
+                        <i class="fas fa-chevron-down custom-select-chevron" aria-hidden="true"></i>
+                    </button>
+                    <ul class="custom-select-dropdown" role="listbox">
+                        @for (opt of readFilterOptions; track opt.value) {
+                        <li role="option" [class.selected]="readFilter() === opt.value"
+                            (click)="onReadFilterChange(opt.value); readFilterOpen.set(false)">
+                            {{ opt.label }}
+                        </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+
+            <div class="filter-card border-none">
+                <div class="sidebar-actions-group">
+                    <button class="btn btn-primary" (click)="applyFilters()">
+                        <i class="fas fa-filter"></i> Aplicar
+                    </button>
+
+                    <button class="btn btn-secondary" (click)="clearFilters()" title="Limpiar todos los filtros">
+                        <i class="fas fa-history"></i> Limpiar filtros
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <section class="contactos-area">
+            <header class="page-header">
+                <div class="header-main-row">
+                    <div class="header-text">
+                        <h2 class="page-title">Mensajes Recibidos</h2>
+                        <p class="page-subtitle">
+                            @if (unreadCount() > 0) {
+                            Tienes <span class="subtitle-count">{{ unreadCount() }}</span> mensaje{{ unreadCount() !== 1
+                            ?
+                            's' : '' }} nuevo{{ unreadCount() !== 1 ? 's' : '' }}
+                            } @else {
+                            No tienes mensajes nuevos
+                            }
+                        </p>
+                    </div>
+                    <div class="page-header-actions">
+                        @if (unreadCount() > 0) {
+                        <button type="button" class="btn btn-primary" (click)="markAllAsRead()">
+                            <i class="fas fa-check-double"></i> Marcar todas como leídas
+                        </button>
+                        }
+                    </div>
+                </div>
+            </header>
+
+            @if (error()) {
+            <p class="error-msg" role="alert">{{ error() }}</p>
+            }
+
+            @if (loading()) {
+            <div class="loading-state">Cargando mensajes...</div>
+            } @else if (contacts().length === 0) {
+            <div class="empty-state">
+                <i class="fas fa-inbox" aria-hidden="true"></i>
+                <p>No se encontraron mensajes.</p>
+            </div>
+            } @else {
+            <div class="contact-list">
+                @for (c of contacts(); track c.id) {
+                <article class="contact-card" [class.unread]="!c.read" (click)="openDetails(c)">
+                    <div class="contact-card-header">
+                        <div class="contact-avatar">
+                            {{ c.name.charAt(0).toUpperCase() }}
+                        </div>
+                        <div class="contact-info">
+                            <div class="name-status-row">
+                                <h3 class="contact-name">{{ c.name }}</h3>
+                                <div class="status-badge-container">
+                                    @if (!c.read) {
+                                    <span class="status-badge unread">Nuevo</span>
+                                    } @else {
+                                    <span class="status-badge read">Leído</span>
+                                    }
+                                </div>
+                            </div>
+                            <span class="contact-email">{{ c.email }}</span>
+                        </div>
+                        <div class="contact-meta-top">
+                            <span class="date-text">{{ getRelativeTime(c.createdAt) }}</span>
+                        </div>
+                    </div>
+
+                    <div class="contact-card-body">
+                        <h4 class="contact-subject">{{ c.subject || '(Sin asunto)' }}</h4>
+                        <div class="contact-preview"
+                            [innerHTML]="getSafeHtml((c.message | slice:0:150) + (c.message.length > 150 ? '...' : ''))">
+                        </div>
+                    </div>
+
+                    <div class="contact-card-footer">
+                        <div class="footer-left">
+                            @if (c.city && c.country) {
+                            <span class="location-tag">
+                                <i class="fas fa-map-marker-alt"></i> {{ c.city }}, {{ c.country }}
+                            </span>
+                            } @else {
+                            <span class="location-tag unknown">
+                                <i class="fas fa-globe"></i> IP: {{ c.ipAddress }}
+                            </span>
+                            }
+                        </div>
+
+                        <div class="card-actions-row">
+                            @if (!c.read) {
+                            <button type="button" class="action-btn read-btn"
+                                (click)="markAsRead(c); $event.stopPropagation()" title="Marcar como leído">
+                                <i class="fas fa-check"></i>
+                            </button>
+                            }
+                            <button type="button" class="action-btn view-btn"
+                                (click)="openDetails(c); $event.stopPropagation()" title="Ver detalles">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button type="button" class="action-btn delete-btn"
+                                (click)="deleteContact(c); $event.stopPropagation()" title="Eliminar">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                </article>
+                }
+            </div>
+
+            @if (totalPages() > 1) {
+            <div class="pagination">
+                <button class="btn-pag" [disabled]="currentPage() === 0" (click)="goToPage(currentPage() - 1)">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <span class="pag-text">Página {{ currentPage() + 1 }} de {{ totalPages() }}</span>
+                <button class="btn-pag" [disabled]="currentPage() >= totalPages() - 1"
+                    (click)="goToPage(currentPage() + 1)">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+            }
+            }
+        </section>
+    </div>
+</div>
+
+<!-- Modal de Detalle Estilo Premium -->
+@if (modalVisible() && selectedContact(); as contact) {
+<div class="modal-overlay" (click)="closeModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-card">
+            <header class="modal-header">
+                <div class="modal-header-info">
+                    <h2 class="modal-title">{{ contact.subject || 'Mensaje de Contacto' }}</h2>
+                    <div class="modal-sender-pill">
+                        <i class="fas fa-user"></i>
+                        <span>{{ contact.name }} &lt;{{ contact.email }}&gt;</span>
+                    </div>
+                </div>
+                <button class="modal-close-btn" (click)="closeModal()" aria-label="Cerrar">&times;</button>
+            </header>
+
+            <div class="modal-body">
+                <div class="message-container">
+                    <div class="message-label">MENSAJE</div>
+                    <div class="message-content-scroll">
+                        <div class="rich-text-content" [innerHTML]="getSafeHtml(contact.message)"></div>
+                    </div>
+                </div>
+
+                <div class="metadata-grid">
+                    <div class="metadata-item">
+                        <span class="meta-label">Fecha</span>
+                        <span class="meta-value">{{ contact.createdAt | date:'medium' }}</span>
+                    </div>
+                    <div class="metadata-item">
+                        <span class="meta-label">IP</span>
+                        <span class="meta-value">{{ contact.ipAddress }}</span>
+                    </div>
+                    @if (contact.country) {
+                    <div class="metadata-item">
+                        <span class="meta-label">Ubicación</span>
+                        <span class="meta-value">{{ contact.city }}, {{ contact.country }}</span>
+                    </div>
+                    <div class="metadata-item">
+                        <span class="meta-label">ISP</span>
+                        <span class="meta-value">{{ contact.isp }}</span>
+                    </div>
+                    }
+                </div>
+            </div>
+
+            <footer class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="closeModal()">Cerrar</button>
+                <button type="button" class="btn btn-danger" (click)="deleteContact(contact); closeModal()">
+                    <i class="fas fa-trash-alt"></i> Eliminar
+                </button>
+            </footer>
+        </div>
+    </div>
+</div>
+}

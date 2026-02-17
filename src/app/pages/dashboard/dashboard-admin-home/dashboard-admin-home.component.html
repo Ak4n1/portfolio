@@ -1,0 +1,308 @@
+<div class="analytics-page stitch-layout">
+  <!-- Header estilo Stitch -->
+  <header class="analytics-header stitch-header">
+    <div class="header-left">
+      <span class="title-accent">/</span>
+      <h1 class="title-main">Inicio</h1>
+    </div>
+    <div class="header-right">
+      <div class="period-selector">
+        <button [class.active]="period() === '7d'" (click)="setPeriod('7d')">7d</button>
+        <button [class.active]="period() === '14d'" (click)="setPeriod('14d')">14d</button>
+        <button [class.active]="period() === '30d'" (click)="setPeriod('30d')">30d</button>
+      </div>
+      <a [href]="ga4Url" target="_blank" rel="noopener" class="btn-ga">
+        Ver en Google Analytics
+        <span class="material-symbols-outlined icon-sm">open_in_new</span>
+      </a>
+    </div>
+  </header>
+
+  @if (loading()) {
+    <div class="analytics-loading">
+      <div class="loading-card">
+        <div class="loading-spinner"></div>
+        <span class="loading-text">Cargando analíticas</span>
+        <div class="loading-bars">
+          <span></span><span></span><span></span><span></span><span></span>
+        </div>
+      </div>
+    </div>
+  } @else {
+    <!-- Cards estilo Stitch -->
+    <section class="metric-cards">
+      <div class="cyber-card metric-card">
+        <div class="card-top">
+          <span class="card-label">Visitantes</span>
+          <span class="material-symbols-outlined card-icon">person</span>
+        </div>
+        <div class="card-value">{{ overview()?.uniqueVisitors ?? 0 }}</div>
+      </div>
+      <div class="cyber-card metric-card">
+        <div class="card-top">
+          <span class="card-label">Sesiones</span>
+          <span class="material-symbols-outlined card-icon">touch_app</span>
+        </div>
+        <div class="card-value">{{ overview()?.totalSessions ?? 0 }}</div>
+      </div>
+      <div class="cyber-card metric-card">
+        <div class="card-top">
+          <span class="card-label">Vistas</span>
+          <span class="material-symbols-outlined card-icon">web</span>
+        </div>
+        <div class="card-value">{{ overview()?.pageViews ?? 0 }}</div>
+      </div>
+      <div class="cyber-card metric-card">
+        <div class="card-top">
+          <span class="card-label">Rebote</span>
+          <span class="material-symbols-outlined card-icon">trending_down</span>
+        </div>
+        <div class="card-value">{{ (overview()?.bounceRate ?? 0) | number:'1.1-1' }}%</div>
+      </div>
+      <div class="cyber-card metric-card">
+        <div class="card-top">
+          <span class="card-label">Tiempo medio</span>
+          <span class="material-symbols-outlined card-icon">schedule</span>
+        </div>
+        <div class="card-value">{{ formatDuration(overview()?.avgSessionDurationSeconds ?? 0) }}</div>
+      </div>
+      <div class="cyber-card metric-card">
+        <div class="card-top">
+          <span class="card-label">Scroll final</span>
+          <span class="material-symbols-outlined card-icon">expand_more</span>
+        </div>
+        <div class="card-value">{{ scrollCompletions() }}</div>
+      </div>
+    </section>
+
+    <!-- Fila principal: Línea + Donut -->
+    <section class="charts-row">
+      <div class="cyber-card chart-card chart-line">
+        <h3 class="chart-title"><span class="chart-dot"></span>Tráfico por día</h3>
+        <div class="chart-container">
+          @if (lineChartData().labels.length) {
+            <canvas baseChart type="line" [data]="lineChartData()" [options]="chartOptions"></canvas>
+          } @else {
+            <p class="chart-empty">Sin datos de tráfico para el período.</p>
+          }
+        </div>
+      </div>
+      <div class="cyber-card chart-card chart-donut">
+        <h3 class="chart-title"><span class="chart-dot"></span>Clicks y acciones</h3>
+        <div class="donut-wrapper">
+          @if (totalClicks() > 0) {
+            <div class="donut-chart-box">
+              <svg class="donut-svg" viewBox="0 0 140 140">
+                @for (s of donutSegments(); track s.label) {
+                  <path
+                    [attr.d]="s.path"
+                    [attr.fill]="disabledSegments().has(s.label) ? 'rgba(100,100,100,0.3)' : s.color"
+                    [class.donut-segment-disabled]="disabledSegments().has(s.label)"
+                    (mouseenter)="hoveredSegment.set(s.label)"
+                    (mouseleave)="hoveredSegment.set(null)"
+                    (click)="toggleSegment(s.label)"
+                  />
+                }
+              </svg>
+              @if (hoveredSegment()) {
+                <div class="donut-tooltip">
+                  @for (s of donutSegments(); track s.label) {
+                    @if (hoveredSegment() === s.label) {
+                      <span>{{ s.label }}: {{ s.value }} ({{ s.percent | number:'1.1-1' }}%)</span>
+                    }
+                  }
+                </div>
+              }
+              <div class="donut-center">
+                <span class="donut-total">{{ totalClicks() }}</span>
+              </div>
+            </div>
+            @if (donutSegments().length) {
+              <div class="donut-legend">
+                @for (s of donutSegments(); track s.label) {
+                  <button
+                    type="button"
+                    class="donut-legend-item"
+                    [class.donut-legend-disabled]="disabledSegments().has(s.label)"
+                    (click)="toggleSegment(s.label)"
+                  >
+                    <span class="donut-legend-dot" [style.background-color]="disabledSegments().has(s.label) ? 'rgba(100,100,100,0.5)' : s.color"></span>
+                    <span class="donut-legend-label">{{ s.label }}</span>
+                  </button>
+                }
+              </div>
+            }
+          } @else {
+            <p class="chart-empty">Sin eventos aún.</p>
+          }
+        </div>
+      </div>
+    </section>
+
+    <!-- Card 1: Origen y contexto -->
+    <section class="charts-row">
+      <div class="cyber-card chart-card chart-context">
+        <h3 class="chart-title"><span class="chart-dot"></span>Origen y contexto</h3>
+        <div class="bar-charts-stack">
+          <div class="donuts-row">
+            <div class="mini-bar-block mini-donut-block">
+              <h4 class="mini-bar-title">Origen del tráfico</h4>
+              <div class="mini-donut-wrap">
+                @if (trafficBySource().length) {
+                  <canvas baseChart type="doughnut" [data]="toDonutChartData(trafficBySource())" [options]="donutChartOptions"></canvas>
+                } @else {
+                  <p class="chart-empty">Sin datos.</p>
+                }
+              </div>
+            </div>
+            <div class="mini-bar-block mini-donut-block">
+              <h4 class="mini-bar-title">País / región</h4>
+              <div class="mini-donut-wrap">
+                @if (trafficByCountry().length) {
+                  <canvas baseChart type="doughnut" [data]="toDonutChartData(trafficByCountry(), 6)" [options]="donutChartOptions"></canvas>
+                } @else {
+                  <p class="chart-empty">Sin datos.</p>
+                }
+              </div>
+            </div>
+          </div>
+          <div class="mini-bar-block">
+            <h4 class="mini-bar-title">Horarios pico</h4>
+            <div class="bar-chart-vertical-wrap">
+              @if (sessionsByHour().length) {
+                <div class="bar-chart-vertical">
+                  @for (item of sessionsByHour(); track item.label) {
+                    <div class="bar-col" [style.height.%]="barPercent(item.value, sessionsByHour())" [title]="item.label + ': ' + item.value"></div>
+                  }
+                </div>
+                <div class="bar-chart-vertical-labels">
+                  <span>0h</span>
+                  <span>12h</span>
+                  <span>23h</span>
+                </div>
+              } @else {
+                <p class="chart-empty">Sin datos.</p>
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="cyber-card chart-card chart-tech">
+        <h3 class="chart-title"><span class="chart-dot"></span>Dispositivo y tecnología</h3>
+        <div class="bar-charts-stack">
+          <div class="mini-bar-block mini-donut-block">
+            <h4 class="mini-bar-title">Dispositivo</h4>
+            <div class="mini-donut-wrap">
+              @if (trafficByDevice().length) {
+                <canvas baseChart type="doughnut" [data]="toDonutChartData(trafficByDevice())" [options]="donutChartOptions"></canvas>
+              } @else {
+                <p class="chart-empty">Sin datos.</p>
+              }
+            </div>
+          </div>
+          <div class="mini-bar-block">
+            <h4 class="mini-bar-title">Navegador</h4>
+            <div class="bar-chart-horizontal">
+              @if (trafficByBrowser().length) {
+                @for (item of trafficByBrowser(); track item.label) {
+                  <div class="bar-row">
+                    <span class="bar-label">{{ item.label }}</span>
+                    <div class="bar-track"><div class="bar-fill" [style.width.%]="barPercent(item.value, trafficByBrowser())"></div></div>
+                    <span class="bar-value">{{ item.value }}</span>
+                  </div>
+                }
+              } @else {
+                <p class="chart-empty">Sin datos.</p>
+              }
+            </div>
+          </div>
+          <div class="mini-bar-block">
+            <h4 class="mini-bar-title">Sistema operativo</h4>
+            <div class="bar-chart-horizontal">
+              @if (trafficByOs().length) {
+                @for (item of trafficByOs(); track item.label) {
+                  <div class="bar-row">
+                    <span class="bar-label">{{ item.label }}</span>
+                    <div class="bar-track"><div class="bar-fill" [style.width.%]="barPercent(item.value, trafficByOs())"></div></div>
+                    <span class="bar-value">{{ item.value }}</span>
+                  </div>
+                }
+              } @else {
+                <p class="chart-empty">Sin datos.</p>
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tablas estilo Stitch -->
+    <section class="tables-row">
+      <div class="cyber-card table-card">
+        <div class="table-header">
+          <h3 class="table-title">Páginas más visitadas</h3>
+        </div>
+        <div class="table-scroll">
+          @if (topPagesWithPercent().length) {
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Ruta</th>
+                  <th class="text-right">Vistas</th>
+                  <th class="text-right">%</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (p of topPagesWithPercent(); track p.path) {
+                  <tr>
+                    <td class="path-cell">{{ p.path }}</td>
+                    <td class="text-right">{{ p.views }}</td>
+                    <td class="text-right accent">{{ p.percent | number:'1.1-1' }}%</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          } @else {
+            <p class="table-empty">Sin datos aún. Los datos vienen de GA4.</p>
+          }
+        </div>
+      </div>
+      <div class="cyber-card table-card">
+        <div class="table-header">
+          <h3 class="table-title">Proyectos destacados</h3>
+        </div>
+        <div class="table-scroll">
+          @if (projectsWithInterest().length) {
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Proyecto</th>
+                  <th class="text-right">Vistas</th>
+                  <th class="text-right">Ver</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (proj of projectsWithInterest(); track proj.projectId) {
+                  <tr>
+                    <td>{{ proj.title }}</td>
+                    <td class="text-right">{{ proj.views }}</td>
+                    <td class="text-right">
+                      <a [routerLink]="['/dashboard/projects', proj.projectId]" class="link">Ver proyecto</a>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          } @else {
+            <p class="table-empty">Sin proyectos aún.</p>
+          }
+        </div>
+      </div>
+    </section>
+
+    <footer class="analytics-footer">
+      <span class="status-dot"></span>
+      Sistema conectado · Datos de GA4
+    </footer>
+  }
+</div>

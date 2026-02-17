@@ -1,0 +1,28 @@
+<section class="auth-page">
+  <div class="auth-container">
+    @if (state === 'verifying') {
+      <h2 class="auth-title">Verificando tu email...</h2>
+      <p class="auth-message">Por favor, espera.</p>
+    }
+
+    @if (state === 'success') {
+      <h2 class="auth-title">¡Email verificado!</h2>
+      <p class="auth-success">Tu cuenta está activa. Ya puedes iniciar sesión.</p>
+      <a routerLink="/login" class="btn-submit">Iniciar Sesión</a>
+    }
+
+    @if (state === 'error') {
+      <h2 class="auth-title">Error al verificar</h2>
+      <p class="auth-error">{{ errorMessage }}</p>
+      <div class="auth-actions">
+        <button type="button" class="btn-secondary" (click)="retry()" [disabled]="isRetrying">
+          Reintentar
+        </button>
+        <button type="button" class="btn-secondary" (click)="goToResendVerification()">
+          Reenviar Email
+        </button>
+        <a routerLink="/login" class="btn-submit">Ir a Login</a>
+      </div>
+    }
+  </div>
+</section>

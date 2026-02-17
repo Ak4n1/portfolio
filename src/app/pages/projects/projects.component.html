@@ -1,11 +1,13 @@
 <section class="projects-hero">
-  <div class="container">
-    <h1 class="projects-title">Mis Proyectos</h1>
+  <div class="hero-decor hero-decor-left"></div>
+  <div class="hero-decor hero-decor-right"></div>
+  <div class="container hero-content">
+    <h1 class="projects-title">Mis <span class="title-accent">Proyectos</span></h1>
     <p class="projects-subtitle">Una muestra de mi trabajo y habilidades en desarrollo web</p>
   </div>
 </section>
 
-<section class="projects-filter">
+<section class="projects-filter" *ngIf="!loading && !error">
   <div class="container">
     <div class="filter-buttons">
       <button 
@@ -19,16 +21,31 @@
   </div>
 </section>
 
+@if (loading) {
+  <section class="projects-loading">
+    <div class="container">
+      <div class="loading-spinner"></div>
+      <p>Loading projects...</p>
+    </div>
+  </section>
+} @else if (error) {
+  <section class="projects-error">
+    <div class="container">
+      <p>{{ error }}</p>
+    </div>
+  </section>
+} @else {
+
 <section class="projects-grid">
   <div class="container">
     <div class="projects-container">
-      <div 
+      <article 
         *ngFor="let project of filteredProjects" 
         class="project-card"
         [@fadeInUp]>
         <div class="project-image">
           <!-- Carousel for projects with images -->
-          <div class="image-carousel" *ngIf="project.images && project.images.length > 0">
+          <div class="image-carousel" *ngIf="getProjectImageUrls(project).length > 0">
             <div class="carousel-container">
               <img 
                 [src]="getCurrentImage(project.id)" 
@@ -38,86 +55,96 @@
                 (mouseenter)="pauseCarousel(project.id)"
                 (mouseleave)="resumeCarousel(project.id)">
               
+              <div class="image-overlay"></div>
+              
               <!-- Image counter -->
-              <div class="image-counter" *ngIf="project.images.length > 1">
-                {{ getCurrentIndex(project.id) + 1 }} / {{ project.images.length }}
+              <div class="image-counter" *ngIf="getProjectImageUrls(project).length > 1">
+                {{ getCurrentIndex(project.id) + 1 }} / {{ getProjectImageUrls(project).length }}
               </div>
             </div>
             
-            <!-- Navigation arrows -->
             <button 
               class="carousel-arrow carousel-prev" 
-              *ngIf="project.images.length > 1" 
+              *ngIf="getProjectImageUrls(project).length > 1" 
               (click)="prevImage(project.id)">
               ‹
             </button>
             <button 
               class="carousel-arrow carousel-next" 
-              *ngIf="project.images.length > 1" 
+              *ngIf="getProjectImageUrls(project).length > 1" 
               (click)="nextImage(project.id)">
               ›
             </button>
             
-            <!-- Indicators -->
-            <div class="carousel-indicators" *ngIf="project.images.length > 1">
+            <div class="carousel-indicators" *ngIf="getProjectImageUrls(project).length > 1">
               <span 
                 class="indicator" 
-                *ngFor="let image of project.images; let i = index" 
+                *ngFor="let image of getProjectImageUrls(project); let i = index" 
                 [class.active]="i === getCurrentIndex(project.id)"
                 (click)="goToImage(project.id, i)">
               </span>
             </div>
           </div>
           
-          <!-- Placeholder for projects without images -->
-          <div class="image-placeholder" *ngIf="!project.images || project.images.length === 0">
-            <span class="project-icon">{{ project.icon }}</span>
+          <div class="image-placeholder" *ngIf="getProjectImageUrls(project).length === 0">
+            <i [class]="getCategoryIcon(project.category)" class="project-icon-fa" aria-hidden="true"></i>
           </div>
         </div>
         
         <div class="project-content">
-          <h3 class="project-title">{{ project.title }}</h3>
-          <p class="project-description">{{ project.description }}</p>
           <div class="project-tags">
             <span 
-              *ngFor="let tag of project.tags" 
-              class="tag">
+              *ngFor="let tag of project.tags; let i = index" 
+              class="tag"
+              [class.tag-accent]="i % 2 === 1">
               {{ tag }}
             </span>
           </div>
-          <div class="project-links">
-            <a 
-              *ngIf="project.github" 
-              [href]="project.github" 
-              target="_blank" 
-              class="project-link github">
-              <i class="fab fa-github"></i> GitHub
-            </a>
-            <a 
-              *ngIf="project.demo" 
-              [href]="project.demo" 
-              target="_blank" 
-              class="project-link demo">
-              <i class="fas fa-external-link-alt"></i> Demo
-            </a>
+          <h3 class="project-title">{{ project.title }}</h3>
+          <p class="project-description">{{ getCardDescription(project) }}</p>
+          <div class="project-actions">
+            <div class="project-links">
+              <a 
+                *ngIf="project.github" 
+                [href]="project.github" 
+                target="_blank" 
+                rel="noopener"
+                class="project-link-icon github"
+                (click)="onProjectGithubClick(project); $event.stopPropagation()">
+                <i class="fab fa-github"></i>
+              </a>
+              <a 
+                *ngIf="project.demo" 
+                [href]="project.demo" 
+                target="_blank" 
+                rel="noopener"
+                class="project-link-icon demo"
+                (click)="onProjectDemoClick(project); $event.stopPropagation()">
+                <i class="fas fa-external-link-alt"></i>
+              </a>
+            </div>
             <a 
               [routerLink]="['/project', project.id]" 
-              class="project-link view-more">
-              <i class="fas fa-eye"></i> Ver más
+              class="btn-view-more"
+              (click)="onProjectCardClick(project)">
+              Ver más
             </a>
           </div>
         </div>
-      </div>
+      </article>
     </div>
   </div>
 </section>
 
+}
+
 <section class="cta-section">
+  <div class="cta-gradient-line"></div>
   <div class="container">
     <div class="cta-content">
-      <h2>¿Te gusta lo que ves?</h2>
+      <h2>¿Te gusta lo que <span class="cta-accent">ves</span>?</h2>
       <p>Estoy siempre abierto a nuevos proyectos y colaboraciones interesantes.</p>
-      <a routerLink="/contact" class="btn btn-primary">Contactar</a>
+      <a routerLink="/contact" class="btn btn-primary" (click)="onCtaContactClick()">Contactar</a>
     </div>
   </div>
 </section>

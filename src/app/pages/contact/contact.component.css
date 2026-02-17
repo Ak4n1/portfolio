@@ -1,6 +1,7 @@
 .contact-icon {
   font-size: 20px;
 }
+
 .contact-hero {
   padding: 5rem 0 3rem;
   background: var(--background-hero);
@@ -25,13 +26,14 @@
 .contact-content {
   padding: 4rem 0;
   background: var(--background-dark);
+  width: 100%;
 }
 
 .contact-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1.25fr;
   gap: 4rem;
-  max-width: 1000px;
+  max-width: 1200px;
   margin: 0 auto;
 }
 
@@ -58,11 +60,8 @@
   transition: all 0.3s ease;
 }
 
-.contact-item:hover {
-
-}
-
-.contact-icon fa-icon, .contact-icon svg {
+.contact-icon fa-icon,
+.contact-icon svg {
   color: var(--text-primary);
   width: 28px;
   height: 28px;
@@ -164,6 +163,12 @@
   box-shadow: 0 0 10px var(--error);
 }
 
+.submit-error {
+  color: var(--error);
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
 .error-message {
   color: var(--error);
   font-size: 0.9rem;
@@ -242,27 +247,87 @@
   .contact-title {
     font-size: 2.5rem;
   }
-  
+
   .contact-grid {
     grid-template-columns: 1fr;
     gap: 3rem;
   }
-  
+
   .contact-info h2,
   .contact-form h2 {
     font-size: 1.8rem;
   }
-  
+
   .social-icons {
     justify-content: center;
   }
-  
+
   .contact-item {
     padding: 1rem;
   }
-  
+
   .contact-icon {
     font-size: 1.5rem;
     min-width: 40px;
   }
+}
+
+/* Rich Text Editor Styles */
+.rich-editor-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  min-height: 250px;
+}
+
+.rich-editor-wrapper ::ng-deep .NgxEditor,
+.rich-editor-wrapper ::ng-deep .NgxEditor__Wrapper,
+.rich-editor-wrapper ::ng-deep ngx-editor-menu {
+  --ngx-editor-background-color: var(--background-card);
+  --ngx-editor-text-color: var(--text-primary);
+  --ngx-editor-placeholder-color: var(--text-secondary);
+  --ngx-editor-border-color: var(--border-color);
+  --ngx-editor-wrapper-border-color: var(--border-color);
+  --ngx-editor-menubar-bg-color: var(--background-card);
+  --ngx-editor-blockquote-color: var(--text-secondary);
+  --ngx-editor-popup-bg-color: var(--background-card);
+  --ngx-editor-menu-item-hover-bg-color: var(--background-card-hover, rgba(0, 255, 204, 0.1));
+  --ngx-editor-menu-item-active-color: var(--button-primary, #00ffcc);
+  --ngx-editor-menu-item-active-bg-color: var(--background-card-hover, rgba(0, 255, 204, 0.1));
+  --ngx-editor-seperator-color: var(--border-color);
+}
+
+.rich-editor-wrapper ::ng-deep .NgxEditor__MenuBar {
+  background-color: var(--background-card) !important;
+  color: var(--text-primary) !important;
+  border-bottom: 1px solid var(--border-color) !important;
+  border-radius: 8px 8px 0 0 !important;
+}
+
+.rich-editor-wrapper ::ng-deep .NgxEditor__MenuBar .NgxEditor__MenuItem--Icon,
+.rich-editor-wrapper ::ng-deep .NgxEditor__MenuBar .NgxEditor__Dropdown,
+.rich-editor-wrapper ::ng-deep .NgxEditor__MenuBar .NgxEditor__Dropdown--Text {
+  color: var(--text-primary) !important;
+}
+
+.rich-editor-wrapper ::ng-deep .NgxEditor__MenuBar svg {
+  fill: var(--text-primary) !important;
+}
+
+.rich-editor-wrapper ::ng-deep ngx-editor {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.rich-editor-wrapper ::ng-deep .NgxEditor {
+  border-radius: 0 0 8px 8px;
+  border: 1px solid var(--border-color);
+  background-color: var(--background-card) !important;
+  flex: 1;
+}
+
+.rich-editor-wrapper ::ng-deep .NgxEditor__Content {
+  min-height: 180px;
+  padding: 12px 16px !important;
 }

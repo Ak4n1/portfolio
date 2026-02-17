@@ -239,19 +239,20 @@ export class PreloaderComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   public onSquareHover(squareId: number) {
+    const primaryGlow = 'color-mix(in srgb, var(--primary-color) 30%, transparent)';
     const adjacentIds = this.getAdjacentSquares(squareId);
     const hoveredSquare = document.querySelector(`[data-id="${squareId}"]`) as HTMLElement;
     if (hoveredSquare) {
       hoveredSquare.style.backgroundColor = '#0F0F0F';
-      hoveredSquare.style.borderColor = 'rgba(0, 255, 195, 0.3)';
-      hoveredSquare.style.boxShadow = '0 0 8px rgba(0, 255, 195, 0.3)';
+      hoveredSquare.style.borderColor = primaryGlow;
+      hoveredSquare.style.boxShadow = `0 0 8px ${primaryGlow}`;
     }
     adjacentIds.forEach(id => {
       const adjacentSquare = document.querySelector(`[data-id="${id}"]`) as HTMLElement;
       if (adjacentSquare) {
         adjacentSquare.style.backgroundColor = '#0F0F0F';
-        adjacentSquare.style.borderColor = 'rgba(0, 255, 195, 0.3)';
-        adjacentSquare.style.boxShadow = '0 0 8px rgba(0, 255, 195, 0.3)';
+        adjacentSquare.style.borderColor = primaryGlow;
+        adjacentSquare.style.boxShadow = `0 0 8px ${primaryGlow}`;
       }
     });
   }

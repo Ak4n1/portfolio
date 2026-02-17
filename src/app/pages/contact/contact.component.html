@@ -5,6 +5,10 @@
   </div>
 </section>
 
+<app-feedback-modal [visible]="showModal" [type]="modalType" [title]="modalTitle" [message]="modalMessage"
+  (closed)="closeModal()">
+</app-feedback-modal>
+
 <section class="contact-content">
   <div class="container">
     <div class="contact-grid">
@@ -44,22 +48,25 @@
         </div>
 
         <div>
- 
+
 
         </div>
         <div class="social-links">
           <h3>Sígueme en redes</h3>
           <div class="social-icons">
-            <a href="https://github.com/juanencabo" target="_blank" class="social-link">
+            <a href="https://github.com/juanencabo" target="_blank" class="social-link"
+              (click)="onSocialClick('github')">
               <img src="https://cdn.simpleicons.org/github/white" alt="GitHub" class="social-icon" width="24"
                 height="24">
               <span>GitHub</span>
             </a>
-            <a href="https://linkedin.com/in/juanencabo" target="_blank" class="social-link">
+            <a href="https://linkedin.com/in/juanencabo" target="_blank" class="social-link"
+              (click)="onSocialClick('linkedin')">
               <img src="/assets/images/linkedin.png" alt="LinkedIn" class="social-icon" width="24" height="24">
               <span>LinkedIn</span>
             </a>
-            <a href="https://instagram.com/juanencabo" target="_blank" class="social-link">
+            <a href="https://instagram.com/juanencabo" target="_blank" class="social-link"
+              (click)="onSocialClick('instagram')">
               <img src="https://cdn.simpleicons.org/instagram/white" alt="Instagram" class="social-icon" width="24"
                 height="24">
               <span>Instagram</span>
@@ -96,13 +103,17 @@
 
           <div class="form-group">
             <label for="message">Mensaje *</label>
-            <textarea id="message" formControlName="message" rows="6" placeholder="Cuéntame sobre tu proyecto..."
-              [class.error]="isFieldInvalid('message')"></textarea>
+            <div class="rich-editor-wrapper NgxEditor__Wrapper">
+              <ngx-editor-menu [editor]="editor" [toolbar]="editorToolbar"></ngx-editor-menu>
+              <ngx-editor [editor]="editor" formControlName="message" outputFormat="html"
+                placeholder="Escribe tu mensaje con formato (negrita, listas, enlaces...)"></ngx-editor>
+            </div>
             <div class="error-message" *ngIf="isFieldInvalid('message')">
               El mensaje es requerido
             </div>
           </div>
 
+          <p class="submit-error" *ngIf="submitError">{{ submitError }}</p>
           <button type="submit" class="submit-btn" [disabled]="contactForm.invalid || isSubmitting">
             <span *ngIf="!isSubmitting">Enviar Mensaje</span>
             <span *ngIf="isSubmitting">Enviando...</span>

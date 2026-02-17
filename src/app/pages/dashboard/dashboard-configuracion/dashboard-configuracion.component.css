@@ -1,0 +1,555 @@
+/* Basado en code.html - cyber-card, primary, secciones */
+.config-page {
+  padding: var(--spacing-xl);
+  max-width: 100%;
+  margin: 0 auto;
+  color: var(--color-text-primary);
+  background-color: var(--background-dark);
+  min-height: 100%;
+}
+
+.config-header {
+  margin-bottom: 2.5rem;
+}
+
+.config-header-inner {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: var(--spacing-lg);
+}
+
+.config-header-titles {
+  flex: 1;
+  min-width: 0;
+}
+
+.config-title {
+  font-size: clamp(1.75rem, 4vw, 2.25rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--color-text-primary);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.config-title-accent {
+  color: var(--color-primary);
+}
+
+.config-subtitle {
+  color: var(--color-text-secondary);
+  font-size: 1rem;
+  margin: 0.5rem 0 0 0;
+}
+
+.config-btn-profile {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 35%, transparent);
+  border-radius: var(--border-radius-md);
+  font-weight: 700;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-decoration: none;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+
+.config-btn-profile:hover {
+  background: color-mix(in srgb, var(--color-primary) 25%, transparent);
+  box-shadow: 0 0 15px color-mix(in srgb, var(--color-primary) 30%, transparent);
+}
+
+.config-btn-icon {
+  font-size: 1.25rem;
+}
+
+/* Grid: 8 + 4 columnas en lg */
+.config-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-xl);
+}
+
+@media (min-width: 1024px) {
+  .config-grid {
+    grid-template-columns: 2fr 1fr;
+  }
+}
+
+.config-main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+}
+
+.config-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+}
+
+/* Cyber card - diseño code.html */
+.cyber-card {
+  background: color-mix(in srgb, var(--color-primary) 6%, var(--background-dark));
+  backdrop-filter: blur(10px);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 12%, transparent);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+}
+
+@media (min-width: 1024px) {
+  .cyber-card {
+    padding: 2rem;
+  }
+}
+
+.config-section-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+}
+
+.config-section-icon {
+  color: var(--color-primary);
+  font-size: 1.5rem;
+}
+
+.config-section-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.config-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.config-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.config-field-full {
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 767px) {
+  .config-form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.config-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+@media (max-width: 767px) {
+  .config-form-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.config-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.config-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-text-secondary);
+  margin-left: 0.25rem;
+}
+
+.config-input {
+  width: 100%;
+  padding: 0.875rem 1rem;
+  background: color-mix(in srgb, var(--color-text-primary) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-text-primary) 25%, transparent);
+  border-radius: var(--border-radius-md);
+  color: var(--color-text-primary);
+  font-size: 1rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.config-input::placeholder {
+  color: var(--color-text-secondary);
+}
+
+.config-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-primary) 25%, transparent);
+}
+
+.config-input-wrap {
+  position: relative;
+}
+
+.config-input-readonly .config-input {
+  background: color-mix(in srgb, var(--color-text-primary) 4%, transparent);
+  color: var(--color-text-secondary);
+  cursor: not-allowed;
+  font-style: italic;
+}
+
+.config-input-icon {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-text-secondary);
+  font-size: 1.25rem;
+  pointer-events: none;
+}
+
+.config-section-footer {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid color-mix(in srgb, var(--color-text-primary) 15%, transparent);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.config-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.375rem 0.75rem;
+  background: var(--color-primary-light);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 15%, transparent);
+  border-radius: var(--border-radius-md);
+}
+
+.config-badge-icon {
+  color: var(--color-primary);
+  font-size: 0.875rem;
+}
+
+.config-badge-text {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-primary);
+  opacity: 0.9;
+}
+
+.config-btn-primary {
+  padding: 0.75rem 2rem;
+  background: var(--color-primary);
+  color: var(--color-primary-contrast, #0a0f0e);
+  border: none;
+  border-radius: var(--border-radius-md);
+  font-weight: 800;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+
+.config-btn-primary:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--color-primary) 90%, white);
+  box-shadow: 0 0 20px color-mix(in srgb, var(--color-primary) 40%, transparent);
+}
+
+.config-btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.config-btn-outline {
+  padding: 0.75rem 2rem;
+  background: transparent;
+  color: var(--color-primary);
+  border: 2px solid var(--color-primary);
+  border-radius: var(--border-radius-md);
+  font-weight: 800;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.config-btn-outline:hover:not(:disabled) {
+  background: var(--color-primary-light);
+}
+
+.config-btn-outline:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.config-password-actions {
+  padding-top: 0.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  justify-content: space-around;
+}
+
+.config-btn-link {
+  background: none;
+  border: none;
+  padding: 0.5rem 0;
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  transition: color 0.2s;
+}
+
+.config-btn-link:hover {
+  color: var(--color-primary);
+}
+
+.config-field-error {
+  font-size: 0.8125rem;
+  color: #f87171;
+  margin: -0.5rem 0 0 0;
+}
+
+.config-notif-error {
+  margin: 0.5rem 0 0 0;
+}
+
+.config-danger-zone {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid color-mix(in srgb, var(--color-text-primary) 15%, transparent);
+}
+
+.config-btn-danger {
+  padding: 0.5rem 1rem;
+  background: transparent;
+  color: #f87171;
+  border: 1px solid color-mix(in srgb, #ef4444 40%, transparent);
+  border-radius: var(--border-radius-md);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  margin: auto;
+  display: block;
+}
+
+.config-danger-zone p {
+  margin: 0;
+  color: var(--color-text-secondary);
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.config-btn-danger:hover {
+  background: color-mix(in srgb, #ef4444 15%, transparent);
+  color: #fca5a5;
+}
+
+/* Notificaciones - switch */
+.config-notif {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.config-notif-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.config-notif-label {
+  font-size: 0.875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--color-text-primary);
+}
+
+.config-switch {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.config-switch input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.config-switch-slider {
+  position: relative;
+  display: block;
+  width: 3rem;
+  height: 1.5rem;
+  background: color-mix(in srgb, var(--color-text-primary) 20%, transparent);
+  border-radius: 9999px;
+  transition: background 0.2s;
+}
+
+.config-switch-slider::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 1.25rem;
+  height: 1.25rem;
+  background: var(--color-text-primary);
+  border-radius: 50%;
+  transition: transform 0.2s;
+}
+
+.config-switch input:checked+.config-switch-slider {
+  background: var(--color-primary);
+}
+
+.config-switch input:checked+.config-switch-slider::after {
+  transform: translateX(1.5rem);
+}
+
+.config-notif-info {
+  padding: 1rem;
+  background: color-mix(in srgb, var(--color-text-primary) 8%, transparent);
+  border-radius: var(--border-radius-md);
+  border-left: 2px solid var(--color-primary);
+}
+
+.config-notif-info p {
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+/* Help card */
+.config-help-card {
+  background: linear-gradient(135deg, var(--color-primary-light) 0%, transparent 100%);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 25%, transparent);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.config-help-icon {
+  position: absolute;
+  right: -1rem;
+  bottom: -1rem;
+  font-size: 5rem;
+  color: var(--color-primary);
+  opacity: 0.12;
+}
+
+.config-help-title {
+  font-size: 1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--color-text-primary);
+  margin: 0 0 0.5rem 0;
+}
+
+.config-help-text {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  margin: 0 0 1rem 0;
+  line-height: 1.4;
+}
+
+.config-help-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: text-decoration 0.2s;
+}
+
+.config-help-link:hover {
+  text-decoration: underline;
+}
+
+.config-help-arrow {
+  font-size: 0.875rem;
+}
+
+.config-error,
+.config-muted {
+  margin: 0;
+  padding: 0.5rem 0;
+}
+
+.config-error {
+  color: #f87171;
+}
+
+.config-muted {
+  color: var(--color-text-secondary);
+}
+
+/* Password Toggle Styles */
+.config-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.config-input-wrap .config-input {
+  width: 100%;
+}
+
+.config-password-toggle {
+  position: absolute;
+  right: 0.75rem;
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  font-size: 1rem;
+}
+
+.config-password-toggle:hover {
+  color: var(--color-primary);
+}
