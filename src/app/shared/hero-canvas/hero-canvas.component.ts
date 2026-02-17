@@ -126,9 +126,10 @@ export class HeroCanvasComponent implements AfterViewInit, OnDestroy {
       };
     } else {
       return {
-        background: 'rgb(70, 70, 70)',
-        darkColor: { r: 255, g: 255, b: 255 },  // Blanco
-        aquaColor: { r: 0, g: 255, b: 195 }     // Verde aqua (mismo)
+        // Tema claro: base blanca/gris suave, acento verde
+        background: 'rgb(218, 222, 228)', // #DADEE4
+        darkColor: { r: 218, g: 222, b: 228 },
+        aquaColor: { r: 0, g: 184, b: 148 }
       };
     }
   }
@@ -399,7 +400,7 @@ export class HeroCanvasComponent implements AfterViewInit, OnDestroy {
       gradient.addColorStop(0, `rgba(${r}, ${g}, ${b}, ${innerOpacity})`);
       gradient.addColorStop(0.5, `rgba(${Math.floor(r * 0.7)}, ${Math.floor(g * 0.7)}, ${Math.floor(b * 0.7)}, ${midOpacity})`);
       gradient.addColorStop(0.8, `rgba(${Math.floor(r * 0.4)}, ${Math.floor(g * 0.4)}, ${Math.floor(b * 0.4)}, ${outerOpacity})`);
-      gradient.addColorStop(1, 'rgba(15, 15, 15, 0)');
+      gradient.addColorStop(1, `rgba(${darkColor.r}, ${darkColor.g}, ${darkColor.b}, 0)`);
 
       this.ctx.fillStyle = gradient;
       this.ctx.fillRect(0, 0, this.canvasWidth, this.canvasHeight);

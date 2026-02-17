@@ -386,3 +386,81 @@
   0% { transform: translateX(0); }
   100% { transform: translateX(-50%); }
 }
+
+/* Tema claro del hero: mantener identidad verde con mejor contraste */
+:host-context([data-theme="light"]) .hero-home {
+  color: rgb(22, 34, 36);
+}
+
+:host-context([data-theme="light"]) .hero-home-bg {
+  opacity: 0.18;
+}
+
+:host-context([data-theme="light"]) .hero-home-terminal {
+  opacity: 0.5;
+}
+
+:host-context([data-theme="light"]) .hero-home-terminal,
+:host-context([data-theme="light"]) .hero-home-terminal-code {
+  background: rgba(0, 184, 148, 0.08);
+  border-color: rgba(0, 184, 148, 0.4);
+  color: rgba(14, 40, 36, 0.78);
+}
+
+:host-context([data-theme="light"]) .hero-home-title-outline {
+  -webkit-text-stroke: 2px rgba(0, 184, 148, 0.72);
+}
+
+:host-context([data-theme="light"]) .hero-home-subtitle {
+  color: rgb(22, 34, 36);
+  opacity: 1;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+:host-context([data-theme="light"]) .hero-home-badge {
+  background: rgba(0, 184, 148, 0.14);
+  border-color: rgba(0, 184, 148, 0.45);
+  box-shadow: 0 12px 28px rgba(0, 184, 148, 0.14);
+}
+
+:host-context([data-theme="light"]) .hero-home-badge p {
+  color: rgb(18, 39, 36);
+}
+
+:host-context([data-theme="light"]) .hero-home-btn-primary {
+  color: rgb(7, 33, 27);
+}
+
+:host-context([data-theme="light"]) .hero-home-btn-outline {
+  border-color: rgba(0, 0, 0, 0.2);
+  color: rgb(18, 39, 36);
+  background: rgba(0, 184, 148, 0.08);
+}
+
+:host-context([data-theme="light"]) .hero-home-btn-outline:hover {
+  background: rgba(0, 184, 148, 0.16);
+}
+
+:host-context([data-theme="light"]) .hero-home-tech-card {
+  background: rgba(0, 184, 148, 0.14);
+  border-color: rgba(0, 184, 148, 0.35);
+  box-shadow: 0 10px 22px rgba(0, 184, 148, 0.08);
+}
+
+:host-context([data-theme="light"]) .hero-home-tech-card h4 {
+  color: rgb(18, 39, 36);
+}
+
+:host-context([data-theme="light"]) .hero-home-tech-card p {
+  color: rgba(18, 39, 36, 0.82);
+}
+
+:host-context([data-theme="light"]) .hero-home-ticker {
+  background: rgba(0, 184, 148, 0.08);
+  border-top-color: rgba(0, 184, 148, 0.28);
+  border-bottom-color: rgba(0, 184, 148, 0.28);
+}
+
+:host-context([data-theme="light"]) .hero-home-ticker-track span:not(.material-symbols-outlined) {
+  color: rgba(20, 44, 40, 0.78);
+}

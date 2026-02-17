@@ -113,10 +113,19 @@
 }
 
 .social-icon {
-  font-size: 1.2rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   width: 24px;
   height: 24px;
-  object-fit: contain;
+  flex-shrink: 0;
+  font-size: 1.1rem;
+  color: var(--text-primary);
+  transition: color 0.3s ease;
+}
+
+.social-link:hover .social-icon {
+  color: var(--text-primary);
 }
 
 /* Contact Form */
