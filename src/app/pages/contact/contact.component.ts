@@ -1,12 +1,14 @@
-import { Component, inject, HostListener, OnDestroy } from '@angular/core';
+import { Component, inject, HostListener, OnDestroy, effect } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { ContactService } from '../../core/services/contact.service';
 import { AnalyticsEventsService } from '../../core/services/analytics/analytics-events.service';
 import { NgxEditorComponent, NgxEditorMenuComponent, Editor, TOOLBAR_FULL } from 'ngx-editor';
 import { pastePreserveNewlinesPlugin } from '../../core/plugins/paste-preserve-newlines.plugin';
 import { FeedbackModalComponent } from '../../core/components/feedback-modal/feedback-modal.component';
+import { AuthStateService } from '../../core/services/auth-state.service';
 
 @Component({
   selector: 'app-contact',
@@ -19,6 +21,7 @@ export class ContactComponent implements OnDestroy {
   private fb = inject(FormBuilder);
   private contactService = inject(ContactService);
   private analyticsEvents = inject(AnalyticsEventsService);
+  private authStateService = inject(AuthStateService);
   private router = inject(Router);
 
   contactForm: FormGroup;
@@ -37,6 +40,10 @@ export class ContactComponent implements OnDestroy {
   editor: Editor = new Editor({ plugins: [pastePreserveNewlinesPlugin()] });
   editorToolbar = TOOLBAR_FULL;
 
+  private authState = toSignal(this.authStateService.authState, {
+    initialValue: { isAuthenticated: false, user: null, isLoading: true }
+  });
+
   constructor() {
     this.contactForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(2)]],
@@ -44,6 +51,28 @@ export class ContactComponent implements OnDestroy {
       subject: [''],
       message: ['', [Validators.required, Validators.minLength(10)]],
     });
+
+    effect(() => {
+      const state = this.authState();
+      if (!state?.isAuthenticated || !state.user) return;
+      this.prefillContactIdentity(state.user.firstName, state.user.lastName, state.user.email);
+    });
+  }
+
+  private prefillContactIdentity(firstName: string, lastName: string, email: string): void {
+    const fullName = `${firstName || ''} ${lastName || ''}`.trim();
+    const nameControl = this.contactForm.get('name');
+    const emailControl = this.contactForm.get('email');
+
+    const currentName = String(nameControl?.value ?? '').trim();
+    if (!currentName && fullName) {
+      nameControl?.patchValue(fullName, { emitEvent: false });
+    }
+
+    const currentEmail = String(emailControl?.value ?? '').trim();
+    if (!currentEmail && email) {
+      emailControl?.patchValue(email, { emitEvent: false });
+    }
   }
 
   copyEmail() {
@@ -113,6 +142,10 @@ export class ContactComponent implements OnDestroy {
         next: () => {
           this.formSubmitted = true;
           this.contactForm.reset();
+          const currentUser = this.authState()?.user;
+          if (currentUser) {
+            this.prefillContactIdentity(currentUser.firstName, currentUser.lastName, currentUser.email);
+          }
           this.isSubmitting = false;
 
           // Mostrar modal de éxito

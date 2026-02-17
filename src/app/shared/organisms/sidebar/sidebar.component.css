@@ -78,7 +78,7 @@
 }
 
 .sidebar-brand-title {
-  font-size: var(--font-size-h2);
+  font-size: 20px;
   font-weight: var(--font-weight-bold);
   color: var(--text-primary);
   letter-spacing: var(--letter-spacing-tight);

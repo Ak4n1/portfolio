@@ -261,27 +261,65 @@
   color: var(--color-primary);
 }
 
+.activity-sort {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.2rem;
+  border: 1px solid color-mix(in srgb, var(--color-primary) 24%, transparent);
+  border-radius: var(--border-radius-md);
+  background: color-mix(in srgb, var(--color-primary) 7%, transparent);
+}
+
+.activity-sort-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+  font-family: 'Fira Code', monospace;
+  padding: 0 0.3rem;
+}
+
+.activity-sort-btn {
+  border: 1px solid transparent;
+  border-radius: var(--border-radius-sm);
+  background: transparent;
+  color: var(--color-text-secondary);
+  min-height: 1.7rem;
+  padding: 0.2rem 0.5rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+}
+
+.activity-sort-btn:hover {
+  color: var(--color-text-primary);
+  border-color: color-mix(in srgb, var(--color-primary) 30%, transparent);
+}
+
+.activity-sort-btn.active {
+  color: var(--color-primary);
+  border-color: color-mix(in srgb, var(--color-primary) 40%, transparent);
+  background: color-mix(in srgb, var(--color-primary) 12%, transparent);
+}
+
 .news-container,
 .notif-list {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
   min-width: 0;
+  width: 100%;
 }
 
 .news-container {
-  max-height: 60vh;
-  overflow-y: auto;
-  padding-right: 0.25rem;
-}
-
-.news-container::-webkit-scrollbar {
-  width: 6px;
-}
-
-.news-container::-webkit-scrollbar-thumb {
-  border-radius: 4px;
-  background: color-mix(in srgb, var(--color-primary) 35%, transparent);
+  height: 400px;
+  max-height: 400px;
+  overflow: visible;
+  padding: 0;
 }
 
 .news-card,
@@ -291,17 +329,23 @@
   border-radius: 0.75rem;
   border: 1px solid color-mix(in srgb, var(--color-primary) 12%, transparent);
   background: color-mix(in srgb, var(--color-primary) 6%, var(--background-dark));
+  box-shadow: var(--shadow-card);
 }
 
 .news-card,
 .news-empty,
 .notif-card-mini {
   padding: 1rem 1.1rem;
+  width: 100%;
 }
 
 .news-card {
-  min-width: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
+  box-shadow: var(--shadow-card);
   transition: border-color 0.2s, background 0.2s;
   border-left: 4px solid var(--color-primary);
   padding-left: 30px;
@@ -340,10 +384,23 @@
   font-size: 0.92rem;
   line-height: 1.5;
   color: var(--color-text-secondary);
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 0.25rem;
   overflow-wrap: anywhere;
   word-break: break-word;
   min-width: 0;
   max-width: 100%;
+}
+
+.news-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.news-content::-webkit-scrollbar-thumb {
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--color-primary) 35%, transparent);
 }
 
 .news-content :where(p, ul, ol, blockquote, pre) {
@@ -422,6 +479,13 @@
   color: var(--color-text-secondary);
 }
 
+.news-section .news-empty {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .notif-meta {
   display: flex;
   align-items: center;
@@ -465,7 +529,7 @@
   overflow: hidden;
   border: 1px solid color-mix(in srgb, var(--color-primary) 22%, transparent);
   background: #0c1210;
-  box-shadow: inset 0 0 20px rgba(0, 255, 195, 0.08);
+  box-shadow: var(--shadow-card), inset 0 0 20px rgba(0, 255, 195, 0.08);
 }
 
 .console-header {
@@ -747,6 +811,11 @@
 
   .console-window {
     height: 340px;
+  }
+
+  .news-container {
+    height: 340px;
+    max-height: 340px;
   }
 
   .news-pagination {

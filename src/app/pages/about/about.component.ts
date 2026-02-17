@@ -351,18 +351,16 @@ export class AboutComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnInit() {
-    // Suscribirse a cambios de tema para actualizar los iconos
     this.themeSubscription = this.themeService.currentTheme$.subscribe(() => {
-      // Solo una detección de cambios, sin delays adicionales
       this.cdr.detectChanges();
     });
   }
 
   ngAfterViewInit() {
-    // Inicializar AOS (Animate On Scroll) con configuración optimizada para mejor performance
+   
     setTimeout(() => {
       AOS.init({
-        duration: 500,        // Reducido aún más para mejor performance
+        duration: 500,        
         easing: 'ease-out',
         once: true,
         offset: 50,

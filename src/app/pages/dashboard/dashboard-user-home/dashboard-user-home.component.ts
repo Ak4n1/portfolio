@@ -23,7 +23,7 @@ import { Subscription } from 'rxjs';
 })
 export class DashboardUserHomeComponent implements OnInit, OnDestroy {
   private readonly ACTIVITY_LOGS_LIMIT = 20;
-  private readonly NEWS_PAGE_SIZE = 2;
+  private readonly NEWS_PAGE_SIZE = 1;
 
   private authStateService = inject(AuthStateService);
   private wsService = inject(WebSocketService);
@@ -68,6 +68,16 @@ export class DashboardUserHomeComponent implements OnInit, OnDestroy {
   notificationsError = signal<string | null>(null);
 
   activityLogs = signal<ActivityLogItem[]>([]);
+  projectTitlesById = signal<Record<number, string>>({});
+  logSortOrder = signal<'asc' | 'desc'>('desc');
+  sortedActivityLogs = computed(() => {
+    const order = this.logSortOrder();
+    return [...this.activityLogs()].sort((a, b) =>
+      order === 'asc'
+        ? a.timestamp.getTime() - b.timestamp.getTime()
+        : b.timestamp.getTime() - a.timestamp.getTime()
+    );
+  });
   loadingLike: { [key: number]: boolean } = {};
 
   readonly getRelativeTime = getRelativeTime;
@@ -99,6 +109,7 @@ export class DashboardUserHomeComponent implements OnInit, OnDestroy {
           .sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime())
           .slice(-this.ACTIVITY_LOGS_LIMIT);
         this.activityLogs.set(merged);
+        this.syncProjectTitlesForLogs(merged);
       },
       error: () => {
         // No bloquear home por error en historial de actividad
@@ -111,10 +122,20 @@ export class DashboardUserHomeComponent implements OnInit, OnDestroy {
       .map((log) => {
         const timestamp = new Date(log.createdAt);
         if (Number.isNaN(timestamp.getTime())) return null;
+        const relatedEntityId =
+          typeof log.relatedEntityId === 'number'
+            ? log.relatedEntityId
+            : null;
+        const relatedEntityType =
+          typeof log.relatedEntityType === 'string' && log.relatedEntityType.trim()
+            ? log.relatedEntityType.trim().toUpperCase()
+            : null;
         return {
           timestamp,
           type: (log.type ?? 'LOG').toUpperCase(),
           message: log.message ?? '',
+          relatedEntityType,
+          relatedEntityId,
         } as ActivityLogItem;
       })
       .filter((item): item is ActivityLogItem => item !== null)
@@ -211,7 +232,7 @@ export class DashboardUserHomeComponent implements OnInit, OnDestroy {
             this.handleNewsBroadcasted(msg as { title?: string; message?: string; data?: Record<string, unknown> });
             break;
           case WebSocketMessageType.ACTIVITY_LOGGED:
-            this.addLog(msg.title || 'LOG', msg.message || '');
+            this.addLog(msg.title || 'LOG', msg.message || '', msg.data);
             break;
           case WebSocketMessageType.NOTIFICATION_COUNT_UPDATED:
             this.loadUserNotifications();
@@ -309,7 +330,16 @@ export class DashboardUserHomeComponent implements OnInit, OnDestroy {
     });
   }
 
-  addLog(type: string, message: string): void {
+  addLog(type: string, message: string, data?: Record<string, unknown>): void {
+    const relatedEntityType =
+      typeof data?.['relatedEntityType'] === 'string' && data['relatedEntityType'].trim()
+        ? data['relatedEntityType'].trim().toUpperCase()
+        : null;
+    const relatedEntityId =
+      typeof data?.['relatedEntityId'] === 'number'
+        ? data['relatedEntityId']
+        : null;
+
     this.activityLogs.update((prev) => {
       const newLogs = [
         ...prev,
@@ -317,15 +347,32 @@ export class DashboardUserHomeComponent implements OnInit, OnDestroy {
           timestamp: new Date(),
           type,
           message,
+          relatedEntityType,
+          relatedEntityId,
         },
       ];
       return newLogs.slice(-this.ACTIVITY_LOGS_LIMIT);
     });
 
+    if (relatedEntityType === 'PROJECT' && typeof relatedEntityId === 'number') {
+      this.cacheProjectTitleFromMessage(relatedEntityId, message);
+      this.syncProjectTitlesForLogs(this.activityLogs());
+    }
+
+    this.scrollConsoleToActiveEdge();
+  }
+
+  setLogSortOrder(order: 'asc' | 'desc'): void {
+    if (this.logSortOrder() === order) return;
+    this.logSortOrder.set(order);
+    this.scrollConsoleToActiveEdge();
+  }
+
+  private scrollConsoleToActiveEdge(): void {
     setTimeout(() => {
-      if (this.consoleBody) {
-        this.consoleBody.nativeElement.scrollTop = this.consoleBody.nativeElement.scrollHeight;
-      }
+      if (!this.consoleBody) return;
+      const el = this.consoleBody.nativeElement as HTMLElement;
+      el.scrollTop = this.logSortOrder() === 'asc' ? el.scrollHeight : 0;
     }, 100);
   }
 
@@ -345,6 +392,95 @@ export class DashboardUserHomeComponent implements OnInit, OnDestroy {
 
   getNewsPriorityClass(news: NewsBroadcast): string {
     return `priority-${this.normalizePriority(news.priority).toLowerCase()}`;
+  }
+
+  formatActivityMessage(log: ActivityLogItem): string {
+    const personalized = this.personalizeActivityMessage(log.message ?? '');
+    if (log.relatedEntityType !== 'PROJECT' || typeof log.relatedEntityId !== 'number') {
+      return personalized;
+    }
+
+    const currentTitle = this.projectTitlesById()[log.relatedEntityId];
+    if (!currentTitle) {
+      return personalized;
+    }
+
+    return personalized.replace(/'[^']*'/, `'${currentTitle}'`);
+  }
+
+  private personalizeActivityMessage(message: string): string {
+    const raw = (message ?? '').trim();
+    if (!raw) return '';
+
+    const firstName = (this.user()?.firstName ?? '').trim();
+    const lastName = (this.user()?.lastName ?? '').trim();
+    const fullName = `${firstName} ${lastName}`.trim();
+
+    if (!fullName) {
+      return raw;
+    }
+
+    const escapedName = this.escapeRegExp(fullName);
+    const likeAdded = new RegExp(`^${escapedName}\\s+dio like a\\s+(.+)$`, 'i');
+    const likeRemoved = new RegExp(`^${escapedName}\\s+quit[oó] like de\\s+(.+)$`, 'i');
+    const resetRequested = new RegExp(`^${escapedName}\\s+solicit[oó]\\s+restablecer tu contrase[nñ]a por email\\.?$`, 'i');
+
+    const likeAddedMatch = raw.match(likeAdded);
+    if (likeAddedMatch?.[1]) {
+      return `Le diste like a ${likeAddedMatch[1]}`;
+    }
+
+    const likeRemovedMatch = raw.match(likeRemoved);
+    if (likeRemovedMatch?.[1]) {
+      return `Quitaste tu like de ${likeRemovedMatch[1]}`;
+    }
+
+    if (resetRequested.test(raw)) {
+      return 'Solicitaste restablecer tu contrasena por email.';
+    }
+
+    return raw;
+  }
+
+  private syncProjectTitlesForLogs(logs: ActivityLogItem[]): void {
+    const toFetch = new Set<number>();
+    const currentCache = this.projectTitlesById();
+
+    logs.forEach((log) => {
+      if (log.relatedEntityType !== 'PROJECT' || typeof log.relatedEntityId !== 'number') {
+        return;
+      }
+
+      this.cacheProjectTitleFromMessage(log.relatedEntityId, log.message);
+      if (!currentCache[log.relatedEntityId]) {
+        toFetch.add(log.relatedEntityId);
+      }
+    });
+
+    toFetch.forEach((projectId) => {
+      this.projectService.getById(projectId).subscribe({
+        next: (project) => {
+          const title = (project?.title ?? '').trim();
+          if (!title) return;
+          this.projectTitlesById.update((prev) => ({ ...prev, [projectId]: title }));
+        },
+        error: () => {
+          // Ignore stale/removed projects; fallback keeps original log text.
+        }
+      });
+    });
+  }
+
+  private cacheProjectTitleFromMessage(projectId: number, message: string): void {
+    const match = (message ?? '').match(/'([^']+)'/);
+    const title = match?.[1]?.trim();
+    if (!title) return;
+    this.projectTitlesById.update((prev) => {
+      if (prev[projectId] === title) {
+        return prev;
+      }
+      return { ...prev, [projectId]: title };
+    });
   }
 
   previousNewsPage(): void {
@@ -377,10 +513,16 @@ export class DashboardUserHomeComponent implements OnInit, OnDestroy {
     this.addLog('IO_REQUEST', 'CV download initiated by user...');
     window.open('/assets/cv_juan_encabo.pdf', '_blank');
   }
+
+  private escapeRegExp(value: string): string {
+    return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  }
 }
 
 interface ActivityLogItem {
   timestamp: Date;
   type: string;
   message: string;
+  relatedEntityType?: string | null;
+  relatedEntityId?: number | null;
 }

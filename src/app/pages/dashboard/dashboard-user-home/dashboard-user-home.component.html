@@ -12,7 +12,7 @@
                 <button type="button" class="btn-primary" (click)="downloadCV()">
                     <i class="fas fa-file-download"></i> Descargar CV
                 </button>
-                <button type="button" class="btn-secondary" routerLink="/dashboard/proyectos">
+                <button type="button" class="btn-secondary" routerLink="/projects">
                     <i class="fas fa-code"></i> Ver Proyectos
                 </button>
                 <button type="button" class="btn-secondary" routerLink="/dashboard/notificaciones">
@@ -59,7 +59,7 @@
                     <p>{{ newsError() }}</p>
                 </div>
                 } @else {
-                @for (news of newsItems(); track news.id) {
+                @for (news of pagedNewsItems(); track news.id) {
                 <article class="news-card" [class]="getNewsPriorityClass(news)">
                     <div class="news-header">
                         <span class="news-date">{{ news.createdAt | date:'shortDate' }}</span>
@@ -74,11 +74,38 @@
                 }
                 }
             </div>
+            @if (!newsLoading() && !newsError() && newsItems().length > 0) {
+            <div class="news-pagination">
+                <button type="button" class="news-page-btn" (click)="previousNewsPage()" [disabled]="newsPage() === 0">
+                    <i class="fas fa-chevron-left"></i>
+                    Anterior
+                </button>
+                <div class="news-page-info">
+                    Pagina {{ newsPage() + 1 }} de {{ newsTotalPages() }}
+                </div>
+                <button type="button" class="news-page-btn" (click)="nextNewsPage()"
+                    [disabled]="newsPage() >= newsTotalPages() - 1">
+                    Siguiente
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+            }
         </section>
 
         <section class="activity-section">
             <div class="section-header">
                 <h2 class="section-title"><i class="fas fa-terminal"></i> Terminal de Actividad</h2>
+                <div class="activity-sort">
+                    <span class="activity-sort-label">Fecha</span>
+                    <button type="button" class="activity-sort-btn" [class.active]="logSortOrder() === 'asc'"
+                        (click)="setLogSortOrder('asc')" aria-label="Ordenar por fecha ascendente">
+                        Asc
+                    </button>
+                    <button type="button" class="activity-sort-btn" [class.active]="logSortOrder() === 'desc'"
+                        (click)="setLogSortOrder('desc')" aria-label="Ordenar por fecha descendente">
+                        Desc
+                    </button>
+                </div>
             </div>
             <div class="console-window">
                 <div class="console-header">
@@ -90,11 +117,11 @@
                     <span class="console-title">Live Activity Log</span>
                 </div>
                 <div class="console-body" #consoleBody>
-                    @for (log of activityLogs(); track $index) {
+                    @for (log of sortedActivityLogs(); track $index) {
                     <div class="console-line" [class]="log.type.toLowerCase()">
                         <span class="timestamp">[{{ log.timestamp | date:'HH:mm:ss' }}]</span>
                         <span class="tag">{{ log.type }}</span>
-                        <span class="message">{{ log.message }}</span>
+                        <span class="message">{{ formatActivityMessage(log) }}</span>
                     </div>
                     }
                 </div>

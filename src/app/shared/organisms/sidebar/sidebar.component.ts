@@ -76,6 +76,14 @@ export class SidebarComponent implements OnInit {
         { label: 'Dashboard', icon: 'fas fa-home', route: '/dashboard/user' },
         { label: 'Notificaciones', icon: 'fas fa-bell', route: '/dashboard/notificaciones' }
       ]
+    },
+    {
+      title: 'Sitio',
+      items: [
+        { label: 'Proyectos', icon: 'fas fa-code', route: '/projects' },
+        { label: 'Sobre mi', icon: 'fas fa-user', route: '/about' },
+        { label: 'Contacto', icon: 'fas fa-envelope', route: '/contact' }
+      ]
     }
   ];
 

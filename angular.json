@@ -63,7 +63,8 @@
               "buildTarget": "portafolio:build:production"
             },
             "development": {
-              "buildTarget": "portafolio:build:development"
+              "buildTarget": "portafolio:build:development",
+              "prebundle": false
             }
           },
           "defaultConfiguration": "development"
