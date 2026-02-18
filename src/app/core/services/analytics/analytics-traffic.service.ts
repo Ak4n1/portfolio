@@ -7,8 +7,9 @@ import {
   TrafficPeriod,
   DimensionCount
 } from './models/analytics-traffic.interface';
+import { environment } from '../../../../environments/environment';
 
-const API_BASE = 'http://localhost:8080';
+const API_BASE = environment.apiBaseUrl;
 
 @Injectable({ providedIn: 'root' })
 export class AnalyticsTrafficService {

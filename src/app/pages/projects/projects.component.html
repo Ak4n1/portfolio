@@ -155,15 +155,10 @@
   </div>
 </section>
 
-<!-- Image Modal -->
-<div class="image-modal" *ngIf="isModalOpen" (click)="onModalClick($event)">
-  <div class="modal-content">
-    <button class="modal-close" (click)="closeModal()">×</button>
-    <div class="modal-header" *ngIf="selectedProject">
-      <h3>{{ selectedProject.title }}</h3>
-    </div>
-    <div class="modal-image-container">
-      <img [src]="selectedImage" [alt]="selectedProject?.title" class="modal-image">
-    </div>
-  </div>
-</div>
+<app-image-lightbox
+  [visible]="isModalOpen"
+  [images]="lightboxImages"
+  [title]="selectedProject?.title || ''"
+  [startIndex]="lightboxStartIndex"
+  (closed)="closeModal()"
+  (indexChanged)="onLightboxIndexChanged($event)" />

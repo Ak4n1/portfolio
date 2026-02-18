@@ -15,18 +15,19 @@ import { Project } from '../../core/models/project.model';
 import { WebSocketService } from '../../core/services/websocket.service';
 import { WebSocketMessageType } from '../../core/models/websocket-message.model';
 import { ConfirmModalComponent } from '../../core/components/confirm-modal/confirm-modal.component';
+import { ImageLightboxComponent } from '../../core/components/image-lightbox/image-lightbox.component';
 
 @Component({
   selector: 'app-project-detail',
   standalone: true,
-  imports: [CommonModule, FontAwesomeModule, RouterLink, ConfirmModalComponent],
+  imports: [CommonModule, FontAwesomeModule, RouterLink, ConfirmModalComponent, ImageLightboxComponent],
   templateUrl: './project-detail.component.html',
   styleUrl: './project-detail.component.css',
   animations: [
     trigger('fadeInUp', [
       transition(':enter', [
         style({ opacity: 0, transform: 'translateY(30px)' }),
-        animate('0.6s ease-out', style({ opacity: 1, transform: 'translateY(0)' }))
+        animate('0.6s ease-out', style({ opacity: 1, transform: 'none' }))
       ])
     ])
   ]
@@ -68,7 +69,8 @@ export class ProjectDetailComponent implements OnInit, OnDestroy, AfterViewCheck
   carouselInterval: ReturnType<typeof setInterval> | null = null;
 
   isModalOpen = false;
-  selectedImage = '';
+  lightboxImages: string[] = [];
+  lightboxStartIndex = 0;
 
   faGamepad = faGamepad;
   faPlug = faPlug;
@@ -319,38 +321,22 @@ export class ProjectDetailComponent implements OnInit, OnDestroy, AfterViewCheck
   // Modal methods
   openModal() {
     if (this.project && this.project.images) {
-      this.selectedImage = this.getCurrentImage();
+      this.lightboxImages = this.project.images.map((image) => this.getImageUrl(image));
+      this.lightboxStartIndex = this.currentImageIndex;
       this.isModalOpen = true;
-      document.body.style.overflow = 'hidden';
       this.pauseCarousel();
     }
   }
 
   closeModal() {
     this.isModalOpen = false;
-    this.selectedImage = '';
-    document.body.style.overflow = 'auto';
+    this.lightboxImages = [];
+    this.lightboxStartIndex = 0;
     this.resumeCarousel();
   }
 
-  onModalClick(event: Event) {
-    if (event.target === event.currentTarget) {
-      this.closeModal();
-    }
-  }
-
-  nextImageModal() {
-    if (this.project && this.project.images) {
-      this.nextImage();
-      this.selectedImage = this.getCurrentImage();
-    }
-  }
-
-  prevImageModal() {
-    if (this.project && this.project.images) {
-      this.prevImage();
-      this.selectedImage = this.getCurrentImage();
-    }
+  onLightboxIndexChanged(index: number): void {
+    this.currentImageIndex = index;
   }
 
   ngAfterViewChecked(): void {

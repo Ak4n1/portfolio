@@ -8,27 +8,71 @@
 
 .auth-container {
   width: 100%;
-  max-width: 420px;
-  background: var(--background-card);
-  border: 1px solid var(--border-color);
-  border-radius: 12px;
+  max-width: 520px;
+  background: color-mix(in srgb, var(--color-primary) 6%, var(--background-dark));
+  border: 1px solid color-mix(in srgb, var(--color-primary) 18%, transparent);
+  border-radius: 14px;
   padding: 2rem;
+  box-shadow: 0 5px 10px rgba(0, 255, 195, 0.1);
+}
+
+.auth-kicker {
+  margin: 0 0 0.6rem;
+  text-align: center;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  font-weight: 800;
+  color: var(--primary-color);
 }
 
 .auth-title {
   color: var(--title-primary);
-  font-size: 1.5rem;
+  font-size: 2rem;
+  margin-bottom: 0.75rem;
+  text-align: center;
+}
+
+.auth-message,
+.auth-success,
+.auth-error {
   margin-bottom: 1rem;
   text-align: center;
 }
 
-.auth-message, .auth-success, .auth-error {
-  margin-bottom: 1rem;
-  text-align: center;
+.auth-success {
+  color: var(--primary-color);
 }
 
-.auth-success { color: var(--primary-color); }
-.auth-error { color: var(--error, #e74c3c); }
+.auth-error {
+  color: var(--error, #e74c3c);
+}
+
+.auth-info-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.45rem;
+  margin: 1.2rem 0 1.1rem;
+}
+
+.auth-info-item {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  padding: 0.55rem 0.7rem;
+  border-radius: 8px;
+  border: 1px solid color-mix(in srgb, var(--color-primary) 12%, transparent);
+  background: color-mix(in srgb, var(--color-primary) 5%, transparent);
+}
+
+.auth-info-item i {
+  color: var(--primary-color);
+  margin-right: 0.45rem;
+}
+
+.auth-primary-action {
+  display: flex;
+  justify-content: center;
+  margin-top: 0.35rem;
+}
 
 .auth-actions {
   display: flex;
@@ -37,13 +81,13 @@
   margin-top: 1.25rem;
 }
 
-.btn-secondary, .btn-submit {
-  flex: 1;
-  min-width: 120px;
-  padding: 0.6rem 1rem;
+.btn-secondary,
+.btn-submit {
+  min-width: 160px;
+  padding: 0.7rem 1.1rem;
   border-radius: 8px;
   font-size: 0.95rem;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
   text-align: center;
   text-decoration: none;
@@ -51,6 +95,7 @@
 }
 
 .btn-secondary {
+  flex: 1;
   background: transparent;
   color: var(--text-secondary);
   border: 1px solid var(--border-color);
@@ -69,4 +114,27 @@
 
 .btn-submit:hover {
   filter: brightness(1.1);
+}
+
+@media (max-width: 640px) {
+  .auth-page {
+    padding: 1rem;
+  }
+
+  .auth-container {
+    padding: 1.25rem;
+  }
+
+  .auth-title {
+    font-size: 1.6rem;
+  }
+
+  .auth-actions {
+    flex-direction: column;
+  }
+
+  .btn-secondary,
+  .btn-submit {
+    width: 100%;
+  }
 }

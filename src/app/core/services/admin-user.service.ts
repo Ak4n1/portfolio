@@ -3,8 +3,9 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { UserSearchItem } from '../models/user-search-item.model';
 import { AdminUserListResponse } from '../models/admin-user-list-response.model';
+import { environment } from '../../../environments/environment';
 
-const API_BASE = 'http://localhost:8080';
+const API_BASE = environment.apiBaseUrl;
 const USERS_BASE = `${API_BASE}/api/admin/users`;
 const SEARCH_URL = `${USERS_BASE}/search`;
 

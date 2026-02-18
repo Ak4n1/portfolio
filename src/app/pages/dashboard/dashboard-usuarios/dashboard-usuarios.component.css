@@ -11,6 +11,7 @@
   min-height: 0;
   display: flex;
   flex-direction: column;
+  gap: var(--spacing-lg);
   padding: var(--spacing-xl);
   background-color: var(--background-dark);
   color: var(--color-text-primary);
@@ -207,69 +208,79 @@
   color: var(--color-primary);
 }
 
-/* ----- Table Card (estilo cyber-card) ----- */
+/* ----- Users Card/Grid (estilo cyber-card) ----- */
+.users-list-card,
 .table-card {
   flex: 1;
   min-height: 0;
-  overflow: hidden;
-  border-radius: 0.75rem;
-  border: 1px solid color-mix(in srgb, var(--color-primary) 12%, transparent);
-  background: color-mix(in srgb, var(--color-primary) 6%, var(--background-dark));
-  backdrop-filter: blur(10px);
+  overflow: visible;
+  border: none;
+  background: transparent;
+  backdrop-filter: none;
+  padding: 0;
 }
 
-.table-scroll {
-  overflow-x: auto;
-  overflow-y: auto;
-  max-height: 100%;
+.users-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+  gap: 1rem;
 }
 
 .usuarios-loading {
-  padding: 2.5rem;
+  padding: 1.5rem;
   text-align: center;
   color: var(--color-text-secondary);
 }
 
-.usuarios-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.875rem;
+.user-card {
+  border-radius: 0.75rem;
+  border: 1px solid color-mix(in srgb, var(--color-primary) 12%, transparent);
+  background: color-mix(in srgb, var(--color-primary) 6%, var(--background-dark));
+  box-shadow: 0 5px 10px rgba(0, 255, 195, 0.1);
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  min-width: 0;
+  transition: box-shadow 0.2s, transform 0.2s;
 }
 
-.usuarios-table th,
-.usuarios-table td {
-  padding: 0.875rem 1.25rem;
-  text-align: left;
-  border-bottom: 1px solid color-mix(in srgb, var(--color-primary) 12%, transparent);
+.user-card:hover {
+  box-shadow: var(--shadow-neon);
+  transform: translateY(-2px);
 }
 
-.usuarios-table thead tr {
-  background: color-mix(in srgb, var(--color-primary) 8%, transparent);
-  border-bottom: 1px solid color-mix(in srgb, var(--color-primary) 12%, transparent);
+.user-card-disabled {
+  opacity: 0.72;
 }
 
-.usuarios-table th {
-  font-size: 0.7rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--color-primary);
+.user-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--color-primary) 10%, transparent);
 }
 
-.usuarios-table th.th-actions {
-  text-align: center;
+.user-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-width: 0;
 }
 
-.usuarios-table tbody tr {
-  transition: background 0.15s;
+.user-card-footer {
+  display: flex;
+  justify-content: flex-end;
+  border-top: 1px solid color-mix(in srgb, var(--color-primary) 10%, transparent);
+  padding-top: 0.75rem;
 }
 
-.usuarios-table tbody tr:hover {
-  background: color-mix(in srgb, var(--color-primary) 6%, transparent);
-}
-
-.usuarios-table tbody tr.row-disabled {
-  opacity: 0.7;
+.user-badges-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
 }
 
 .user-cell {
@@ -302,11 +313,30 @@
   display: flex;
   flex-direction: column;
   gap: 0.1rem;
+  min-width: 0;
+}
+
+.user-name-row {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-width: 0;
 }
 
 .user-name {
   font-weight: 700;
   color: var(--color-text-primary);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.user-roles-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  margin-top: 0.2rem;
 }
 
 .user-id {
@@ -317,8 +347,11 @@
 }
 
 .email-cell {
+  margin: 0;
   color: var(--color-text-secondary);
-  font-style: italic;
+  font-style: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .date-cell {
@@ -367,6 +400,11 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.02em;
+}
+
+.badge-role-inline {
+  font-size: 0.62rem;
+  padding: 0.14rem 0.4rem;
 }
 
 .badge-role-admin {
@@ -495,21 +533,20 @@
 .empty-cell {
   text-align: center;
   color: var(--color-text-secondary);
-  padding: 2rem;
+  padding: 1rem;
 }
 
 /* ----- Pagination ----- */
 .pagination-bar {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   gap: 1rem;
-  margin-top: 1.25rem;
-  padding: 1rem 1.25rem;
-  border-radius: 0.75rem;
-  border: 1px solid color-mix(in srgb, var(--color-primary) 12%, transparent);
-  background: color-mix(in srgb, var(--color-primary) 6%, var(--background-dark));
+  margin-top: 0.25rem;
+  padding: 0.5rem 0;
+  border: none;
+  background: transparent;
 }
 
 .pagination-summary {
@@ -759,7 +796,13 @@
   color: var(--color-primary);
 }
 
-:host-context([data-theme='light']) .table-card {
+:host-context([data-theme='light']) .table-card,
+:host-context([data-theme='light']) .users-list-card {
+  background: transparent;
+  border-color: transparent;
+}
+
+:host-context([data-theme='light']) .user-card {
   background: color-mix(in srgb, var(--color-primary) 8%, rgb(255, 255, 255));
   border-color: color-mix(in srgb, var(--color-primary) 20%, transparent);
 }
@@ -792,8 +835,8 @@
 }
 
 :host-context([data-theme='light']) .pagination-bar {
-  background: color-mix(in srgb, var(--color-primary) 8%, rgb(255, 255, 255));
-  border-color: color-mix(in srgb, var(--color-primary) 20%, transparent);
+  background: transparent;
+  border-color: transparent;
 }
 
 :host-context([data-theme='light']) .btn-pagination {
@@ -843,7 +886,30 @@
 }
 
 @media (max-width: 900px) {
-  .usuarios-table {
-    min-width: 800px;
+  .users-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .usuarios-page {
+    padding: var(--spacing-md);
+  }
+
+  .users-list-card {
+    padding: 0.8rem;
+  }
+
+  .user-card {
+    padding: 0.85rem;
+  }
+
+  .user-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .controls-bar {
+    padding: 1rem;
   }
 }

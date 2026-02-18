@@ -4,8 +4,9 @@ import { Observable, Subject, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { SystemNotificationsResponse } from '../models/system-notifications-response.model';
 import { SystemNotificationResponse } from '../models/system-notification-response.model';
+import { environment } from '../../../environments/environment';
 
-const API_BASE = 'http://localhost:8080';
+const API_BASE = environment.apiBaseUrl;
 const NOTIFICATIONS_API = `${API_BASE}/api/notifications`;
 
 @Injectable({

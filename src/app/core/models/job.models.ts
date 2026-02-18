@@ -44,6 +44,7 @@ export interface JobSettingsRequest {
   filterCountry?: string;
   filterLanguage?: string;
   filterSource?: string;
+  autoEmailEnabled?: boolean;
 }
 
 export interface JobSettingsResponse {
@@ -51,6 +52,7 @@ export interface JobSettingsResponse {
   filterCountry?: string;
   filterLanguage?: string;
   filterSource?: string;
+  autoEmailEnabled: boolean;
 }
 
 export interface JobSearchRunResponse {

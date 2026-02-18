@@ -1,0 +1,68 @@
+<section class="chat-card">
+  <header class="chat-header">
+    <h3><i class="fas fa-robot"></i> Asistente IA</h3>
+    <span class="chat-status" [class.busy]="isBusy()">
+      {{ isBusy() ? 'Procesando' : 'Listo' }}
+    </span>
+  </header>
+
+  <div class="chat-messages" #messagesViewport (click)="onMessagesClick($event)">
+    @for (msg of messages(); track msg.id) {
+      <article
+        class="chat-message"
+        [class.user]="msg.role === 'user'"
+        [class.assistant]="msg.role === 'assistant'"
+        [class.thinking]="msg.status === 'thinking'"
+        [class.error]="msg.status === 'error'"
+        [class.cancelled]="msg.status === 'cancelled'">
+
+        <div class="bubble">
+          @if (msg.status === 'thinking') {
+            <div class="bubble-content bubble-thinking">
+              <span class="thinking-text">{{ msg.content }}</span>
+              <span class="thinking-dots" aria-hidden="true"></span>
+            </div>
+          } @else {
+            <div class="bubble-content" [innerHTML]="formatMessage(msg.content)"></div>
+          }
+        </div>
+      </article>
+    }
+  </div>
+
+  @if (sendError()) {
+    <p class="chat-error">{{ sendError() }}</p>
+  }
+
+  <div class="chat-input-row">
+    <div class="chat-input-wrap">
+      <textarea
+        class="chat-input"
+        rows="2"
+        [value]="draft()"
+        (input)="setDraft($any($event.target).value)"
+        (keydown)="onInputKeydown($event)"
+        placeholder="Pregunta por proyectos, stack, experiencia o contacto..."></textarea>
+      <button
+        type="button"
+        class="chat-send"
+        [attr.aria-label]="isBusy() ? 'Cancelar envio anterior y reenviar' : 'Enviar mensaje'"
+        [title]="isBusy() ? 'Enviar (cancela anterior)' : 'Enviar'"
+        [disabled]="!draft().trim()"
+        (click)="send()">
+        <i class="fas" [class.fa-paper-plane]="!isBusy()" [class.fa-rotate-right]="isBusy()" aria-hidden="true"></i>
+      </button>
+    </div>
+  </div>
+</section>
+
+@if (imagePreviewVisible()) {
+  <div class="chat-image-preview-overlay" (click)="closeImagePreview()">
+    <div class="chat-image-preview-content" (click)="$event.stopPropagation()">
+      <button type="button" class="chat-image-preview-close" (click)="closeImagePreview()" aria-label="Cerrar">
+        <i class="fas fa-times"></i>
+      </button>
+      <img [src]="imagePreviewUrl()" [alt]="imagePreviewAlt()" class="chat-image-preview-full" />
+    </div>
+  </div>
+}

@@ -1,0 +1,292 @@
+<div class="chatbot-page">
+  <header class="chatbot-header">
+    <h1>Configuracion de Chatbot</h1>
+    <p>Panel admin para elegir proveedor, modelo y reglas del asistente.</p>
+  </header>
+
+  @if (loading()) {
+    <section class="chatbot-card">
+      <p class="chatbot-muted">Cargando configuracion...</p>
+    </section>
+  } @else if (loadError()) {
+    <section class="chatbot-card">
+      <p class="chatbot-error">{{ loadError() }}</p>
+      <button type="button" class="chatbot-btn-outline" (click)="loadConfig()">Reintentar</button>
+    </section>
+  } @else {
+    <div class="chatbot-grid">
+      <section class="chatbot-card">
+        <h2>Parametros del proveedor</h2>
+
+        <form [formGroup]="form" (ngSubmit)="save()" class="chatbot-form">
+          <div class="chatbot-field">
+            <label>Proveedor activo</label>
+            <select formControlName="activeProvider" class="custom-select-hidden">
+              @for (option of providerOptions; track option.value) {
+              <option [value]="option.value">{{ option.label }}</option>
+              }
+            </select>
+            <div class="custom-select provider-select" [class.open]="providerOpen()" (click)="$event.stopPropagation()">
+              <button type="button" class="custom-select-trigger" (click)="toggleProviderOpen()"
+                [attr.aria-expanded]="providerOpen()" aria-haspopup="listbox">
+                <span>{{ getSelectedProviderLabel() }}</span>
+                <i class="fas fa-chevron-down custom-select-chevron"></i>
+              </button>
+              <ul class="custom-select-dropdown" role="listbox">
+                @for (option of providerOptions; track option.value) {
+                <li role="option" [class.selected]="form.controls.activeProvider.value === option.value"
+                  (click)="selectProvider(option.value)">
+                  {{ option.label }}
+                </li>
+                }
+              </ul>
+            </div>
+          </div>
+
+          <label class="chatbot-switch-row">
+            <span>Chatbot habilitado</span>
+            <input type="checkbox" formControlName="enabled" />
+          </label>
+
+          <div class="chatbot-two-col">
+            <div class="chatbot-field">
+              <label>Modelo OpenRouter</label>
+              <input formControlName="openRouterModel" class="chatbot-input" />
+            </div>
+            <div class="chatbot-field">
+              <label>Modelo OpenAI</label>
+              <input formControlName="openAiModel" class="chatbot-input" />
+            </div>
+          </div>
+
+          <div class="chatbot-two-col">
+            <div class="chatbot-field">
+              <label>Modelo Anthropic</label>
+              <input formControlName="anthropicModel" class="chatbot-input" />
+            </div>
+            <div class="chatbot-field">
+              <label>Temperatura</label>
+              <input type="number" step="0.1" min="0" max="2" formControlName="temperature" class="chatbot-input" />
+            </div>
+          </div>
+
+          <div class="chatbot-field">
+            <label>Max tokens</label>
+            <input type="number" min="64" max="4096" formControlName="maxTokens" class="chatbot-input" />
+          </div>
+
+          <div class="chatbot-field">
+            <label>Proyectos actuales (para respuestas de "en que estas trabajando")</label>
+            @if (projectOptionsError()) {
+              <p class="chatbot-error">{{ projectOptionsError() }}</p>
+            } @else if (projectOptions().length === 0) {
+              <p class="chatbot-muted">No hay proyectos publicos para seleccionar.</p>
+            } @else {
+              <div class="focus-projects-list">
+                @for (project of projectOptions(); track project.id) {
+                  <label class="focus-project-item">
+                    <input
+                      type="checkbox"
+                      [checked]="isProjectSelected(project.id)"
+                      (change)="toggleFocusProject(project.id, $any($event.target).checked)" />
+                    <span class="focus-project-title">{{ project.title }}</span>
+                    <span class="focus-project-category">{{ project.category }}</span>
+                  </label>
+                }
+              </div>
+            }
+          </div>
+
+          <div class="chatbot-field">
+            <label>Temas permitidos (CSV)</label>
+            <textarea rows="2" formControlName="allowedTopicsCsv" class="chatbot-input"></textarea>
+          </div>
+
+          <div class="chatbot-field">
+            <label>Mensaje fuera de dominio</label>
+            <textarea rows="2" formControlName="outOfScopeMessage" class="chatbot-input"></textarea>
+          </div>
+
+          <div class="chatbot-field">
+            <div class="chatbot-field-label-row">
+              <label>System prompt</label>
+              <button type="button" class="chatbot-btn-link" (click)="openSystemPromptModal()">
+                Ver completo
+              </button>
+            </div>
+            <textarea rows="8" formControlName="systemPrompt" class="chatbot-input"></textarea>
+          </div>
+
+          @if (saveError()) {
+            <p class="chatbot-error">{{ saveError() }}</p>
+          }
+          @if (saveSuccess()) {
+            <p class="chatbot-success">{{ saveSuccess() }}</p>
+          }
+
+          <div class="chatbot-actions">
+            <button type="submit" class="chatbot-btn-primary" [disabled]="form.invalid || form.pristine || saving()">
+              {{ saving() ? 'Guardando...' : 'Guardar configuracion' }}
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <aside class="chatbot-card chatbot-help">
+        <h2>Ayuda y consumo</h2>
+        <p>Proveedor seleccionado: <strong>{{ getSelectedProviderLabel() }}</strong></p>
+        <p class="chatbot-note">Accede a la guia de configuracion o revisa consumo de OpenRouter.</p>
+        <button type="button" class="chatbot-btn-outline chatbot-usage-btn" (click)="openHelpModal()">
+          Ver ayuda de configuracion
+        </button>
+        <button type="button" class="chatbot-btn-outline chatbot-usage-btn" (click)="openOpenRouterUsageModal()">
+          Ver OpenRouter Usage
+        </button>
+
+        <div class="chatbot-stack-editor">
+          <h3>Stack profesional</h3>
+          <p class="chatbot-note">Estos stacks se usan como contexto base del asistente.</p>
+
+          <div class="chatbot-chip-input-row">
+            <input
+              class="chatbot-input"
+              type="text"
+              [value]="stackInput()"
+              (input)="setStackInput($any($event.target).value)"
+              (keydown.enter)="addProfileStack($event)"
+              placeholder="Agregar stack..." />
+            <button type="button" class="chatbot-chip-add-btn" (click)="addProfileStack($event)" title="Agregar stack">+</button>
+          </div>
+
+          @if (profileStacks().length > 0) {
+            <div class="chatbot-chip-list">
+              @for (stack of profileStacks(); track stack; let i = $index) {
+                <div class="chatbot-chip">
+                  @if (editingStackIndex() === i) {
+                    <input
+                      class="chatbot-chip-edit-input"
+                      [value]="editingStackValue()"
+                      (input)="setEditingStackValue($any($event.target).value)"
+                      (keydown.enter)="saveEditStack(i)" />
+                    <button type="button" class="chatbot-chip-action" (click)="saveEditStack(i)" title="Guardar">
+                      <i class="fas fa-check"></i>
+                    </button>
+                    <button type="button" class="chatbot-chip-action" (click)="cancelEditStack()" title="Cancelar">
+                      <i class="fas fa-times"></i>
+                    </button>
+                  } @else {
+                    <span>{{ stack }}</span>
+                    <button type="button" class="chatbot-chip-action" (click)="startEditStack(i)" title="Editar">
+                      <i class="fas fa-pen"></i>
+                    </button>
+                    <button type="button" class="chatbot-chip-action" (click)="removeProfileStack(stack)" title="Quitar">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  }
+                </div>
+              }
+            </div>
+          } @else {
+            <p class="chatbot-muted chatbot-stack-empty">Aun no definiste stacks profesionales.</p>
+          }
+        </div>
+      </aside>
+
+      <section class="chatbot-card chatbot-preview">
+        <h2>Mini chat de prueba</h2>
+        <p class="chatbot-note">Prueba una pregunta sin salir del panel de configuracion.</p>
+
+        <div class="chatbot-preview-box">
+          @if (previewMessages().length === 0) {
+            <p class="chatbot-muted">Aun no hay mensajes. Escribe una consulta para probar.</p>
+          } @else {
+            @for (msg of previewMessages(); track $index) {
+              <div class="chat-msg" [class.chat-msg-user]="msg.role === 'user'" [class.chat-msg-assistant]="msg.role === 'assistant'">
+                <p>{{ msg.content }}</p>
+              </div>
+            }
+          }
+        </div>
+
+        <div class="chatbot-preview-input-row">
+          <input
+            class="chatbot-input"
+            [value]="testInput()"
+            (input)="setTestInput($any($event.target).value)"
+            [disabled]="testing()"
+            placeholder="Ej: Que tecnologias usa Juan en sus proyectos?" />
+          <button type="button" class="chatbot-btn-primary" (click)="runPreviewChat()" [disabled]="testing() || !testInput().trim()">
+            {{ testing() ? 'Probando...' : 'Probar' }}
+          </button>
+        </div>
+
+        @if (testError()) {
+          <p class="chatbot-error">{{ testError() }}</p>
+        }
+      </section>
+    </div>
+  }
+</div>
+
+@if (openRouterUsageModalOpen()) {
+  <div class="chatbot-modal-backdrop" (click)="closeOpenRouterUsageModal()">
+    <div class="chatbot-modal" (click)="$event.stopPropagation()">
+      <div class="chatbot-modal-header">
+        <h3>OpenRouter Usage</h3>
+        <button type="button" class="chatbot-modal-close" (click)="closeOpenRouterUsageModal()" aria-label="Cerrar modal">
+          <i class="fas fa-times" aria-hidden="true"></i>
+        </button>
+      </div>
+      <div class="chatbot-modal-body">
+        <app-openrouter-usage />
+      </div>
+    </div>
+  </div>
+}
+
+@if (helpModalOpen()) {
+  <div class="chatbot-modal-backdrop" (click)="closeHelpModal()">
+    <div class="chatbot-modal" (click)="$event.stopPropagation()">
+      <div class="chatbot-modal-header">
+        <h3>Ayuda de configuracion</h3>
+        <button type="button" class="chatbot-modal-close" (click)="closeHelpModal()" aria-label="Cerrar modal">
+          <i class="fas fa-times" aria-hidden="true"></i>
+        </button>
+      </div>
+      <div class="chatbot-modal-body chatbot-help-modal-content">
+        <ol>
+          <li>Guarda la nueva key en variables de entorno del backend Spring.</li>
+          <li>OpenRouter: <code>OPENROUTER_API_KEY</code></li>
+          <li>OpenAI: <code>OPENAI_API_KEY</code></li>
+          <li>Anthropic: <code>ANTHROPIC_API_KEY</code></li>
+          <li>En este panel cambia <code>activeProvider</code> al proveedor deseado.</li>
+          <li>Guarda la configuracion y prueba una consulta en el chat.</li>
+        </ol>
+        <p class="chatbot-note">
+          No necesitas keys de OpenAI/Anthropic ahora. Puedes operar solo con OpenRouter y cambiar cuando tengas
+          nuevas credenciales.
+        </p>
+      </div>
+    </div>
+  </div>
+}
+
+@if (systemPromptModalOpen()) {
+  <div class="chatbot-modal-backdrop" (click)="closeSystemPromptModal()">
+    <div class="chatbot-modal" (click)="$event.stopPropagation()">
+      <div class="chatbot-modal-header">
+        <h3>System prompt (solo lectura)</h3>
+        <button type="button" class="chatbot-modal-close" (click)="closeSystemPromptModal()" aria-label="Cerrar modal">
+          <i class="fas fa-times" aria-hidden="true"></i>
+        </button>
+      </div>
+      <div class="chatbot-modal-body">
+        <textarea
+          rows="20"
+          class="chatbot-input chatbot-readonly-prompt"
+          [value]="form.controls.systemPrompt.value"
+          readonly></textarea>
+      </div>
+    </div>
+  </div>
+}

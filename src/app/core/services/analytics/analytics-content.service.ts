@@ -2,8 +2,9 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of, catchError } from 'rxjs';
 import { ClickEvents, ProjectViewItem, TrafficPeriod } from './models/analytics-content.interface';
+import { environment } from '../../../../environments/environment';
 
-const API_BASE = 'http://localhost:8080';
+const API_BASE = environment.apiBaseUrl;
 
 @Injectable({ providedIn: 'root' })
 export class AnalyticsContentService {

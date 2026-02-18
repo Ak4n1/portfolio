@@ -1,0 +1,109 @@
+.lightbox-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1500;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: var(--overlay-bg, rgba(0, 0, 0, 0.72));
+  backdrop-filter: blur(10px);
+}
+
+.lightbox-content {
+  position: relative;
+  width: 100vw;
+  height: 100dvh;
+  max-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  border: 0;
+  border-radius: 0;
+  background: var(--modal-bg, color-mix(in srgb, var(--background-light) 85%, black));
+  overflow: hidden;
+}
+
+.lightbox-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 10;
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  border: none;
+  background: rgba(0, 0, 0, 0.72);
+  color: var(--text-primary);
+  font-size: 1.9rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.lightbox-header {
+  position: relative;
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 4rem 1rem 1rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.lightbox-header h3 {
+  margin: 0;
+  color: var(--title-primary);
+  font-size: 1.45rem;
+  text-align: center;
+}
+
+.lightbox-counter {
+  position: absolute;
+  left: 1rem;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+
+.lightbox-swiper-wrapper {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.lightbox-swiper {
+  width: 100%;
+  height: 100%;
+  --swiper-navigation-color: var(--text-primary);
+  --swiper-pagination-color: var(--text-accent);
+  --swiper-pagination-bullet-inactive-color: rgba(255, 255, 255, 0.4);
+  --swiper-pagination-bullet-inactive-opacity: 0.8;
+}
+
+.lightbox-swiper swiper-slide {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.lightbox-swiper img {
+  max-width: 100%;
+  max-height: calc(100dvh - 170px);
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+@media (max-width: 768px) {
+  .lightbox-header {
+    padding-right: 3.5rem;
+  }
+
+  .lightbox-header h3 {
+    font-size: 1.15rem;
+  }
+
+  .lightbox-swiper img {
+    max-height: calc(100dvh - 150px);
+  }
+}

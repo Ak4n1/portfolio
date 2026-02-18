@@ -1,0 +1,188 @@
+:host {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
+.dashboard-chat-page {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: var(--spacing-lg) var(--spacing-xl);
+  overflow: hidden;
+}
+
+.dashboard-chat-header {
+  margin-bottom: 0.9rem;
+}
+
+.dashboard-chat-header h1 {
+  margin: 0;
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  color: var(--color-text-primary);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.dashboard-chat-header p {
+  margin: 0.4rem 0 0;
+  color: var(--color-text-secondary);
+}
+
+.beta-badge {
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  border-radius: 999px;
+  padding: 0.18rem 0.55rem;
+  border: 1px solid color-mix(in srgb, var(--color-primary) 45%, transparent);
+  color: var(--color-primary);
+  background: color-mix(in srgb, var(--color-primary) 14%, transparent);
+}
+
+.dashboard-chat-layout {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 1rem;
+  flex: 1;
+  min-height: 0;
+}
+
+.history-panel {
+  min-height: 0;
+  height: 100%;
+  border: 1px solid color-mix(in srgb, var(--color-primary) 16%, transparent);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--color-primary) 5%, var(--background-dark));
+  padding: 0.85rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.history-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.7rem;
+}
+
+.history-panel-header h2 {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.history-new-btn {
+  border: 1px solid color-mix(in srgb, var(--color-primary) 55%, transparent);
+  background: transparent;
+  color: var(--color-primary);
+  border-radius: 8px;
+  padding: 0.35rem 0.55rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+.history-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  text-align: left;
+  width: 100%;
+  border: 1px solid color-mix(in srgb, var(--color-text-primary) 16%, transparent);
+  background: color-mix(in srgb, var(--color-text-primary) 6%, transparent);
+  color: var(--color-text-primary);
+  border-radius: 8px;
+  padding: 0.55rem 0.6rem;
+  cursor: pointer;
+}
+
+.history-item:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--color-primary) 65%, transparent);
+  outline-offset: 1px;
+}
+
+.history-item.active {
+  border-color: color-mix(in srgb, var(--color-primary) 60%, transparent);
+  background: color-mix(in srgb, var(--color-primary) 15%, transparent);
+}
+
+.history-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.4rem;
+}
+
+.history-title {
+  font-size: 0.84rem;
+  line-height: 1.35;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.history-time {
+  font-size: 0.7rem;
+  color: var(--color-text-secondary);
+}
+
+.history-delete-btn {
+  width: 1.45rem;
+  height: 1.45rem;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.history-delete-btn:hover {
+  color: #f87171;
+  background: color-mix(in srgb, #ef4444 16%, transparent);
+}
+
+.chat-panel {
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+}
+
+.chat-panel app-chat {
+  display: block;
+  height: 100%;
+}
+
+@media (max-width: 768px) {
+  .dashboard-chat-page {
+    padding: var(--spacing-md);
+    overflow: auto;
+  }
+
+  .dashboard-chat-layout {
+    grid-template-columns: 1fr;
+    gap: 0.8rem;
+  }
+
+  .history-panel {
+    height: auto;
+    max-height: 240px;
+  }
+}

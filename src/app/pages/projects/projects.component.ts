@@ -8,18 +8,19 @@ import { AnalyticsEventsService } from '../../core/services/analytics/analytics-
 import { WebSocketService } from '../../core/services/websocket.service';
 import { WebSocketMessageType } from '../../core/models/websocket-message.model';
 import { Subscription } from 'rxjs';
+import { ImageLightboxComponent } from '../../core/components/image-lightbox/image-lightbox.component';
 
 @Component({
   selector: 'app-projects',
   standalone: true,
-  imports: [RouterLink, CommonModule],
+  imports: [RouterLink, CommonModule, ImageLightboxComponent],
   templateUrl: './projects.component.html',
   styleUrl: './projects.component.css',
   animations: [
     trigger('fadeInUp', [
       transition(':enter', [
         style({ opacity: 0, transform: 'translateY(30px)' }),
-        animate('0.6s ease-out', style({ opacity: 1, transform: 'translateY(0)' }))
+        animate('0.6s ease-out', style({ opacity: 1, transform: 'none' }))
       ])
     ])
   ]
@@ -39,8 +40,9 @@ export class ProjectsComponent implements OnInit, OnDestroy {
   error = '';
 
   isModalOpen = false;
-  selectedImage = '';
   selectedProject: Project | null = null;
+  lightboxImages: string[] = [];
+  lightboxStartIndex = 0;
 
   carouselStates: { [key: number]: { currentIndex: number; interval: ReturnType<typeof setInterval> | null } } = {};
 
@@ -227,21 +229,20 @@ export class ProjectsComponent implements OnInit, OnDestroy {
 
   // Modal methods
   openModal(project: Project) {
-    const url = this.getCurrentImage(project.id);
-    if (url) {
-      this.selectedImage = url;
-      this.selectedProject = project;
-      this.isModalOpen = true;
-      document.body.style.overflow = 'hidden';
-      this.pauseCarousel(project.id);
-    }
+    const urls = this.getProjectImageUrls(project).map((url) => this.getImageUrl(url));
+    if (!urls.length) return;
+    this.selectedProject = project;
+    this.lightboxImages = urls;
+    this.lightboxStartIndex = this.getCurrentIndex(project.id);
+    this.isModalOpen = true;
+    this.pauseCarousel(project.id);
   }
 
   closeModal() {
     this.isModalOpen = false;
-    this.selectedImage = '';
     this.selectedProject = null;
-    document.body.style.overflow = 'auto';
+    this.lightboxImages = [];
+    this.lightboxStartIndex = 0;
     
     // Resume all carousels
     this.projects.forEach(project => {
@@ -251,9 +252,8 @@ export class ProjectsComponent implements OnInit, OnDestroy {
     });
   }
 
-  onModalClick(event: Event) {
-    if (event.target === event.currentTarget) {
-      this.closeModal();
-    }
+  onLightboxIndexChanged(index: number): void {
+    if (!this.selectedProject) return;
+    this.goToImage(this.selectedProject.id, index);
   }
 }

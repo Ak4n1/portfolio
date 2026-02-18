@@ -4,8 +4,9 @@ import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { ContactsResponse } from '../models/contacts-response.model';
 import { ContactResponse } from '../models/contact-response.model';
+import { environment } from '../../../environments/environment';
 
-const API_BASE = 'http://localhost:8080';
+const API_BASE = environment.apiBaseUrl;
 const CONTACT_API = `${API_BASE}/api/contact`;
 
 @Injectable({

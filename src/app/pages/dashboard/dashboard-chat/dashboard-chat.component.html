@@ -1,0 +1,57 @@
+<section class="dashboard-chat-page">
+  <header class="dashboard-chat-header">
+    <h1>Chat del Portafolio <span class="beta-badge">Beta</span></h1>
+    <p>Asistente conversacional para consultas sobre perfil, stack, proyectos y contacto.</p>
+  </header>
+
+  <div class="dashboard-chat-layout">
+    <aside class="history-panel">
+      <div class="history-panel-header">
+        <h2>Historial</h2>
+        <button type="button" class="history-new-btn" (click)="createNewChat()">Nuevo chat</button>
+      </div>
+
+      <div class="history-list">
+        @for (item of sortedHistories(); track trackByHistoryId($index, item)) {
+          <div
+            class="history-item"
+            role="button"
+            tabindex="0"
+            [class.active]="selectedHistoryId() === item.id"
+            (click)="selectHistory(item.id)"
+            (keydown.enter)="selectHistory(item.id)"
+            (keydown.space)="selectHistory(item.id); $event.preventDefault()">
+            <span class="history-row">
+              <span class="history-title">{{ item.title }}</span>
+              <button
+                type="button"
+                class="history-delete-btn"
+                title="Borrar chat"
+                aria-label="Borrar chat"
+                (click)="openDeleteHistoryConfirm(item.id, $event)">
+                <i class="fas fa-times" aria-hidden="true"></i>
+              </button>
+            </span>
+            <span class="history-time">{{ formatUpdatedAt(item.updatedAt) }}</span>
+          </div>
+        }
+      </div>
+    </aside>
+
+    <section class="chat-panel">
+      <app-chat
+        [seedMessages]="activeSeedMessages()"
+        (conversationChange)="onConversationChange($event)" />
+    </section>
+  </div>
+</section>
+
+<app-confirm-modal
+  [visible]="deleteModalVisible()"
+  type="danger"
+  title="Borrar chat"
+  [message]="'Se eliminara ' + getPendingDeleteTitle() + '. Esta accion no se puede deshacer.'"
+  confirmText="Borrar"
+  cancelText="Cancelar"
+  (confirmed)="confirmDeleteHistory()"
+  (cancelled)="closeDeleteHistoryConfirm()" />

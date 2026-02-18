@@ -6,9 +6,10 @@ import {
   WebSocketMessageType,
   WebSocketConnectionState,
 } from '../models/websocket-message.model';
+import { environment } from '../../../environments/environment';
 
 const WS_PATH = '/api/ws/notifications';
-const API_URL = 'http://localhost:8080';
+const API_URL = environment.apiBaseUrl || window.location.origin;
 
 @Injectable({
   providedIn: 'root',

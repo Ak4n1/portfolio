@@ -1,0 +1,79 @@
+<section class="usage-panel">
+  <header class="usage-header">
+    <div>
+      <h3>OpenRouter Usage</h3>
+      <p>Datos de uso obtenidos via backend proxy seguro.</p>
+    </div>
+    <button type="button" class="usage-refresh" (click)="refresh()" [disabled]="loading() || refreshing()">
+      {{ refreshing() ? 'Actualizando...' : 'Refresh' }}
+    </button>
+  </header>
+
+  @if (usage(); as data) {
+    <div class="usage-grid">
+      <article class="usage-card">
+        <span class="label">Creditos totales</span>
+        <strong>{{ data.limit | number:'1.0-2' }}</strong>
+      </article>
+
+      <article class="usage-card" [class.low]="hasLowRemaining()">
+        <span class="label">Creditos restantes</span>
+        <strong>{{ data.limitRemaining | number:'1.0-2' }}</strong>
+        <small [class.low]="hasLowRemaining()">Disponible {{ remainingPercent() }}%</small>
+      </article>
+
+      <article class="usage-card">
+        <span class="label">Uso total acumulado</span>
+        <strong>{{ data.usage | number:'1.0-2' }}</strong>
+      </article>
+
+      <article class="usage-card">
+        <span class="label">Tipo de cuenta</span>
+        <span class="tier-badge" [class.free]="data.isFreeTier" [class.paid]="!data.isFreeTier">
+          {{ data.isFreeTier ? 'Free Tier' : 'Creditos pagos' }}
+        </span>
+      </article>
+    </div>
+
+    <div class="usage-bars">
+      <div class="usage-bar-card">
+        <div class="bar-header">
+          <span>Uso diario</span>
+          <strong>{{ data.usageDaily | number:'1.0-2' }}</strong>
+        </div>
+        <div class="bar-track">
+          <div class="bar-fill daily" [style.width.%]="usageDailyPercent()"></div>
+        </div>
+        <small>{{ usageDailyPercent() }}% del limite</small>
+      </div>
+
+      <div class="usage-bar-card">
+        <div class="bar-header">
+          <span>Uso semanal</span>
+          <strong>{{ data.usageWeekly | number:'1.0-2' }}</strong>
+        </div>
+      </div>
+
+      <div class="usage-bar-card">
+        <div class="bar-header">
+          <span>Uso mensual</span>
+          <strong>{{ data.usageMonthly | number:'1.0-2' }}</strong>
+        </div>
+        <div class="bar-track">
+          <div class="bar-fill monthly" [style.width.%]="usageMonthlyPercent()"></div>
+        </div>
+        <small>{{ usageMonthlyPercent() }}% del limite</small>
+      </div>
+    </div>
+  } @else if (loading()) {
+    <div class="usage-loading">
+      <div class="usage-spinner"></div>
+      <p>Cargando datos de OpenRouter...</p>
+    </div>
+  } @else if (error()) {
+    <div class="usage-error">
+      <p>{{ error() }}</p>
+      <button type="button" class="usage-refresh" (click)="loadUsage()">Reintentar</button>
+    </div>
+  }
+</section>

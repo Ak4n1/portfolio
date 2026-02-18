@@ -248,10 +248,10 @@ main {
 main.dashboard-main {
   padding-top: 0;
   padding-bottom: 0;
-  min-height: 100vh;
-  height: 100vh;
+  min-height: 100dvh;
+  height: auto;
   position: relative;
-  overflow: hidden;
+  overflow: visible;
 }
 
 /* Utilidades */

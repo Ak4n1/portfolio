@@ -12,8 +12,9 @@ import {
     JobSearchRunResponse,
     SearchNowResponse
 } from '../models/job.models';
+import { environment } from '../../../environments/environment';
 
-const API_BASE = 'http://localhost:8080';
+const API_BASE = environment.apiBaseUrl;
 
 @Injectable({
     providedIn: 'root'

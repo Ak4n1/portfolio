@@ -29,6 +29,7 @@ export const routes: Routes = [
     children: [
       { path: '', loadComponent: () => import('./core/components/dashboard-redirect/dashboard-redirect.component').then(m => m.DashboardRedirectComponent) },
       { path: 'user', loadComponent: () => import('./pages/dashboard/dashboard-user-home/dashboard-user-home.component').then(m => m.DashboardUserHomeComponent) },
+      { path: 'chat', loadComponent: () => import('./pages/dashboard/dashboard-chat/dashboard-chat.component').then(m => m.DashboardChatComponent) },
       { path: 'admin', loadComponent: () => import('./pages/dashboard/dashboard-admin-home/dashboard-admin-home.component').then(m => m.DashboardAdminHomeComponent), canActivate: [roleGuard], data: { roles: ['ROLE_ADMIN'] } },
       { path: 'projects', loadComponent: () => import('./pages/dashboard/dashboard-projects/dashboard-projects.component').then(m => m.DashboardProjectsComponent), canActivate: [roleGuard], data: { roles: ['ROLE_ADMIN'] } },
       { path: 'projects/new', loadComponent: () => import('./pages/dashboard/dashboard-project-detail/dashboard-project-detail.component').then(m => m.DashboardProjectDetailComponent), canActivate: [roleGuard], data: { roles: ['ROLE_ADMIN'] } },
@@ -38,6 +39,7 @@ export const routes: Routes = [
       { path: 'notificaciones', loadComponent: () => import('./pages/dashboard/dashboard-notificaciones/dashboard-notificaciones.component').then(m => m.DashboardNotificacionesComponent) },
       { path: 'contactos', loadComponent: () => import('./pages/dashboard/dashboard-contactos/dashboard-contactos.component').then(m => m.DashboardContactosComponent), canActivate: [roleGuard], data: { roles: ['ROLE_ADMIN'] } },
       { path: 'configuracion', loadComponent: () => import('./pages/dashboard/dashboard-configuracion/dashboard-configuracion.component').then(m => m.DashboardConfiguracionComponent) },
+      { path: 'chatbot-config', loadComponent: () => import('./pages/dashboard/dashboard-chatbot-config/dashboard-chatbot-config.component').then(m => m.DashboardChatbotConfigComponent), canActivate: [roleGuard], data: { roles: ['ROLE_ADMIN'] } },
       { path: 'ofertas', loadComponent: () => import('./pages/dashboard/dashboard-ofertas/dashboard-ofertas.component').then(m => m.DashboardOfertasComponent), canActivate: [roleGuard], data: { roles: ['ROLE_ADMIN'] } },
     ]
   },

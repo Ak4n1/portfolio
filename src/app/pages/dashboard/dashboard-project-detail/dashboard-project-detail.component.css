@@ -722,10 +722,57 @@
   object-fit: cover;
 }
 
-.btn-remove-image {
+.image-primary-badge {
   position: absolute;
-  top: 0.25rem;
-  right: 0.25rem;
+  left: 0.4rem;
+  top: 0.4rem;
+  padding: 0.2rem 0.45rem;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  background: color-mix(in srgb, var(--color-primary) 86%, white);
+  color: var(--color-primary-contrast, #0a0f0e);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 48%, transparent);
+}
+
+.image-actions {
+  position: absolute;
+  right: 0.3rem;
+  top: 0.3rem;
+  display: inline-flex;
+  gap: 0.3rem;
+}
+
+.btn-set-primary-icon {
+  border: 1px solid color-mix(in srgb, var(--color-primary) 40%, transparent);
+  background: color-mix(in srgb, var(--background-dark) 80%, var(--color-primary) 20%);
+  color: var(--color-text-primary);
+  border-radius: 50%;
+  width: 1.5rem;
+  height: 1.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-set-primary-icon:hover:not(:disabled) {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.btn-set-primary-icon.active {
+  background: color-mix(in srgb, var(--color-primary) 84%, white);
+  color: var(--color-primary-contrast, #0a0f0e);
+}
+
+.btn-set-primary-icon:disabled {
+  opacity: 1;
+  cursor: default;
+}
+
+.btn-remove-image {
   width: 1.5rem;
   height: 1.5rem;
   display: flex;
@@ -736,13 +783,32 @@
   border: none;
   border-radius: 50%;
   cursor: pointer;
-  font-size: 1rem;
+  font-size: 0.72rem;
   line-height: 1;
   transition: background 0.2s;
 }
 
 .btn-remove-image:hover {
   background: var(--error);
+}
+
+.btn-show-more-images {
+  margin-top: 0.75rem;
+  width: 100%;
+  border: 1px solid color-mix(in srgb, var(--color-primary) 30%, transparent);
+  border-radius: var(--border-radius-md);
+  background: color-mix(in srgb, var(--color-primary) 8%, transparent);
+  color: var(--color-text-primary);
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 0.5rem 0.7rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-show-more-images:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
 }
 
 .form-actions {

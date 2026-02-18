@@ -172,13 +172,34 @@
                 </div>
                 @if (imageItems.length > 0) {
                   <div class="images-preview">
-                    @for (item of imageItems; track item.id) {
+                    @for (item of getVisibleImageItems(); track item.id) {
                       <div class="image-preview-item">
                         <img [src]="getImageUrl(item.url)" [alt]="form.title" />
-                        <button type="button" class="btn-remove-image" (click)="removeImage(item)" title="Quitar">×</button>
+                        @if (isPrimary(item)) {
+                          <span class="image-primary-badge">Principal</span>
+                        }
+                        <div class="image-actions">
+                          <button
+                            type="button"
+                            class="btn-set-primary-icon"
+                            [class.active]="isPrimary(item)"
+                            [disabled]="isPrimary(item)"
+                            (click)="setAsPrimary(item)"
+                            title="Marcar como principal">
+                            <i class="fas fa-star"></i>
+                          </button>
+                          <button type="button" class="btn-remove-image" (click)="removeImage(item)" title="Quitar imagen">
+                            <i class="fas fa-trash"></i>
+                          </button>
+                        </div>
                       </div>
                     }
                   </div>
+                  @if (imageItems.length > 2) {
+                    <button type="button" class="btn-show-more-images" (click)="toggleShowImages()">
+                      {{ showAllImages ? 'Mostrar menos' : 'Ver mas' }}
+                    </button>
+                  }
                 } @else {
                   <p class="images-empty">Aún no hay imágenes. Sube la primera.</p>
                 }
@@ -215,3 +236,5 @@
   [message]="modalMessage"
   (closed)="closeErrorModal()">
 </app-feedback-modal>
+
+

@@ -149,7 +149,7 @@
               </div>
               <div class="info-item">
                 <span class="info-label">Tecnologías</span>
-                <span class="info-value">{{ (project.tags || []).length }}</span>
+                <span class="info-value">{{ (project.stacks || []).length }}</span>
               </div>
               <div class="info-item">
                 <span class="info-label">Imágenes</span>
@@ -191,31 +191,13 @@
 
 }
 
-@if (isModalOpen) {
-  <div class="image-modal" (click)="onModalClick($event)">
-    <div class="modal-content">
-      <button class="modal-close" (click)="closeModal()">×</button>
-      @if (project) {
-        <div class="modal-header">
-          @if (project.images && project.images.length > 1) {
-            <div class="modal-image-counter">{{ currentImageIndex + 1 }} / {{ project.images.length }}</div>
-          }
-          <h3>{{ project.title }}</h3>
-        </div>
-      }
-      <div class="modal-image-container">
-        @if (project && project.images && project.images.length > 1) {
-          <button class="modal-arrow modal-arrow-prev" (click)="prevImageModal(); $event.stopPropagation()">‹</button>
-        }
-        <img [src]="selectedImage" [alt]="project?.title" class="modal-image">
-        @if (project && project.images && project.images.length > 1) {
-          <button class="modal-arrow modal-arrow-next" (click)="nextImageModal(); $event.stopPropagation()">›</button>
-        }
-      </div>
-    </div>
-  </div>
-}
-
+<app-image-lightbox
+  [visible]="isModalOpen"
+  [images]="lightboxImages"
+  [title]="project?.title || ''"
+  [startIndex]="lightboxStartIndex"
+  (closed)="closeModal()"
+  (indexChanged)="onLightboxIndexChanged($event)" />
 <app-confirm-modal
   [visible]="loginModalVisible"
   title="Inicia sesion"
@@ -225,3 +207,5 @@
   cancelText="Cancelar"
   (confirmed)="onLoginModalConfirmed()"
   (cancelled)="onLoginModalCancelled()" />
+
+

@@ -68,6 +68,7 @@ export class PreloaderV2Component implements AfterViewInit, OnDestroy {
   @Output() complete = new EventEmitter<void>();
   @Output() exitStarted = new EventEmitter<void>();
   private readonly brandLabel = 'PORTAFOLIO JUAN ENCABO';
+  private readonly useCircularRevealWipe = false;
 
   private ctx: CanvasRenderingContext2D | null = null;
   private dpr = Math.max(1, window.devicePixelRatio || 1);
@@ -522,7 +523,9 @@ export class PreloaderV2Component implements AfterViewInit, OnDestroy {
     this.drawVignette(fadeMultiplier);
 
     if (this.exiting && this.exitEase < 0.15) this.drawExitFlash(fadeMultiplier);
-    if (this.exiting && this.exitEase > 0.3) this.drawDissolveWipe();
+    if (this.useCircularRevealWipe && this.exiting && this.exitEase > 0.3) {
+      this.drawDissolveWipe();
+    }
   }
 
   private drawBackgroundGlow(fadeMultiplier: number): void {

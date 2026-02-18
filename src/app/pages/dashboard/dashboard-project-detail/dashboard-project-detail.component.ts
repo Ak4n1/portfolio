@@ -57,6 +57,7 @@ export class DashboardProjectDetailComponent implements OnInit, OnDestroy {
   images: string[] = [];
   imageItems: { id: number; url: string }[] = [];
   uploadError = '';
+  showAllImages = false;
 
   categories = ['Frontend', 'Backend', 'Desktop', 'Fullstack', 'Mobile', 'DevOps', 'Other'];
 
@@ -103,6 +104,7 @@ export class DashboardProjectDetailComponent implements OnInit, OnDestroy {
     this.imageItems = [];
     this.uploadError = '';
     this.error = '';
+    this.showAllImages = false;
   }
 
   loadProject(): void {
@@ -124,6 +126,7 @@ export class DashboardProjectDetailComponent implements OnInit, OnDestroy {
         };
         this.images = p.images || [];
         this.imageItems = p.imageItems || [];
+        this.showAllImages = false;
         this.loading = false;
       },
       error: (err) => {
@@ -210,6 +213,7 @@ export class DashboardProjectDetailComponent implements OnInit, OnDestroy {
       next: (res) => {
         this.images = [...this.images, res.url];
         this.imageItems = [...this.imageItems, { id: res.imageId, url: res.url }];
+        this.showAllImages = this.imageItems.length <= 2 ? false : this.showAllImages;
         this.uploading = false;
       },
       error: (err) => {
@@ -225,9 +229,43 @@ export class DashboardProjectDetailComponent implements OnInit, OnDestroy {
       next: () => {
         this.images = this.images.filter((u) => u !== item.url);
         this.imageItems = this.imageItems.filter((i) => i.id !== item.id);
+        if (this.imageItems.length <= 2) {
+          this.showAllImages = false;
+        }
       },
       error: (err) => (this.uploadError = err?.error?.message || 'Error al eliminar la imagen')
     });
+  }
+
+  setAsPrimary(item: { id: number; url: string }): void {
+    if (!this.id) return;
+    this.uploadError = '';
+    this.projectService.setPrimaryImage(this.id, item.id).subscribe({
+      next: (project) => {
+        this.images = project.images || [];
+        this.imageItems = project.imageItems || [];
+      },
+      error: (err) => {
+        this.uploadError = err?.error?.message || 'Error al marcar imagen principal';
+      },
+    });
+  }
+
+  isPrimary(item: { id: number; url: string }): boolean {
+    if (!this.imageItems.length) return false;
+    const primary = this.imageItems[0];
+    if (primary.id != null && item.id != null) {
+      return primary.id === item.id;
+    }
+    return (primary.url || '').trim() === (item.url || '').trim();
+  }
+
+  getVisibleImageItems(): { id: number; url: string }[] {
+    return this.showAllImages ? this.imageItems : this.imageItems.slice(0, 2);
+  }
+
+  toggleShowImages(): void {
+    this.showAllImages = !this.showAllImages;
   }
 
   getImageUrl(url: string): string {

@@ -1,10 +1,9 @@
 <div class="usuarios-page">
-  <!-- Page Header (estilo Stich: título con acento + subtítulo + badges) -->
   <header class="usuarios-header">
     <div class="header-top">
       <div class="header-titles">
-        <h1 class="usuarios-title">Gestión de <span class="title-accent">Usuarios</span></h1>
-        <p class="usuarios-subtitle">Administre accesos, roles y estados del sistema.</p>
+        <h1 class="usuarios-title">Gestion de <span class="title-accent">Usuarios</span></h1>
+        <p class="usuarios-subtitle">Administra accesos, roles y estados del sistema.</p>
       </div>
       <div class="header-badges">
         <div class="stat-badge">
@@ -12,7 +11,7 @@
           <span class="stat-badge-value">{{ totalElements() }}</span>
         </div>
         <div class="stat-badge stat-badge-online">
-          <span class="stat-badge-label">En línea</span>
+          <span class="stat-badge-label">En linea</span>
           <span class="stat-badge-value">
             <i class="fas fa-circle online-dot" aria-hidden="true"></i> {{ onlineUsersCount() }}
           </span>
@@ -25,7 +24,6 @@
     <div class="usuarios-error" role="alert">{{ error() }}</div>
   }
 
-  <!-- Controls Bar (búsqueda + Filtros) -->
   <div class="controls-bar">
     <label class="search-wrap">
       <i class="fas fa-search search-icon" aria-hidden="true"></i>
@@ -47,126 +45,113 @@
     </div>
   </div>
 
-  <!-- Table Card -->
-  <div class="table-card">
+  <div class="users-list-card">
     @if (loading()) {
       <p class="usuarios-loading">Cargando usuarios...</p>
+    } @else if (users().length === 0) {
+      <p class="empty-cell">No hay usuarios o no coinciden con la busqueda.</p>
     } @else {
-      <div class="table-scroll">
-        <table class="usuarios-table" aria-label="Lista de usuarios">
-          <thead>
-            <tr>
-              <th>Usuario</th>
-              <th>Email</th>
-              <th>Rol</th>
-              <th>Estado</th>
-              <th>Verificado</th>
-              <th>En línea</th>
-              <th>Fecha</th>
-              <th class="th-actions">Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            @for (user of users(); track user.id) {
-              <tr class="table-row" [class.row-disabled]="!user.enabled">
-                <td>
-                  <div class="user-cell">
-                    <div class="user-avatar" [class.avatar-online]="isUserOnline(user.email)">
-                      {{ getInitials(user) }}
-                    </div>
-                    <div class="user-info">
-                      <span class="user-name">{{ user.firstName }} {{ user.lastName }}</span>
-                      <span class="user-id">ID: {{ user.id }}</span>
-                    </div>
+      <div class="users-grid">
+        @for (user of users(); track user.id) {
+          <article class="user-card" [class.user-card-disabled]="!user.enabled">
+            <header class="user-card-header">
+              <div class="user-cell">
+                <div class="user-avatar" [class.avatar-online]="isUserOnline(user.email)">
+                  {{ getInitials(user) }}
+                </div>
+                <div class="user-info">
+                  <div class="user-name-row">
+                    <span class="user-name">{{ user.firstName }} {{ user.lastName }}</span>
                   </div>
-                </td>
-                <td><span class="email-cell">{{ user.email }}</span></td>
-                <td>
-                  @for (r of getRolesList(user); track r) {
-                    <span class="badge" [class.badge-role-admin]="r === 'ROLE_ADMIN'" [class.badge-role-user]="r === 'ROLE_USER'">{{ getRoleLabel(r) }}</span>
-                  }
-                </td>
-                <td>
-                  <div class="status-cell">
-                    @if (user.enabled) {
-                      <span class="status-dot status-active"></span>
-                      <span class="status-label">Activo</span>
-                    } @else {
-                      <span class="status-dot status-inactive"></span>
-                      <span class="status-label status-label-inactive">Inactivo</span>
+                  <div class="user-roles-row">
+                    @for (r of getRolesList(user); track r) {
+                      <span class="badge badge-role-inline" [class.badge-role-admin]="r === 'ROLE_ADMIN'" [class.badge-role-user]="r === 'ROLE_USER'">
+                        {{ getRoleLabel(r) }}
+                      </span>
                     }
                   </div>
-                </td>
-                <td>
-                  @if (user.emailVerified) {
-                    <span class="badge badge-success">Sí</span>
+                  <span class="user-id">ID: {{ user.id }}</span>
+                </div>
+              </div>
+              <span class="date-cell">{{ formatDate(user.createdAt) }}</span>
+            </header>
+
+            <div class="user-card-body">
+              <p class="email-cell">{{ user.email }}</p>
+
+              <div class="user-badges-row">
+                @if (user.emailVerified) {
+                  <span class="badge badge-success">Verificado</span>
+                } @else {
+                  <span class="badge badge-warning">Sin verificar</span>
+                }
+
+                @if (isUserOnline(user.email)) {
+                  <span class="badge badge-online"><i class="fas fa-circle online-dot"></i> En linea</span>
+                } @else {
+                  <span class="badge badge-offline">Desconectado</span>
+                }
+              </div>
+
+              <div class="status-cell">
+                @if (user.enabled) {
+                  <span class="status-dot status-active"></span>
+                  <span class="status-label">Activo</span>
+                } @else {
+                  <span class="status-dot status-inactive"></span>
+                  <span class="status-label status-label-inactive">Inactivo</span>
+                }
+              </div>
+            </div>
+
+            <footer class="user-card-footer">
+              @if (actionLoadingFor() === user.id) {
+                <span class="action-loading"><i class="fas fa-spinner fa-spin"></i></span>
+              } @else {
+                <div class="action-buttons">
+                  @if (user.enabled) {
+                    <button type="button" class="btn-action btn-action-warn" (click)="openConfirmDisable(user)" title="Deshabilitar">
+                      <i class="fas fa-user-slash"></i>
+                    </button>
                   } @else {
-                    <span class="badge badge-warning">No</span>
+                    <button type="button" class="btn-action btn-action-ok" (click)="openConfirmEnable(user)" title="Habilitar">
+                      <i class="fas fa-user-check"></i>
+                    </button>
                   }
-                </td>
-                <td>
-                  @if (isUserOnline(user.email)) {
-                    <span class="badge badge-online"><i class="fas fa-circle online-dot"></i> En línea</span>
-                  } @else {
-                    <span class="badge badge-offline">Desconectado</span>
+                  @if (!user.emailVerified) {
+                    <button type="button" class="btn-action" (click)="openConfirmResendVerification(user)" title="Reenviar verificacion">
+                      <i class="fas fa-envelope"></i>
+                    </button>
                   }
-                </td>
-                <td><span class="date-cell">{{ formatDate(user.createdAt) }}</span></td>
-                <td class="actions-cell">
-                  @if (actionLoadingFor() === user.id) {
-                    <span class="action-loading"><i class="fas fa-spinner fa-spin"></i></span>
-                  } @else {
-                    <div class="action-buttons">
-                      @if (user.enabled) {
-                        <button type="button" class="btn-action btn-action-warn" (click)="openConfirmDisable(user)" title="Deshabilitar">
-                          <i class="fas fa-user-slash"></i>
-                        </button>
-                      } @else {
-                        <button type="button" class="btn-action btn-action-ok" (click)="openConfirmEnable(user)" title="Habilitar">
-                          <i class="fas fa-user-check"></i>
-                        </button>
-                      }
-                      @if (!user.emailVerified) {
-                        <button type="button" class="btn-action" (click)="openConfirmResendVerification(user)" title="Reenviar verificación">
-                          <i class="fas fa-envelope"></i>
-                        </button>
-                      }
-                      <button type="button" class="btn-action" (click)="openConfirmSendPasswordReset(user)" title="Recuperar contraseña">
-                        <i class="fas fa-key"></i>
-                      </button>
-                      <div class="roles-dropdown" (click)="$event.stopPropagation()">
-                        <button type="button" class="btn-action" (click)="toggleRolesMenu(user.id)" [attr.aria-expanded]="rolesMenuOpenFor() === user.id" title="Cambiar rol">
-                          <i class="fas fa-user-tag"></i>
-                        </button>
-                        @if (rolesMenuOpenFor() === user.id) {
-                          <ul class="roles-menu">
-                            <li><button type="button" (click)="openConfirmSetRoles(user.id, ['ROLE_USER'])">Usuario</button></li>
-                            <li><button type="button" (click)="openConfirmSetRoles(user.id, ['ROLE_ADMIN'])">Administrador</button></li>
-                          </ul>
-                        }
-                      </div>
-                      <button type="button" class="btn-action" (click)="goToSendNotification(user)" title="Enviar notificación">
-                        <i class="fas fa-bell"></i>
-                      </button>
-                    </div>
-                  }
-                </td>
-              </tr>
-            } @empty {
-              <tr>
-                <td colspan="8" class="empty-cell">No hay usuarios o no coinciden con la búsqueda.</td>
-              </tr>
-            }
-          </tbody>
-        </table>
+                  <button type="button" class="btn-action" (click)="openConfirmSendPasswordReset(user)" title="Recuperar contrasena">
+                    <i class="fas fa-key"></i>
+                  </button>
+                  <div class="roles-dropdown" (click)="$event.stopPropagation()">
+                    <button type="button" class="btn-action" (click)="toggleRolesMenu(user.id)" [attr.aria-expanded]="rolesMenuOpenFor() === user.id" title="Cambiar rol">
+                      <i class="fas fa-user-tag"></i>
+                    </button>
+                    @if (rolesMenuOpenFor() === user.id) {
+                      <ul class="roles-menu">
+                        <li><button type="button" (click)="openConfirmSetRoles(user.id, ['ROLE_USER'])">Usuario</button></li>
+                        <li><button type="button" (click)="openConfirmSetRoles(user.id, ['ROLE_ADMIN'])">Administrador</button></li>
+                      </ul>
+                    }
+                  </div>
+                  <button type="button" class="btn-action" (click)="goToSendNotification(user)" title="Enviar notificacion">
+                    <i class="fas fa-bell"></i>
+                  </button>
+                </div>
+              }
+            </footer>
+          </article>
+        }
       </div>
     }
   </div>
 
-  <!-- Pagination -->
   @if (!loading() && (totalPages() > 1 || totalElements() > 0)) {
-    <nav class="pagination-bar" aria-label="Paginación">
-      <p class="pagination-summary">Página {{ currentPage() + 1 }} de {{ totalPages() }} // Total: {{ totalElements() }}</p>
+    <nav class="pagination-bar" aria-label="Paginacion">
+      <p class="pagination-summary">Pagina {{ currentPage() + 1 }} de {{ totalPages() }} // Total: {{ totalElements() }}</p>
       <div class="pagination-buttons">
         <button type="button" class="btn-pagination" [disabled]="currentPage() === 0" (click)="goToPage(currentPage() - 1)">
           Anterior
@@ -179,7 +164,6 @@
   }
 </div>
 
-<!-- Modal de confirmación reutilizable -->
 <app-confirm-modal
   [visible]="confirmModalVisible()"
   [title]="confirmModalTitle()"
@@ -190,7 +174,6 @@
   (confirmed)="onConfirmModalConfirmed()"
   (cancelled)="onConfirmModalCancelled()" />
 
-<!-- Modal de filtros -->
 @if (filtersModalVisible()) {
   <div class="filters-modal-overlay" (click)="closeFiltersModal()">
     <div class="filters-modal" (click)="$event.stopPropagation(); onFiltersModalClick($event)">
@@ -201,9 +184,9 @@
         </button>
       </div>
       <div class="filters-modal-body">
-        <p class="filters-modal-hint">La búsqueda se realiza con el campo superior. Aquí puedes filtrar por rol, estado y en línea.</p>
+        <p class="filters-modal-hint">La busqueda se realiza con el campo superior. Aqui puedes filtrar por rol, estado y en linea.</p>
         <div class="filters-form">
-          <label class="filter-field">
+          <div class="filter-field">
             <span class="filter-label">Rol</span>
             <div class="custom-select" [class.open]="roleFilterOpen()" (click)="$event.stopPropagation()">
               <button type="button" class="custom-select-trigger" (click)="openOnlyRoleFilter()"
@@ -220,8 +203,8 @@
                 }
               </ul>
             </div>
-          </label>
-          <label class="filter-field">
+          </div>
+          <div class="filter-field">
             <span class="filter-label">Estado</span>
             <div class="custom-select" [class.open]="enabledFilterOpen()" (click)="$event.stopPropagation()">
               <button type="button" class="custom-select-trigger" (click)="openOnlyEnabledFilter()"
@@ -238,9 +221,9 @@
                 }
               </ul>
             </div>
-          </label>
-          <label class="filter-field">
-            <span class="filter-label">En línea</span>
+          </div>
+          <div class="filter-field">
+            <span class="filter-label">En linea</span>
             <div class="custom-select" [class.open]="onlineFilterOpen()" (click)="$event.stopPropagation()">
               <button type="button" class="custom-select-trigger" (click)="openOnlyOnlineFilter()"
                 [attr.aria-expanded]="onlineFilterOpen()" aria-haspopup="listbox">
@@ -256,7 +239,7 @@
                 }
               </ul>
             </div>
-          </label>
+          </div>
         </div>
         <div class="filters-modal-actions">
           <button type="button" class="btn-control" (click)="clearFilters()">Limpiar</button>

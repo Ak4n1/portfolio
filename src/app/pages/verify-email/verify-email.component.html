@@ -1,17 +1,28 @@
 <section class="auth-page">
   <div class="auth-container">
     @if (state === 'verifying') {
+      <p class="auth-kicker">VERIFICACION EN CURSO</p>
       <h2 class="auth-title">Verificando tu email...</h2>
       <p class="auth-message">Por favor, espera.</p>
     }
 
     @if (state === 'success') {
-      <h2 class="auth-title">¡Email verificado!</h2>
-      <p class="auth-success">Tu cuenta está activa. Ya puedes iniciar sesión.</p>
-      <a routerLink="/login" class="btn-submit">Iniciar Sesión</a>
+      <p class="auth-kicker">ACCESO HABILITADO</p>
+      <h2 class="auth-title">Email verificado</h2>
+      <p class="auth-success">Tu cuenta esta activa. Ya puedes iniciar sesion.</p>
+
+      <div class="auth-info-grid">
+        <div class="auth-info-item"><i class="fas fa-shield-alt"></i> Acceso seguro habilitado</div>
+
+      </div>
+
+      <div class="auth-primary-action">
+        <a routerLink="/login" class="btn-submit">Iniciar sesion</a>
+      </div>
     }
 
     @if (state === 'error') {
+      <p class="auth-kicker">NO SE PUDO VALIDAR</p>
       <h2 class="auth-title">Error al verificar</h2>
       <p class="auth-error">{{ errorMessage }}</p>
       <div class="auth-actions">
@@ -19,9 +30,9 @@
           Reintentar
         </button>
         <button type="button" class="btn-secondary" (click)="goToResendVerification()">
-          Reenviar Email
+          Reenviar email
         </button>
-        <a routerLink="/login" class="btn-submit">Ir a Login</a>
+        <a routerLink="/login" class="btn-submit">Ir a login</a>
       </div>
     }
   </div>

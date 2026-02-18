@@ -3,8 +3,9 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { timeout } from 'rxjs/operators';
 import { Project, ProjectRequest, ImageUploadResponse } from '../models/project.model';
+import { environment } from '../../../environments/environment';
 
-const API_BASE = 'http://localhost:8080';
+const API_BASE = environment.apiBaseUrl;
 const REQUEST_TIMEOUT_MS = 15000;
 
 @Injectable({
@@ -65,6 +66,14 @@ export class ProjectService {
   deleteImage(projectId: number, imageId: number): Observable<void> {
     return this.http.delete<void>(
       `${API_BASE}/api/projects/${projectId}/images/${imageId}`,
+      { withCredentials: true }
+    );
+  }
+
+  setPrimaryImage(projectId: number, imageId: number): Observable<Project> {
+    return this.http.patch<Project>(
+      `${API_BASE}/api/projects/${projectId}/images/${imageId}/primary`,
+      {},
       { withCredentials: true }
     );
   }

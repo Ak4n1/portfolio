@@ -3,8 +3,9 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { SendManualNotificationRequest } from '../models/send-manual-notification-request.model';
 import { SendManualNotificationResponse } from '../models/send-manual-notification-response.model';
+import { environment } from '../../../environments/environment';
 
-const API_BASE = 'http://localhost:8080';
+const API_BASE = environment.apiBaseUrl;
 const SEND_URL = `${API_BASE}/api/admin/notifications/send`;
 
 @Injectable({

@@ -15,11 +15,8 @@ import { DashboardLayoutComponent } from './dashboard-layout.component';
   styles: [`
     :host {
       display: block;
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
+      position: relative;
+      min-height: 100dvh;
       z-index: 1;
     }
   `]

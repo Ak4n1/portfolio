@@ -5,8 +5,9 @@ import { SendBulkEmailRequest } from '../models/send-bulk-email-request.model';
 import { SendBulkEmailResponse } from '../models/send-bulk-email-response.model';
 import { CheckRecipientsRequest } from '../models/check-recipients-request.model';
 import { CheckRecipientsResponse } from '../models/check-recipients-response.model';
+import { environment } from '../../../environments/environment';
 
-const API_BASE = 'http://localhost:8080';
+const API_BASE = environment.apiBaseUrl;
 const SEND_URL = `${API_BASE}/api/admin/emails/send`;
 const CHECK_RECIPIENTS_URL = `${API_BASE}/api/admin/emails/check-recipients`;
 

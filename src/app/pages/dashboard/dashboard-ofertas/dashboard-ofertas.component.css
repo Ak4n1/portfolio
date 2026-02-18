@@ -158,6 +158,37 @@
   line-height: 1.5;
 }
 
+.auto-email-toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  border: 1px solid color-mix(in srgb, var(--color-text-primary) 16%, transparent);
+  border-radius: var(--border-radius-md);
+  background: color-mix(in srgb, var(--color-text-primary) 4%, transparent);
+}
+
+.auto-email-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.auto-email-label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.auto-email-hint {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+  line-height: 1.35;
+}
+
 .empty-text {
   color: var(--color-text-secondary);
   font-style: italic;

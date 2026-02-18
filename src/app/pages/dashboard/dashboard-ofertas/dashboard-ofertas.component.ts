@@ -26,6 +26,7 @@ export class DashboardOfertasComponent implements OnInit {
     skills = signal<ProfileSkillResponse[]>([]);
     rules = signal<AlertRuleResponse[]>([]);
     alertIntervalHours = signal<number>(24);
+    autoEmailEnabled = signal<boolean>(true);
     filterCountry = signal<string>('');
     filterLanguage = signal<string>('');
     filterSource = signal<string>('');
@@ -117,6 +118,7 @@ export class DashboardOfertasComponent implements OnInit {
         this.jobService.getSettings().subscribe({
             next: s => {
                 this.alertIntervalHours.set(s.alertIntervalHours);
+                this.autoEmailEnabled.set(s.autoEmailEnabled ?? true);
                 this.filterCountry.set(s.filterCountry || '');
                 this.filterLanguage.set(s.filterLanguage || '');
                 this.filterSource.set(s.filterSource || ''); // Load source
@@ -263,6 +265,11 @@ export class DashboardOfertasComponent implements OnInit {
         this.saveSettings();
     }
 
+    toggleAutoEmail(enabled: boolean): void {
+        this.autoEmailEnabled.set(enabled);
+        this.saveSettings();
+    }
+
     updateFilterCountry(value: string): void {
         this.filterCountry.set(value);
         this.saveSettings();
@@ -278,12 +285,14 @@ export class DashboardOfertasComponent implements OnInit {
     private saveSettings(): void {
         this.jobService.updateSettings({
             alertIntervalHours: this.alertIntervalHours(),
+            autoEmailEnabled: this.autoEmailEnabled(),
             filterCountry: this.filterCountry() || undefined,
             filterLanguage: this.filterLanguage() || undefined,
             filterSource: this.filterSource() || undefined
         }).subscribe({
             next: s => {
                 this.alertIntervalHours.set(s.alertIntervalHours);
+                this.autoEmailEnabled.set(s.autoEmailEnabled ?? true);
                 this.filterCountry.set(s.filterCountry || '');
                 this.filterLanguage.set(s.filterLanguage || '');
                 this.filterSource.set(s.filterSource || '');

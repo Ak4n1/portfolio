@@ -74,7 +74,8 @@ export class SidebarComponent implements OnInit {
       title: 'Sistema',
       items: [
         { label: 'Dashboard', icon: 'fas fa-home', route: '/dashboard/user' },
-        { label: 'Notificaciones', icon: 'fas fa-bell', route: '/dashboard/notificaciones' }
+        { label: 'Notificaciones', icon: 'fas fa-bell', route: '/dashboard/notificaciones' },
+        { label: 'Chat IA', icon: 'fas fa-comments', route: '/dashboard/chat' }
       ]
     },
     {
@@ -92,7 +93,8 @@ export class SidebarComponent implements OnInit {
       title: 'Sistema',
       items: [
         { label: 'Dashboard', icon: 'fas fa-home', route: '/dashboard/admin' },
-        { label: 'Notificaciones', icon: 'fas fa-bell', route: '/dashboard/notificaciones' }
+        { label: 'Notificaciones', icon: 'fas fa-bell', route: '/dashboard/notificaciones' },
+        { label: 'Chat IA', icon: 'fas fa-comments', route: '/dashboard/chat' }
       ]
     },
     {
@@ -102,7 +104,8 @@ export class SidebarComponent implements OnInit {
         { label: 'Noticias', icon: 'fas fa-newspaper', route: '/dashboard/noticias' },
         { label: 'Usuarios', icon: 'fas fa-users', route: '/dashboard/usuarios' },
         { label: 'Ofertas', icon: 'fas fa-briefcase', route: '/dashboard/ofertas' },
-        { label: 'Mensajes', icon: 'fas fa-address-book', route: '/dashboard/contactos' }
+        { label: 'Mensajes', icon: 'fas fa-address-book', route: '/dashboard/contactos' },
+        { label: 'Chatbot IA', icon: 'fas fa-robot', route: '/dashboard/chatbot-config' }
       ]
     }
   ];

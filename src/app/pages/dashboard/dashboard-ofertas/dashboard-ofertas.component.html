@@ -190,6 +190,23 @@
           <h2 class="config-section-title">Frecuencia</h2>
         </div>
         <p class="section-desc">¿Cada cuánto buscamos ofertas y enviamos el digest por email?</p>
+        <div class="auto-email-toggle-row">
+          <div class="auto-email-copy">
+            <span class="auto-email-label">Emails automáticos</span>
+            <span class="auto-email-hint">
+              @if (autoEmailEnabled()) {
+              Activo: el scheduler enviará emails automáticamente.
+              } @else {
+              Desactivado: solo se enviarán emails manuales.
+              }
+            </span>
+          </div>
+          <label class="config-switch">
+            <input type="checkbox" [checked]="autoEmailEnabled()"
+              (change)="toggleAutoEmail($any($event.target).checked)" />
+            <span class="config-switch-slider"></span>
+          </label>
+        </div>
         <div class="interval-options">
           @for (opt of intervalOptions; track opt.value) {
           <button class="interval-btn" [class.interval-active]="alertIntervalHours() === opt.value"
