@@ -34,6 +34,8 @@
             </span>
             <span class="history-time">{{ formatUpdatedAt(item.updatedAt) }}</span>
           </div>
+        } @empty {
+          <div class="history-empty">Todavia no hay conversaciones guardadas.</div>
         }
       </div>
     </aside>
@@ -41,6 +43,7 @@
     <section class="chat-panel">
       <app-chat
         [seedMessages]="activeSeedMessages()"
+        [conversationKey]="selectedHistoryId()"
         (conversationChange)="onConversationChange($event)" />
     </section>
   </div>

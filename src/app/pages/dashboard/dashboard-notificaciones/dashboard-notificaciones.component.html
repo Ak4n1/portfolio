@@ -487,7 +487,15 @@
               <h3 class="notif-card-title">{{ n.title }}</h3>
               <span class="notif-card-time">{{ getRelativeTime(n.createdAt) }}</span>
             </div>
-            <p class="notif-card-message">{{ n.message }}</p>
+            <p class="notif-card-message" [class.expanded]="isMessageExpanded(n.id)">{{ n.message }}</p>
+            @if (hasLongMessage(n.message)) {
+            <button
+              type="button"
+              class="notif-card-message-toggle"
+              (click)="toggleMessageExpanded(n, $event)">
+              {{ isMessageExpanded(n.id) ? 'Ver menos' : 'Ver mas' }}
+            </button>
+            }
           </div>
           <div class="notif-card-actions">
             @if (!n.read) {

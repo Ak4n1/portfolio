@@ -4,6 +4,27 @@
     <p>Panel admin para elegir proveedor, modelo y reglas del asistente.</p>
   </header>
 
+  <div class="chatbot-tabs">
+    <button
+      type="button"
+      class="chatbot-tab-btn"
+      [class.active]="activeTab() === 'config'"
+      (click)="setTab('config')">
+      Configuracion
+    </button>
+    <button
+      type="button"
+      class="chatbot-tab-btn"
+      [class.active]="activeTab() === 'audit'"
+      (click)="setTab('audit')">
+      Auditoria
+    </button>
+  </div>
+
+  @if (activeTab() === 'audit') {
+    <app-chatbot-audit />
+  } @else {
+
   @if (loading()) {
     <section class="chatbot-card">
       <p class="chatbot-muted">Cargando configuracion...</p>
@@ -225,6 +246,7 @@
         }
       </section>
     </div>
+  }
   }
 </div>
 

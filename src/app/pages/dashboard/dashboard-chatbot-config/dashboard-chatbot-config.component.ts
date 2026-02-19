@@ -5,6 +5,7 @@ import { ChatbotConfigService } from '../../../core/services/chatbot-config.serv
 import { ChatProvider, ChatbotConfig, ChatbotProjectOption } from '../../../core/models/chatbot-config.model';
 import { ChatService } from '../../../core/services/chat.service';
 import { OpenRouterUsageComponent } from './openrouter-usage/openrouter-usage.component';
+import { ChatbotAuditComponent } from './chatbot-audit/chatbot-audit.component';
 
 interface PreviewMessage {
   role: 'user' | 'assistant';
@@ -14,7 +15,7 @@ interface PreviewMessage {
 @Component({
   selector: 'app-dashboard-chatbot-config',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, OpenRouterUsageComponent],
+  imports: [CommonModule, ReactiveFormsModule, OpenRouterUsageComponent, ChatbotAuditComponent],
   templateUrl: './dashboard-chatbot-config.component.html',
   styleUrl: './dashboard-chatbot-config.component.css'
 })
@@ -44,6 +45,7 @@ export class DashboardChatbotConfigComponent implements OnInit {
   editingStackValue = signal('');
   profileStacks = signal<string[]>([]);
   providerOpen = signal(false);
+  activeTab = signal<'config' | 'audit'>('config');
 
   providerOptions: { value: ChatProvider; label: string }[] = [
     { value: 'OPENROUTER', label: 'OpenRouter' },
@@ -69,6 +71,10 @@ export class DashboardChatbotConfigComponent implements OnInit {
   ngOnInit(): void {
     this.loadConfig();
     this.loadProjectOptions();
+  }
+
+  setTab(tab: 'config' | 'audit'): void {
+    this.activeTab.set(tab);
   }
 
   getSelectedProviderLabel(): string {

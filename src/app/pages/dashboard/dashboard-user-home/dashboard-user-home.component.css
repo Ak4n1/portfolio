@@ -120,22 +120,22 @@
   transform: none;
 }
 
-.id-card-wrapper {
+.social-card-wrapper {
   perspective: 1000px;
 }
 
-.id-card {
+.social-card {
   position: relative;
   overflow: hidden;
   border-radius: var(--border-radius-xl);
-  padding: 1.5rem;
+  padding: 1.35rem;
   background: color-mix(in srgb, var(--color-primary) 6%, var(--background-dark));
-  border: 1px solid color-mix(in srgb, var(--color-primary) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 14%, transparent);
   box-shadow: var(--shadow-card);
   transition: transform 0.25s ease, border-color 0.25s ease;
 }
 
-.id-card::before {
+.social-card::before {
   content: '';
   position: absolute;
   inset: 0 auto 0 0;
@@ -143,82 +143,90 @@
   background: var(--color-primary);
 }
 
-.id-card:hover {
+.social-card:hover {
   transform: translateY(-3px);
   border-color: color-mix(in srgb, var(--color-primary) 35%, transparent);
 }
 
-.id-card-header {
+.social-card-header {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 1.5rem;
+  flex-direction: column;
+  gap: 0.2rem;
+  margin-bottom: 1rem;
 }
 
-.id-brand {
-  font-size: 0.875rem;
+.social-title {
+  font-size: 1rem;
   font-weight: 800;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.04em;
   color: var(--color-text-primary);
+}
+
+.social-subtitle {
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   font-family: 'Fira Code', monospace;
-  opacity: 0.9;
+  color: var(--color-text-secondary);
 }
 
-.id-chip {
-  width: 42px;
-  height: 30px;
-  border-radius: 6px;
-  background: linear-gradient(135deg, #ffd75f 0%, #c89100 100%);
-  border: 1px solid rgba(0, 0, 0, 0.15);
-}
-
-.id-card-body {
+.social-links-list {
   display: flex;
-  gap: 1rem;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.social-link-item {
+  display: flex;
   align-items: center;
+  gap: 0.75rem;
+  text-decoration: none;
+  border-radius: 0.7rem;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid color-mix(in srgb, var(--color-text-primary) 15%, transparent);
+  background: color-mix(in srgb, var(--color-text-primary) 6%, transparent);
+  color: var(--color-text-primary);
+  transition: transform 0.2s, border-color 0.2s, background 0.2s;
 }
 
-.id-photo {
-  width: 72px;
-  height: 72px;
-  flex-shrink: 0;
-  display: flex;
+.social-link-item:hover {
+  transform: translateY(-1px);
+  border-color: color-mix(in srgb, var(--color-primary) 40%, transparent);
+  background: color-mix(in srgb, var(--color-primary) 12%, transparent);
+}
+
+.social-link-item:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.social-link-icon {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 12px;
-  font-size: 1.75rem;
-  color: var(--color-primary);
-  background: color-mix(in srgb, var(--color-text-primary) 8%, transparent);
   border: 1px solid color-mix(in srgb, var(--color-text-primary) 20%, transparent);
+  background: color-mix(in srgb, var(--color-text-primary) 8%, transparent);
+  font-size: 1rem;
 }
 
-.id-name {
-  display: block;
-  font-size: 1.125rem;
-  font-weight: 700;
+.social-link-item.linkedin .social-link-icon {
+  color: #0a66c2;
+}
+
+.social-link-item.github .social-link-icon {
   color: var(--color-text-primary);
 }
 
-.id-role {
-  display: block;
-  margin-top: 0.15rem;
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  color: var(--color-primary);
-  font-family: 'Fira Code', monospace;
+.social-link-item.instagram .social-link-icon {
+  color: #e1306c;
 }
 
-.id-card-footer {
-  display: flex;
-  justify-content: space-between;
-  gap: 1rem;
-  margin-top: 1.5rem;
-  padding-top: 1rem;
-  border-top: 1px solid color-mix(in srgb, var(--color-primary) 12%, transparent);
-  font-size: 0.75rem;
-  color: var(--color-text-secondary);
-  font-family: 'Fira Code', monospace;
+.social-link-text {
+  font-size: 0.9rem;
+  font-weight: 700;
 }
 
 .dashboard-grid {
@@ -593,19 +601,24 @@
 }
 
 .console-line {
-  display: flex;
-  gap: 0.65rem;
+  display: grid;
+  grid-template-columns: auto auto minmax(0, 1fr);
+  column-gap: 0.65rem;
   align-items: flex-start;
   font-size: 0.82rem;
 }
 
 .console-line .timestamp {
   color: #6b7d75;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .console-line .tag {
   color: var(--color-primary);
   font-weight: 700;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .console-line .tag::before {
@@ -618,6 +631,10 @@
 
 .console-line .message {
   color: #cfe4dc;
+  min-width: 0;
+  line-height: 1.35;
+  overflow-wrap: break-word;
+  word-break: normal;
 }
 
 .console-line.update .tag {
@@ -741,12 +758,12 @@
 :host-context([data-theme='light']) .news-empty,
 :host-context([data-theme='light']) .notif-card-mini,
 :host-context([data-theme='light']) .popular-card,
-:host-context([data-theme='light']) .id-card {
+:host-context([data-theme='light']) .social-card {
   background: color-mix(in srgb, var(--color-primary) 8%, rgb(255, 255, 255));
   border-color: color-mix(in srgb, var(--color-primary) 20%, transparent);
 }
 
-:host-context([data-theme='light']) .id-photo,
+:host-context([data-theme='light']) .social-link-icon,
 :host-context([data-theme='light']) .project-thumb {
   background: color-mix(in srgb, var(--color-text-primary) 8%, transparent);
   border-color: color-mix(in srgb, var(--color-text-primary) 20%, transparent);
@@ -779,6 +796,10 @@
   color: #1f2933;
 }
 
+:host-context([data-theme='light']) .social-link-item.github .social-link-icon {
+  color: #111827;
+}
+
 @media (max-width: 1200px) {
   .dashboard-grid {
     grid-template-columns: 1fr;
@@ -794,7 +815,7 @@
     grid-template-columns: 1fr;
   }
 
-  .id-card-wrapper {
+  .social-card-wrapper {
     max-width: 420px;
   }
 }
@@ -805,8 +826,33 @@
     gap: var(--spacing-lg);
   }
 
+  .news-section,
+  .activity-section,
+  .notifications-section {
+    padding: 0.85rem;
+  }
+
   .section-title {
     font-size: 1.15rem;
+  }
+
+  .activity-section .section-header {
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 0.6rem;
+  }
+
+  .activity-section .section-title {
+    min-width: 0;
+  }
+
+  .activity-sort {
+    margin-left: auto;
+    min-width: 0;
+  }
+
+  .activity-sort-label {
+    display: none;
   }
 
   .console-window {
@@ -843,9 +889,35 @@
     width: 100%;
   }
 
-  .id-card-footer {
-    flex-direction: column;
-    gap: 0.25rem;
+  .activity-section .section-title {
+    font-size: 1.05rem;
+  }
+
+  .activity-sort-btn {
+    min-height: 1.6rem;
+    padding: 0.15rem 0.42rem;
+    font-size: 0.66rem;
+  }
+
+  .console-body {
+    padding: 0.72rem 0.75rem;
+    gap: 0.35rem;
+  }
+
+  .console-line {
+    display: block;
+    font-size: 0.76rem;
+  }
+
+  .console-line .timestamp,
+  .console-line .tag {
+    display: inline-block;
+    vertical-align: top;
+  }
+
+  .console-line .message {
+    display: block;
+    margin-top: 0.2rem;
   }
 }
 

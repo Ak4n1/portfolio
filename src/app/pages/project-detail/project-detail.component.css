@@ -125,6 +125,7 @@
   color: var(--background-dark);
   border: 2px solid transparent;
   transition: all 0.3s ease;
+  white-space: nowrap;
 }
 
 .edit-project-button:hover {
@@ -970,6 +971,29 @@
 
   .project-icon-large {
     font-size: 3rem;
+  }
+
+  .section-title-row {
+    flex-wrap: nowrap;
+    gap: 0.5rem;
+  }
+
+  .section-title-accent {
+    font-size: 1.25rem;
+    min-width: 0;
+  }
+
+  .section-title-actions {
+    flex-wrap: nowrap;
+    gap: 0.45rem;
+    margin-left: auto;
+  }
+
+  .edit-project-button {
+    padding: 0.45rem 0.8rem;
+    font-size: 0.85rem;
+    gap: 0.35rem;
+    border-radius: 18px;
   }
 }
 

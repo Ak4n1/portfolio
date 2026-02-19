@@ -58,6 +58,7 @@ export class DashboardNotificacionesComponent implements OnInit, OnDestroy {
   });
 
   notifications = signal<SystemNotificationResponse[]>([]);
+  expandedMessages = signal<Record<number, boolean>>({});
   unreadCount = signal(0);
   totalElements = signal(0);
   totalPages = signal(0);
@@ -493,6 +494,7 @@ export class DashboardNotificacionesComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (res) => {
           this.notifications.set(res.notifications ?? []);
+          this.expandedMessages.set({});
           this.totalElements.set(res.totalElements);
           this.totalPages.set(res.totalPages);
           this.currentPage.set(res.page);
@@ -541,6 +543,23 @@ export class DashboardNotificacionesComponent implements OnInit, OnDestroy {
         this.notificationService.notifyUnreadCountChanged();
       },
     });
+  }
+
+  isMessageExpanded(notificationId: number): boolean {
+    return !!this.expandedMessages()[notificationId];
+  }
+
+  hasLongMessage(message: string | null | undefined): boolean {
+    return (message?.trim().length ?? 0) > 110;
+  }
+
+  toggleMessageExpanded(notification: SystemNotificationResponse, event: Event): void {
+    event.stopPropagation();
+    const id = notification.id;
+    this.expandedMessages.update((current) => ({
+      ...current,
+      [id]: !current[id],
+    }));
   }
 
   sendManualNotification(): void {

@@ -20,28 +20,32 @@
                 </button>
             </div>
         </div>
-
-        <div class="id-card-wrapper">
-            <div class="id-card">
-                <div class="id-card-header">
-                    <span class="id-brand">AK4N1_OS</span>
-                    <div class="id-chip"></div>
+        <aside class="social-card-wrapper" aria-label="Redes de Juan Encabo">
+            <div class="social-card">
+                <div class="social-card-header">
+                    <span class="social-title">Conecta conmigo</span>
+                    <span class="social-subtitle">Redes profesionales</span>
                 </div>
-                <div class="id-card-body">
-                    <div class="id-photo">
-                        <i class="fas fa-user-astronaut"></i>
-                    </div>
-                    <div class="id-info">
-                        <span class="id-name">{{ user()?.firstName }} {{ user()?.lastName }}</span>
-                        <span class="id-role">ACCESS_LEVEL: {{ accessLevel() }}</span>
-                    </div>
-                </div>
-                <div class="id-card-footer">
-                    <span>ID: 0x{{ user()?.id?.toString(16) || 'XXXX' }}</span>
-                    <span>EST: {{ user()?.createdAt | date:'yyyy' }}</span>
+                <div class="social-links-list">
+                    <a class="social-link-item linkedin" href="https://www.linkedin.com/in/juan-encabo/" target="_blank"
+                        rel="noopener noreferrer" aria-label="LinkedIn de Juan Encabo">
+                        <span class="social-link-icon"><i class="fab fa-linkedin-in"></i></span>
+                        <span class="social-link-text">LinkedIn</span>
+                    </a>
+                    <a class="social-link-item github" href="https://github.com/Ak4n1" target="_blank"
+                        rel="noopener noreferrer" aria-label="GitHub de Juan Encabo">
+                        <span class="social-link-icon"><i class="fab fa-github"></i></span>
+                        <span class="social-link-text">GitHub</span>
+                    </a>
+                    <a class="social-link-item instagram" href="https://www.instagram.com/juannencabo/" target="_blank"
+                        rel="noopener noreferrer" aria-label="Instagram de Juan Encabo">
+                        <span class="social-link-icon"><i class="fab fa-instagram"></i></span>
+                        <span class="social-link-text">Instagram</span>
+                    </a>
                 </div>
             </div>
-        </div>
+        </aside>
+
     </header>
 
     <div class="dashboard-grid">
@@ -198,6 +202,5 @@
         }
     </section>
 
-    <div class="badge-base LI-profile-badge" data-locale="es_ES" data-size="medium" data-theme="dark" data-type="VERTICAL" data-vanity="juan-encabo" data-version="v1"><a class="badge-base__link LI-simple-link" href="https://ar.linkedin.com/in/juan-encabo?trk=profile-badge">Juan Encabo</a></div>
               
 </div>

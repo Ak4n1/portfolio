@@ -62,6 +62,7 @@ export class ChatComponent implements AfterViewInit, OnChanges {
   private readonly sanitizer = inject(DomSanitizer);
 
   @Input() seedMessages: ChatPersistedMessage[] | null = null;
+  @Input() conversationKey: string | null = null;
   @Output() conversationChange = new EventEmitter<ChatPersistedMessage[]>();
 
   @ViewChild('messagesViewport') private messagesViewport?: ElementRef<HTMLElement>;
@@ -195,7 +196,10 @@ export class ChatComponent implements AfterViewInit, OnChanges {
   private fetchAssistantResponse(message: string, request: ActiveRequest): Promise<ChatResponse> {
     return new Promise<ChatResponse>((resolve, reject) => {
       request.rejectPending = reject;
-      request.subscription = this.chatService.sendMessage({ message }).subscribe({
+      request.subscription = this.chatService.sendMessage({
+        message,
+        conversationKey: this.conversationKey ?? undefined,
+      }).subscribe({
         next: (response) => resolve(response),
         error: (error) => reject(error),
       });

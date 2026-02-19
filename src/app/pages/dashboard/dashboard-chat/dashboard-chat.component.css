@@ -92,7 +92,9 @@
   flex-direction: column;
   gap: 0.45rem;
   overflow-y: auto;
+  flex: 1 1 auto;
   min-height: 0;
+  padding-right: 0.15rem;
 }
 
 .history-item {
@@ -140,6 +142,15 @@
   color: var(--color-text-secondary);
 }
 
+.history-empty {
+  border: 1px dashed color-mix(in srgb, var(--color-text-primary) 20%, transparent);
+  border-radius: 8px;
+  padding: 0.6rem;
+  font-size: 0.78rem;
+  color: var(--color-text-secondary);
+  text-align: center;
+}
+
 .history-delete-btn {
   width: 1.45rem;
   height: 1.45rem;
@@ -170,7 +181,13 @@
   height: 100%;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1200px) {
+  .dashboard-chat-layout {
+    grid-template-columns: minmax(240px, 280px) minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 1024px) {
   .dashboard-chat-page {
     padding: var(--spacing-md);
     overflow: auto;
@@ -183,6 +200,66 @@
 
   .history-panel {
     height: auto;
-    max-height: 240px;
+    max-height: none;
+    min-height: 290px;
+    overflow: hidden;
+  }
+
+  .history-list {
+    height: 210px;
+    max-height: 210px;
+    min-height: 0;
+  }
+
+  .chat-panel {
+    height: auto;
+    min-height: 420px;
+  }
+
+  .chat-panel app-chat {
+    height: auto;
+    min-height: 420px;
+  }
+}
+
+@media (max-width: 769px) {
+  .dashboard-chat-page {
+    padding: var(--spacing-md);
+    overflow: auto;
+  }
+
+  .dashboard-chat-header h1 {
+    font-size: 1.4rem;
+  }
+
+  .history-panel-header {
+    gap: 0.5rem;
+  }
+
+  .history-new-btn {
+    padding: 0.32rem 0.48rem;
+    font-size: 0.72rem;
+  }
+
+  .history-panel {
+    padding: 0.72rem;
+  }
+
+  .history-list {
+    height: 210px;
+    max-height: 210px;
+    min-height: 0;
+  }
+
+  .history-item {
+    padding: 0.5rem 0.55rem;
+  }
+
+  .chat-panel {
+    min-height: 60dvh;
+  }
+
+  .chat-panel app-chat {
+    min-height: 60dvh;
   }
 }

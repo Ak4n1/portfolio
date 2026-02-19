@@ -380,7 +380,7 @@
   text-decoration: underline;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 769px) {
   .notifications-dropdown {
     position: fixed;
     left: 50%;
@@ -461,7 +461,7 @@
   line-height: 1;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 769px) {
   .dashboard-header {
     height: var(--header-height-mobile);
     min-height: var(--header-height-mobile);

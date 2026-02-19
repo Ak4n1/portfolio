@@ -13,6 +13,33 @@
   color: var(--color-text-secondary);
 }
 
+.chatbot-tabs {
+  margin-top: 1rem;
+  display: inline-flex;
+  gap: 0.45rem;
+  padding: 0.22rem;
+  border-radius: 0.6rem;
+  border: 1px solid color-mix(in srgb, var(--color-primary) 24%, transparent);
+  background: color-mix(in srgb, var(--color-primary) 8%, transparent);
+}
+
+.chatbot-tab-btn {
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--color-text-secondary);
+  border-radius: 0.45rem;
+  padding: 0.45rem 0.72rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.chatbot-tab-btn.active {
+  color: var(--color-primary);
+  border-color: color-mix(in srgb, var(--color-primary) 50%, transparent);
+  background: color-mix(in srgb, var(--color-primary) 12%, transparent);
+}
+
 .chatbot-grid {
   margin-top: 1.2rem;
   display: grid;

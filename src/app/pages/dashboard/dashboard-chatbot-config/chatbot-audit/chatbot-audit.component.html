@@ -1,0 +1,99 @@
+<section class="audit-card">
+  <header class="audit-header">
+    <h2>Auditoria de Chat</h2>
+    <p>Busca un usuario, selecciona una conversacion y revisa mensajes.</p>
+  </header>
+
+  <div class="audit-user-search">
+    <input
+      class="audit-input"
+      [value]="query()"
+      (input)="setQuery($any($event.target).value)"
+      (keydown.enter)="searchUsers()"
+      placeholder="Buscar usuario por nombre o email..." />
+    <button type="button" class="audit-btn" (click)="searchUsers()" [disabled]="searchingUsers()">
+      {{ searchingUsers() ? 'Buscando...' : 'Buscar' }}
+    </button>
+  </div>
+
+  @if (userSearchError()) {
+    <p class="audit-error">{{ userSearchError() }}</p>
+  }
+
+  <div class="audit-layout">
+    <aside class="audit-column audit-users">
+      <h3>Usuarios</h3>
+      <div class="audit-list">
+        @for (user of users(); track user.id) {
+          <button
+            type="button"
+            class="audit-list-item"
+            [class.active]="selectedUser()?.id === user.id"
+            (click)="selectUser(user)">
+            <span class="audit-item-title">{{ getUserDisplayName(user) }}</span>
+            <span class="audit-item-sub">{{ user.email }}</span>
+          </button>
+        } @empty {
+          <p class="audit-muted">Sin resultados.</p>
+        }
+      </div>
+    </aside>
+
+    <aside class="audit-column audit-conversations">
+      <h3>Conversaciones</h3>
+      @if (loadingConversations()) {
+        <p class="audit-muted">Cargando conversaciones...</p>
+      } @else if (conversationsError()) {
+        <p class="audit-error">{{ conversationsError() }}</p>
+      } @else {
+        <div class="audit-list">
+          @for (conversation of conversations(); track conversation.conversationId) {
+            <button
+              type="button"
+              class="audit-list-item"
+              [class.active]="selectedConversationId() === conversation.conversationId"
+              (click)="selectConversation(conversation)">
+              <span class="audit-item-title">{{ conversation.preview }}</span>
+              <span class="audit-item-sub">
+                {{ conversation.provider }} / {{ conversation.model }}
+              </span>
+              <span class="audit-item-sub">{{ formatDate(conversation.updatedAt) }}</span>
+            </button>
+          } @empty {
+            <p class="audit-muted">Este usuario no tiene conversaciones auditadas.</p>
+          }
+        </div>
+      }
+    </aside>
+
+    <section class="audit-column audit-detail">
+      <h3>Detalle</h3>
+      @if (loadingConversationDetail()) {
+        <p class="audit-muted">Cargando detalle...</p>
+      } @else if (conversationDetailError()) {
+        <p class="audit-error">{{ conversationDetailError() }}</p>
+      } @else if (conversationDetail()) {
+        <div class="audit-detail-meta">
+          <span><strong>Usuario:</strong> {{ conversationDetail()!.user.fullName }}</span>
+          <span><strong>Email:</strong> {{ conversationDetail()!.user.email }}</span>
+          <span><strong>Proveedor:</strong> {{ conversationDetail()!.provider }} / {{ conversationDetail()!.model }}</span>
+          <span><strong>Fecha:</strong> {{ formatDate(conversationDetail()!.updatedAt) }}</span>
+        </div>
+
+        <div class="audit-messages">
+          @for (message of conversationDetail()!.messages; track $index) {
+            <article class="audit-message" [class.user]="message.role === 'user'" [class.assistant]="message.role === 'assistant'">
+              <header>
+                <strong>{{ message.role === 'user' ? 'Usuario' : 'Asistente' }}</strong>
+                <span>{{ formatDate(message.createdAt) }}</span>
+              </header>
+              <p>{{ message.content }}</p>
+            </article>
+          }
+        </div>
+      } @else {
+        <p class="audit-muted">Selecciona una conversacion para ver los mensajes.</p>
+      }
+    </section>
+  </div>
+</section>

@@ -1,0 +1,178 @@
+.audit-card {
+  background: color-mix(in srgb, var(--color-primary) 6%, var(--background-dark));
+  border: 1px solid color-mix(in srgb, var(--color-primary) 15%, transparent);
+  border-radius: 0.75rem;
+  padding: 1.2rem;
+}
+
+.audit-header h2 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.audit-header p {
+  margin: 0.35rem 0 0.9rem;
+  color: var(--color-text-secondary);
+}
+
+.audit-user-search {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.6rem;
+  margin-bottom: 0.9rem;
+}
+
+.audit-input {
+  width: 100%;
+  padding: 0.72rem 0.8rem;
+  border-radius: 0.5rem;
+  border: 1px solid color-mix(in srgb, var(--color-text-primary) 22%, transparent);
+  background: color-mix(in srgb, var(--color-text-primary) 8%, transparent);
+  color: var(--color-text-primary);
+}
+
+.audit-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+.audit-btn {
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.68rem 0.9rem;
+  font-weight: 700;
+  background: var(--color-primary);
+  color: var(--color-primary-contrast, #0b1211);
+  cursor: pointer;
+}
+
+.audit-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.audit-layout {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.9fr) minmax(240px, 1fr) minmax(300px, 1.6fr);
+  gap: 0.8rem;
+}
+
+.audit-column h3 {
+  margin: 0 0 0.6rem;
+  font-size: 0.9rem;
+}
+
+.audit-list {
+  border: 1px solid color-mix(in srgb, var(--color-text-primary) 16%, transparent);
+  border-radius: 0.5rem;
+  background: color-mix(in srgb, var(--color-text-primary) 4%, transparent);
+  max-height: 420px;
+  overflow-y: auto;
+  padding: 0.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.audit-list-item {
+  width: 100%;
+  text-align: left;
+  border: 1px solid color-mix(in srgb, var(--color-text-primary) 18%, transparent);
+  background: color-mix(in srgb, var(--color-text-primary) 6%, transparent);
+  color: var(--color-text-primary);
+  border-radius: 0.45rem;
+  padding: 0.48rem 0.55rem;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.audit-list-item.active {
+  border-color: color-mix(in srgb, var(--color-primary) 55%, transparent);
+  background: color-mix(in srgb, var(--color-primary) 13%, transparent);
+}
+
+.audit-item-title {
+  font-size: 0.82rem;
+  line-height: 1.3;
+}
+
+.audit-item-sub {
+  font-size: 0.72rem;
+  color: var(--color-text-secondary);
+}
+
+.audit-detail-meta {
+  display: grid;
+  gap: 0.3rem;
+  margin-bottom: 0.65rem;
+  font-size: 0.8rem;
+}
+
+.audit-messages {
+  border: 1px solid color-mix(in srgb, var(--color-text-primary) 16%, transparent);
+  border-radius: 0.5rem;
+  background: color-mix(in srgb, var(--color-text-primary) 4%, transparent);
+  max-height: 420px;
+  overflow-y: auto;
+  padding: 0.55rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.48rem;
+}
+
+.audit-message {
+  border-radius: 0.45rem;
+  padding: 0.5rem 0.55rem;
+  border: 1px solid transparent;
+}
+
+.audit-message.user {
+  background: color-mix(in srgb, var(--color-primary) 12%, transparent);
+  border-color: color-mix(in srgb, var(--color-primary) 30%, transparent);
+}
+
+.audit-message.assistant {
+  background: color-mix(in srgb, var(--color-text-primary) 9%, transparent);
+  border-color: color-mix(in srgb, var(--color-text-primary) 18%, transparent);
+}
+
+.audit-message header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.22rem;
+  font-size: 0.72rem;
+  color: var(--color-text-secondary);
+}
+
+.audit-message p {
+  margin: 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  line-height: 1.35;
+  font-size: 0.84rem;
+}
+
+.audit-muted {
+  color: var(--color-text-secondary);
+  font-size: 0.84rem;
+}
+
+.audit-error {
+  color: #f87171;
+  font-size: 0.84rem;
+}
+
+@media (max-width: 1200px) {
+  .audit-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .audit-list,
+  .audit-messages {
+    max-height: 260px;
+  }
+}
