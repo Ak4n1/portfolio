@@ -1,21 +1,17 @@
 <div class="config-page">
-  <!-- Page Header -->
   <header class="config-header">
     <div class="config-header-inner">
       <div class="config-header-titles">
         <h1 class="config-title">
-          <span class="config-title-accent">/</span>Configuración
+          <span class="config-title-accent">/</span>Configuracion
         </h1>
         <p class="config-subtitle">Personaliza tu entorno de desarrollo y preferencias de seguridad.</p>
       </div>
-
     </div>
   </header>
 
   <div class="config-grid">
-    <!-- Left Column -->
     <div class="config-main">
-      <!-- Datos de la cuenta -->
       <section class="cyber-card config-section">
         <div class="config-section-header">
           <span class="material-symbols-outlined config-section-icon">account_circle</span>
@@ -26,16 +22,16 @@
           <div class="config-form-grid">
             <div class="config-field">
               <label class="config-label">Nombre</label>
-              <input formControlName="firstName" class="config-input" type="text" />
+              <input formControlName="firstName" class="config-input" type="text" autocomplete="given-name" />
             </div>
             <div class="config-field">
               <label class="config-label">Apellido</label>
-              <input formControlName="lastName" class="config-input" type="text" />
+              <input formControlName="lastName" class="config-input" type="text" autocomplete="family-name" />
             </div>
             <div class="config-field config-field-full">
               <label class="config-label">Email (solo lectura)</label>
               <div class="config-input-wrap config-input-readonly">
-                <input formControlName="email" class="config-input" type="email" readonly />
+                <input formControlName="email" class="config-input" type="email" readonly autocomplete="email" />
                 <span class="material-symbols-outlined config-input-icon">lock</span>
               </div>
             </div>
@@ -58,43 +54,47 @@
         }
       </section>
 
-      <!-- Seguridad -->
       <section class="cyber-card config-section">
         <div class="config-section-header">
           <span class="material-symbols-outlined config-section-icon">shield_lock</span>
           <h2 class="config-section-title">Seguridad</h2>
         </div>
         <form [formGroup]="passwordForm" (ngSubmit)="updatePassword()" class="config-form">
+          <input type="email" autocomplete="username email" [value]="profile()?.email || ''" tabindex="-1"
+            aria-hidden="true" style="position:absolute;left:-10000px;width:1px;height:1px;opacity:0;pointer-events:none;" />
           <div class="config-field">
-            <label class="config-label">Contraseña actual</label>
+            <label class="config-label">Contrasena actual</label>
             <div class="config-input-wrap">
               <input formControlName="currentPassword" class="config-input"
-                [type]="showCurrentPassword() ? 'text' : 'password'" placeholder="••••••••••••" />
+                [type]="showCurrentPassword() ? 'text' : 'password'" placeholder="************"
+                autocomplete="current-password" />
               <button type="button" class="config-password-toggle" (click)="toggleCurrentPassword()"
-                [attr.aria-label]="showCurrentPassword() ? 'Ocultar contraseña' : 'Ver contraseña'">
+                [attr.aria-label]="showCurrentPassword() ? 'Ocultar contrasena' : 'Ver contrasena'">
                 <i class="fas" [class.fa-eye]="!showCurrentPassword()" [class.fa-eye-slash]="showCurrentPassword()"></i>
               </button>
             </div>
           </div>
           <div class="config-form-row">
             <div class="config-field">
-              <label class="config-label">Nueva contraseña</label>
+              <label class="config-label">Nueva contrasena</label>
               <div class="config-input-wrap">
                 <input formControlName="newPassword" class="config-input"
-                  [type]="showNewPassword() ? 'text' : 'password'" placeholder="Escribe tu nueva contraseña" />
+                  [type]="showNewPassword() ? 'text' : 'password'" placeholder="Escribe tu nueva contrasena"
+                  autocomplete="new-password" />
                 <button type="button" class="config-password-toggle" (click)="toggleNewPassword()"
-                  [attr.aria-label]="showNewPassword() ? 'Ocultar contraseña' : 'Ver contraseña'">
+                  [attr.aria-label]="showNewPassword() ? 'Ocultar contrasena' : 'Ver contrasena'">
                   <i class="fas" [class.fa-eye]="!showNewPassword()" [class.fa-eye-slash]="showNewPassword()"></i>
                 </button>
               </div>
             </div>
             <div class="config-field">
-              <label class="config-label">Confirmar nueva contraseña</label>
+              <label class="config-label">Confirmar nueva contrasena</label>
               <div class="config-input-wrap">
                 <input formControlName="confirmPassword" class="config-input"
-                  [type]="showConfirmPassword() ? 'text' : 'password'" placeholder="Repite la contraseña" />
+                  [type]="showConfirmPassword() ? 'text' : 'password'" placeholder="Repite la contrasena"
+                  autocomplete="new-password" />
                 <button type="button" class="config-password-toggle" (click)="toggleConfirmPassword()"
-                  [attr.aria-label]="showConfirmPassword() ? 'Ocultar contraseña' : 'Ver contraseña'">
+                  [attr.aria-label]="showConfirmPassword() ? 'Ocultar contrasena' : 'Ver contrasena'">
                   <i class="fas" [class.fa-eye]="!showConfirmPassword()"
                     [class.fa-eye-slash]="showConfirmPassword()"></i>
                 </button>
@@ -102,19 +102,19 @@
             </div>
           </div>
           @if (passwordForm.get('confirmPassword')?.touched && passwordForm.hasError('passwordMismatch')) {
-          <p class="config-field-error">Las contraseñas no coinciden.</p>
+          <p class="config-field-error">Las contrasenas no coinciden.</p>
           }
           <div class="config-password-actions">
             <button type="submit" class="config-btn-outline" [disabled]="passwordForm.invalid || savingPassword()">
-              Actualizar Contraseña
+              Actualizar Contrasena
             </button>
             <button type="button" class="config-btn-outline" (click)="goToForgotPassword()">
-              ¿Olvidaste tu contraseña?
+              Olvidaste tu contrasena?
             </button>
           </div>
         </form>
         <div class="config-danger-zone">
-          <p>Advertencia: Esta acción no se puede deshacer.</p>
+          <p>Advertencia: Esta accion no se puede deshacer.</p>
           <button type="button" class="config-btn-danger" (click)="openDisableAccountModal()">
             Deshabilitar cuenta
           </button>
@@ -122,9 +122,7 @@
       </section>
     </div>
 
-    <!-- Right Column -->
     <aside class="config-sidebar">
-      <!-- Notificaciones -->
       <section class="cyber-card config-section">
         <div class="config-section-header">
           <span class="material-symbols-outlined config-section-icon">mail</span>
@@ -142,20 +140,128 @@
           <p class="config-field-error config-notif-error">{{ receiveEmailsError() }}</p>
           }
           <div class="config-notif-info">
-            <p>Recibirás correos sobre anuncios, actualizaciones y recordatorios. Los correos transaccionales
-              (seguridad, verificación) son obligatorios y no se pueden desactivar.</p>
+            <p>Recibiras correos sobre anuncios, actualizaciones y recordatorios. Los correos transaccionales
+              (seguridad, verificacion) son obligatorios y no se pueden desactivar.</p>
           </div>
         </div>
       </section>
 
-      <!-- Ayuda -->
       <section class="config-help-card">
         <span class="material-symbols-outlined config-help-icon">support_agent</span>
-        <h3 class="config-help-title">¿Necesitas ayuda?</h3>
+        <h3 class="config-help-title">Necesitas ayuda?</h3>
         <p class="config-help-text">Si tienes problemas con tu cuenta o seguridad, contacta con nuestro equipo.</p>
         <a [routerLink]="['/contact']" class="config-help-link">
           Contactar <span class="material-symbols-outlined config-help-arrow">arrow_forward</span>
         </a>
+      </section>
+
+      <section class="cyber-card config-section">
+        <div class="config-section-header">
+          <span class="material-symbols-outlined config-section-icon">security</span>
+          <h2 class="config-section-title">Autenticacion en dos pasos (2FA)</h2>
+        </div>
+
+        @if (loadingTwoFactor()) {
+        <p class="config-muted">Cargando estado 2FA...</p>
+        } @else if (twoFactorEnabled()) {
+        <p class="config-ok">2FA esta activo en tu cuenta.</p>
+        <form class="config-2fa-box" (submit)="$event.preventDefault(); openDisableTwoFactorModal()">
+          <input type="email" autocomplete="username email" [value]="profile()?.email || ''" tabindex="-1"
+            aria-hidden="true" style="position:absolute;left:-10000px;width:1px;height:1px;opacity:0;pointer-events:none;" />
+          <div class="config-field">
+            <label class="config-label">Password actual</label>
+            <input class="config-input" type="password" [value]="disableTwoFactorPassword()"
+              (input)="setDisableTwoFactorPassword($any($event.target).value)" placeholder="Tu password actual"
+              autocomplete="current-password" />
+          </div>
+          <div class="config-field">
+            <label class="config-label">Codigo 2FA actual</label>
+            <input class="config-input" [value]="disableTwoFactorCode()"
+              (input)="setDisableTwoFactorCode($any($event.target).value)" maxlength="6" inputmode="numeric"
+              placeholder="123456" autocomplete="one-time-code" />
+          </div>
+          <div class="config-2fa-actions">
+            <button type="button" class="config-btn-outline" (click)="openTrustedDevicesModal()">
+              Ver dispositivos confiables
+            </button>
+            <button type="submit" class="config-btn-danger"
+              [disabled]="disablingTwoFactor() || !disableTwoFactorPassword() || disableTwoFactorCode().length < 6">
+              {{ disablingTwoFactor() ? 'Desactivando...' : 'Desactivar 2FA' }}
+            </button>
+          </div>
+        </form>
+        } @else {
+        <p class="config-muted">Genera el QR, escanealo en Google Authenticator y valida un codigo.</p>
+        <button type="button" class="config-btn-primary" (click)="initTwoFactor()" [disabled]="enablingTwoFactor()">
+          {{ enablingTwoFactor() ? 'Preparando...' : 'Generar QR 2FA' }}
+        </button>
+
+        @if (twoFactorInitData(); as data) {
+        <div class="config-2fa-box">
+          <div class="config-2fa-box-head">
+            <button type="button" class="config-2fa-close-btn" (click)="closeTwoFactorSetup()"
+              aria-label="Cerrar configuracion de QR">
+              Cerrar
+            </button>
+          </div>
+          <div class="config-qr-wrap">
+            <img class="config-qr-image" [src]="data.qrDataUrl" alt="QR para configurar 2FA" />
+          </div>
+          <p class="config-2fa-expire">Expira en {{ data.expiresInSec }}s</p>
+
+          <button type="button" class="config-btn-link" (click)="toggleManualSetup()">
+            {{ showManualSetup() ? 'Ocultar clave manual' : 'No puedo escanear QR' }}
+          </button>
+
+          @if (showManualSetup()) {
+          <div class="config-2fa-manual-card">
+            <p class="config-2fa-label">Clave manual (solo respaldo)</p>
+            <div class="config-2fa-key-row">
+              <code class="config-2fa-key">{{ data.manualKey }}</code>
+              <button type="button" class="config-2fa-copy-btn" (click)="copyManualKey(data.manualKey)"
+                [attr.aria-label]="manualKeyCopied() ? 'Clave copiada' : 'Copiar clave manual'">
+                {{ manualKeyCopied() ? 'Copiado' : 'Copiar' }}
+              </button>
+            </div>
+            <p class="config-2fa-manual-hint">Guardala en un lugar seguro. No la compartas.</p>
+          </div>
+          }
+
+          <div class="config-field">
+            <label class="config-label">Codigo de 6 digitos</label>
+            <input class="config-input" [value]="twoFactorCode()" (input)="setTwoFactorCode($any($event.target).value)"
+              maxlength="6" inputmode="numeric" autocomplete="one-time-code" />
+          </div>
+          <button type="button" class="config-btn-outline config-2fa-confirm-btn" (click)="verifyAndEnableTwoFactor()"
+            [disabled]="twoFactorCode().length < 6 || enablingTwoFactor()">
+            {{ enablingTwoFactor() ? 'Verificando...' : 'Confirmar y activar 2FA' }}
+          </button>
+        </div>
+        }
+        }
+        @if (twoFactorError()) {
+        <p class="config-field-error">{{ twoFactorError() }}</p>
+        }
+        @if (twoFactorInfo()) {
+        <p class="config-ok">{{ twoFactorInfo() }}</p>
+        }
+        <details class="config-2fa-help-accordion">
+          <summary class="config-2fa-help-head">
+            <img class="config-2fa-help-icon" src="/assets/images/google-authenticator-3.svg"
+              alt="Icono Google Authenticator" />
+            <h3 class="config-2fa-help-title">Autenticador de Google - Ayuda</h3>
+            <span class="material-symbols-outlined config-2fa-help-chevron">expand_more</span>
+          </summary>
+          <div class="config-2fa-help-body">
+            <ol class="config-2fa-help-steps">
+              <li>Instala Google Authenticator en tu telefono.</li>
+              <li>Presiona "Generar QR 2FA" y escanea el codigo.</li>
+              <li>Ingresa el codigo de 6 digitos para activar 2FA.</li>
+              <li>En proximos inicios de sesion, usa ese codigo.</li>
+            </ol>
+            <p class="config-2fa-help-note">Ten en cuenta que al desactivar 2FA, el codigo en el Autenticador de Google se desactivará. Debes generar uno nuevo</p>
+          </div>
+        </details>
       </section>
     </aside>
   </div>
@@ -164,3 +270,48 @@
 <app-confirm-modal [visible]="confirmDisableVisible()" title="Deshabilitar cuenta" [message]="confirmDisableMessage()"
   type="danger" confirmText="Deshabilitar" cancelText="Cancelar" (confirmed)="onConfirmDisableAccount()"
   (cancelled)="closeDisableAccountModal()" />
+
+<app-confirm-modal [visible]="confirmDisableTwoFactorVisible()" title="Desactivar 2FA"
+  [message]="confirmDisableTwoFactorMessage()" type="warning" confirmText="Desactivar 2FA" cancelText="Cancelar"
+  (confirmed)="onConfirmDisableTwoFactor()" (cancelled)="closeDisableTwoFactorModal()" />
+
+@if (trustedDevicesModalVisible()) {
+<div class="td-modal-overlay" (click)="closeTrustedDevicesModal()">
+  <div class="td-modal" (click)="$event.stopPropagation()">
+    <div class="td-modal-head">
+      <h3>Dispositivos confiables</h3>
+      <button type="button" class="td-close" (click)="closeTrustedDevicesModal()">X</button>
+    </div>
+    @if (trustedDevicesLoading()) {
+    <p class="config-muted">Cargando dispositivos...</p>
+    } @else if (trustedDevices().length === 0) {
+    <p class="config-muted">No hay dispositivos confiables activos.</p>
+    } @else {
+    <div class="td-list">
+      @for (d of trustedDevices(); track d.id) {
+      <div class="td-item">
+        <div class="td-meta">
+          <p class="td-name">
+            {{ d.deviceName || 'Dispositivo' }}
+            @if (d.current) {
+            <span class="td-current-badge">Este dispositivo</span>
+            }
+          </p>
+          <p class="td-date">Ultimo uso: {{ d.lastUsedAt ? (d.lastUsedAt | date:'short') : '-' }}</p>
+          <p class="td-date">Expira: {{ d.expiresAt | date:'short' }}</p>
+        </div>
+        <button type="button" class="config-btn-outline" [disabled]="d.current" (click)="revokeTrustedDevice(d.id)">
+          Revocar
+        </button>
+      </div>
+      }
+    </div>
+    <div class="td-actions">
+      <button type="button" class="config-btn-danger" (click)="revokeAllTrustedDevices()">
+        Revocar todos (excepto actual)
+      </button>
+    </div>
+    }
+  </div>
+</div>
+}

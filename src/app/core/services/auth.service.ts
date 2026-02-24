@@ -22,7 +22,11 @@ export interface UpdateProfileRequest {
 }
 
 export interface AuthResponse {
-  user: UserResponse;
+  user?: UserResponse;
+  mfaRequired?: boolean;
+  challengeId?: string;
+  challengeExpiresInSec?: number;
+  methods?: string[];
 }
 
 export interface RegisterRequest {
@@ -30,6 +34,48 @@ export interface RegisterRequest {
   password: string;
   firstName: string;
   lastName: string;
+}
+
+export interface VerifyTwoFactorLoginRequest {
+  challengeId: string;
+  code: string;
+  trustThisDevice: boolean;
+  deviceName?: string;
+}
+
+export interface TwoFactorStatusResponse {
+  enabled: boolean;
+}
+
+export interface TwoFactorSetupInitResponse {
+  manualKey: string;
+  otpauthUri: string;
+  qrDataUrl: string;
+  expiresInSec: number;
+}
+
+export interface TwoFactorSetupVerifyResponse {
+  status: number;
+  message: string;
+  requiresReLogin?: boolean;
+}
+
+export interface ApiStatusResponse {
+  status: number;
+  message: string;
+}
+
+export interface TrustedDeviceItem {
+  id: number;
+  deviceName: string;
+  current?: boolean;
+  createdAt: string;
+  lastUsedAt?: string;
+  expiresAt: string;
+}
+
+export interface TrustedDevicesResponse {
+  items: TrustedDeviceItem[];
 }
 
 @Injectable({
@@ -49,6 +95,14 @@ export class AuthService {
     return this.http.post<AuthResponse>(
       `${this.apiUrl}/login`,
       { email, password },
+      this.getOptions()
+    );
+  }
+
+  verifyLogin2FA(data: VerifyTwoFactorLoginRequest): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(
+      `${this.apiUrl}/login/2fa/verify`,
+      data,
       this.getOptions()
     );
   }
@@ -114,5 +168,37 @@ export class AuthService {
       {},
       this.getOptions()
     );
+  }
+
+  getTwoFactorStatus(): Observable<TwoFactorStatusResponse> {
+    return this.http.get<TwoFactorStatusResponse>(`${this.apiUrl}/2fa/status`, this.getOptions());
+  }
+
+  initTwoFactorSetup(): Observable<TwoFactorSetupInitResponse> {
+    return this.http.post<TwoFactorSetupInitResponse>(`${this.apiUrl}/2fa/setup/init`, {}, this.getOptions());
+  }
+
+  verifyTwoFactorSetup(code: string): Observable<TwoFactorSetupVerifyResponse> {
+    return this.http.post<TwoFactorSetupVerifyResponse>(
+      `${this.apiUrl}/2fa/setup/verify`,
+      { code },
+      this.getOptions()
+    );
+  }
+
+  disableTwoFactor(currentPassword: string, code: string): Observable<ApiStatusResponse> {
+    return this.http.post<ApiStatusResponse>(`${this.apiUrl}/2fa/disable`, { currentPassword, code }, this.getOptions());
+  }
+
+  getTrustedDevices(): Observable<TrustedDevicesResponse> {
+    return this.http.get<TrustedDevicesResponse>(`${this.apiUrl}/2fa/trusted-devices`, this.getOptions());
+  }
+
+  revokeTrustedDevice(deviceId: number): Observable<ApiStatusResponse> {
+    return this.http.delete<ApiStatusResponse>(`${this.apiUrl}/2fa/trusted-devices/${deviceId}`, this.getOptions());
+  }
+
+  revokeAllTrustedDevices(): Observable<ApiStatusResponse> {
+    return this.http.post<ApiStatusResponse>(`${this.apiUrl}/2fa/trusted-devices/revoke-all`, {}, this.getOptions());
   }
 }

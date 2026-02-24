@@ -8,7 +8,7 @@
         <div class="input-with-icon">
           <i class="fas fa-user input-icon"></i>
           <input id="register-name" type="text" formControlName="name" placeholder="Tu nombre"
-            [class.error]="isFieldInvalid('name')" />
+            [class.error]="isFieldInvalid('name')" autocomplete="given-name" />
         </div>
         <span class="error-msg" *ngIf="isFieldInvalid('name')">Mínimo 2 caracteres</span>
       </div>
@@ -17,7 +17,7 @@
         <div class="input-with-icon">
           <i class="fas fa-user-tag input-icon"></i>
           <input id="register-apellido" type="text" formControlName="apellido" placeholder="Tu apellido"
-            [class.error]="isFieldInvalid('apellido')" />
+            [class.error]="isFieldInvalid('apellido')" autocomplete="family-name" />
         </div>
         <span class="error-msg" *ngIf="isFieldInvalid('apellido')">Mínimo 2 caracteres</span>
       </div>
@@ -27,7 +27,7 @@
       <div class="input-with-icon">
         <i class="fas fa-envelope input-icon"></i>
         <input id="register-email" type="email" formControlName="email" placeholder="tu&#64;email.com"
-          [class.error]="isFieldInvalid('email')" />
+          [class.error]="isFieldInvalid('email')" autocomplete="username email" />
       </div>
       <span class="error-msg" *ngIf="isFieldInvalid('email')">Email válido requerido</span>
     </div>
@@ -36,7 +36,8 @@
       <div class="password-input-wrapper input-with-icon">
         <i class="fas fa-lock input-icon"></i>
         <input id="register-password" [type]="showPassword ? 'text' : 'password'" formControlName="password"
-          placeholder="••••••••" [class.error]="isFieldInvalid('password')" class="password-input-field" />
+          placeholder="********" [class.error]="isFieldInvalid('password')" class="password-input-field"
+          autocomplete="new-password" />
         <button type="button" class="password-toggle"
           [attr.aria-label]="showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'" (click)="togglePassword()">
           <i [class]="showPassword ? 'fas fa-eye' : 'fas fa-eye-slash'" aria-hidden="true"></i>
@@ -49,8 +50,8 @@
       <div class="password-input-wrapper input-with-icon">
         <i class="fas fa-shield-halved input-icon"></i>
         <input id="register-confirm" [type]="showConfirmPassword ? 'text' : 'password'"
-          formControlName="confirmPassword" placeholder="••••••••" [class.error]="isConfirmPasswordInvalid()"
-          class="password-input-field" />
+          formControlName="confirmPassword" placeholder="********" [class.error]="isConfirmPasswordInvalid()"
+          class="password-input-field" autocomplete="new-password" />
         <button type="button" class="password-toggle"
           [attr.aria-label]="showConfirmPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'"
           (click)="toggleConfirmPassword()">

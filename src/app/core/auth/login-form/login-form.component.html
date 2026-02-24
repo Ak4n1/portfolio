@@ -7,7 +7,7 @@
       <div class="input-with-icon">
         <i class="fas fa-envelope input-icon"></i>
         <input id="login-email" type="email" formControlName="email" placeholder="tu@email.com"
-          [class.error]="isFieldInvalid('email')" />
+          [class.error]="isFieldInvalid('email')" autocomplete="username email" />
       </div>
       <span class="error-msg" *ngIf="isFieldInvalid('email')">Email válido requerido</span>
     </div>
@@ -16,7 +16,8 @@
       <div class="password-input-wrapper input-with-icon">
         <i class="fas fa-lock input-icon"></i>
         <input id="login-password" [type]="showPassword ? 'text' : 'password'" formControlName="password"
-          placeholder="••••••••" [class.error]="isFieldInvalid('password')" class="password-input-field" />
+          placeholder="********" [class.error]="isFieldInvalid('password')" class="password-input-field"
+          autocomplete="current-password" />
         <button type="button" class="password-toggle"
           [attr.aria-label]="showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'" (click)="togglePassword()">
           <i [class]="showPassword ? 'fas fa-eye' : 'fas fa-eye-slash'" aria-hidden="true"></i>

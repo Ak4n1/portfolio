@@ -253,7 +253,7 @@
                 </tr>
               </thead>
               <tbody>
-                @for (p of topPagesWithPercent(); track p.path) {
+                @for (p of topPagesWithPercent(); track p.path + '-' + $index) {
                   <tr>
                     <td class="path-cell">{{ p.path }}</td>
                     <td class="text-right">{{ p.views }}</td>
@@ -282,7 +282,7 @@
                 </tr>
               </thead>
               <tbody>
-                @for (proj of projectsWithInterest(); track proj.projectId) {
+                @for (proj of projectsWithInterest(); track proj.projectId + '-' + $index) {
                   <tr>
                     <td>{{ proj.title }}</td>
                     <td class="text-right">{{ proj.views }}</td>
