@@ -12,3 +12,32 @@
   height: 100%;
   background: transparent;
 }
+
+.preloader-v2-skip {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 10000;
+  border: 1px solid rgba(2, 163, 126, 0.5);
+  background: rgba(5, 14, 12, 0.72);
+  color: rgba(228, 255, 248, 0.96);
+  border-radius: 999px;
+  padding: 0.5rem 0.9rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  backdrop-filter: blur(6px);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.preloader-v2-skip:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 0 12px rgba(2, 163, 126, 0.35);
+  background: rgba(8, 24, 20, 0.82);
+}
+
+.preloader-v2-skip:focus-visible {
+  outline: 2px solid rgba(2, 163, 126, 0.9);
+  outline-offset: 2px;
+}

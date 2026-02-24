@@ -712,3 +712,62 @@
   0%, 100% { opacity: 1; }
   50% { opacity: 0.5; }
 }
+
+/* Light theme tuning for analytics dashboard */
+:host-context([data-theme='light']) .analytics-page {
+  background: var(--background-dark);
+}
+
+:host-context([data-theme='light']) .analytics-page .cyber-card {
+  background: color-mix(in srgb, #ffffff 88%, var(--color-primary) 12%);
+  border-color: color-mix(in srgb, var(--color-primary) 26%, transparent);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+:host-context([data-theme='light']) .period-selector {
+  background: color-mix(in srgb, #ffffff 92%, var(--color-primary) 8%);
+  border-color: color-mix(in srgb, var(--color-primary) 24%, transparent);
+}
+
+:host-context([data-theme='light']) .period-selector button {
+  color: #3f4a57;
+}
+
+:host-context([data-theme='light']) .period-selector button.active {
+  color: #ffffff;
+}
+
+:host-context([data-theme='light']) .btn-ga {
+  border-color: color-mix(in srgb, var(--color-primary) 50%, transparent);
+  background: color-mix(in srgb, var(--color-primary) 8%, #ffffff);
+}
+
+:host-context([data-theme='light']) .card-label,
+:host-context([data-theme='light']) .mini-bar-title,
+:host-context([data-theme='light']) .bar-label,
+:host-context([data-theme='light']) .table-empty,
+:host-context([data-theme='light']) .analytics-footer,
+:host-context([data-theme='light']) .chart-empty,
+:host-context([data-theme='light']) .donut-legend-label {
+  color: #5b6675;
+}
+
+:host-context([data-theme='light']) .metric-card .card-value,
+:host-context([data-theme='light']) .donut-total,
+:host-context([data-theme='light']) .data-table td,
+:host-context([data-theme='light']) .title-main {
+  color: #1f2937;
+}
+
+:host-context([data-theme='light']) .data-table thead tr,
+:host-context([data-theme='light']) .table-header {
+  border-bottom-color: rgba(15, 23, 42, 0.1);
+}
+
+:host-context([data-theme='light']) .data-table tbody tr {
+  border-bottom-color: rgba(15, 23, 42, 0.08);
+}
+
+:host-context([data-theme='light']) .data-table tbody tr:hover {
+  background: rgba(15, 23, 42, 0.04);
+}

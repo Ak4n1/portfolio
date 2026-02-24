@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+
+# Private and auth areas
+Disallow: /dashboard/
+Disallow: /login
+Disallow: /register
+Disallow: /forgot-password
+Disallow: /reset-password/
+Disallow: /verify-email
+Disallow: /verify-email-pending
+
+Sitemap: https://ak4n1.site/sitemap.xml

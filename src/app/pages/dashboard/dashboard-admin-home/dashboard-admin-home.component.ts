@@ -1,10 +1,12 @@
-import { Component, OnInit, inject, signal, computed } from '@angular/core';
+import { Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { BaseChartDirective } from 'ng2-charts';
 import { AnalyticsTrafficService } from '../../../core/services/analytics/analytics-traffic.service';
 import { AnalyticsContentService } from '../../../core/services/analytics/analytics-content.service';
 import { AnalyticsService } from '../../../core/services/analytics/analytics.service';
+import { ThemeService } from '../../../core/services/theme.service';
 import {
   TrafficOverview,
   TrafficTimeSeriesPoint
@@ -26,6 +28,8 @@ export class DashboardAdminHomeComponent implements OnInit {
   private readonly trafficService = inject(AnalyticsTrafficService);
   private readonly contentService = inject(AnalyticsContentService);
   private readonly analyticsService = inject(AnalyticsService);
+  private readonly themeService = inject(ThemeService);
+  private readonly destroyRef = inject(DestroyRef);
 
   overview = signal<TrafficOverview | null>(null);
   trafficSeries = signal<TrafficTimeSeriesPoint[]>([]);
@@ -140,36 +144,11 @@ export class DashboardAdminHomeComponent implements OnInit {
     return list.map(p => ({ ...p, level: max > 0 ? Math.ceil((p.views / max) * 5) : 0 }));
   });
 
-  readonly chartOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: { legend: { labels: { color: '#e2e8f0' } } },
-    scales: {
-      x: { ticks: { color: '#94a3b8', maxTicksLimit: 12 }, grid: { color: 'rgba(148,163,184,0.1)' } },
-      y: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(148,163,184,0.1)' } }
-    }
-  };
+  chartOptions = this.buildLineChartOptions();
 
-  readonly barChartOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    indexAxis: 'y' as const,
-    plugins: { legend: { display: false } },
-    scales: {
-      x: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(148,163,184,0.1)' } },
-      y: { ticks: { color: '#94a3b8', font: { size: 11 } }, grid: { display: false } }
-    }
-  };
+  barChartOptions = this.buildBarChartOptions();
 
-  readonly barChartOptionsVertical = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: { legend: { display: false } },
-    scales: {
-      x: { ticks: { color: '#94a3b8', maxTicksLimit: 24 }, grid: { color: 'rgba(148,163,184,0.1)' } },
-      y: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(148,163,184,0.1)' } }
-    }
-  };
+  barChartOptionsVertical = this.buildBarChartOptionsVertical();
 
   toBarChartData(items: { label: string; value: number }[]) {
     const primary = 'rgba(2, 163, 126, 0.8)';
@@ -204,16 +183,12 @@ export class DashboardAdminHomeComponent implements OnInit {
     };
   }
 
-  readonly donutChartOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    cutout: '65%',
-    plugins: {
-      legend: { position: 'bottom' as const, labels: { color: '#94a3b8', font: { size: 10 }, padding: 8 } }
-    }
-  };
+  donutChartOptions = this.buildDonutChartOptions();
 
   ngOnInit(): void {
+    this.themeService.currentTheme$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.applyChartTheme());
     this.loadData();
   }
 
@@ -284,5 +259,80 @@ export class DashboardAdminHomeComponent implements OnInit {
     const m = Math.floor(seconds / 60);
     const s = Math.round(seconds % 60);
     return s > 0 ? `${m}m ${s}s` : `${m}m`;
+  }
+
+  private applyChartTheme(): void {
+    this.chartOptions = this.buildLineChartOptions();
+    this.barChartOptions = this.buildBarChartOptions();
+    this.barChartOptionsVertical = this.buildBarChartOptionsVertical();
+    this.donutChartOptions = this.buildDonutChartOptions();
+  }
+
+  private isLightTheme(): boolean {
+    return this.themeService.getCurrentTheme() === 'light';
+  }
+
+  private buildLineChartOptions() {
+    const isLight = this.isLightTheme();
+    const legendColor = isLight ? '#334155' : '#e2e8f0';
+    const ticksColor = isLight ? '#475569' : '#94a3b8';
+    const gridColor = isLight ? 'rgba(71,85,105,0.15)' : 'rgba(148,163,184,0.1)';
+
+    return {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { labels: { color: legendColor } } },
+      scales: {
+        x: { ticks: { color: ticksColor, maxTicksLimit: 12 }, grid: { color: gridColor } },
+        y: { ticks: { color: ticksColor }, grid: { color: gridColor } }
+      }
+    };
+  }
+
+  private buildBarChartOptions() {
+    const isLight = this.isLightTheme();
+    const ticksColor = isLight ? '#475569' : '#94a3b8';
+    const gridColor = isLight ? 'rgba(71,85,105,0.15)' : 'rgba(148,163,184,0.1)';
+
+    return {
+      responsive: true,
+      maintainAspectRatio: false,
+      indexAxis: 'y' as const,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { ticks: { color: ticksColor }, grid: { color: gridColor } },
+        y: { ticks: { color: ticksColor, font: { size: 11 } }, grid: { display: false } }
+      }
+    };
+  }
+
+  private buildBarChartOptionsVertical() {
+    const isLight = this.isLightTheme();
+    const ticksColor = isLight ? '#475569' : '#94a3b8';
+    const gridColor = isLight ? 'rgba(71,85,105,0.15)' : 'rgba(148,163,184,0.1)';
+
+    return {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { ticks: { color: ticksColor, maxTicksLimit: 24 }, grid: { color: gridColor } },
+        y: { ticks: { color: ticksColor }, grid: { color: gridColor } }
+      }
+    };
+  }
+
+  private buildDonutChartOptions() {
+    const isLight = this.isLightTheme();
+    const legendColor = isLight ? '#475569' : '#94a3b8';
+
+    return {
+      responsive: true,
+      maintainAspectRatio: false,
+      cutout: '65%',
+      plugins: {
+        legend: { position: 'bottom' as const, labels: { color: legendColor, font: { size: 10 }, padding: 8 } }
+      }
+    };
   }
 }

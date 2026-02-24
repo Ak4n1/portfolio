@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, AfterViewChecked, inject, computed, ChangeDetectorRef, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { DomSanitizer, SafeHtml, Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { trigger, transition, style, animate } from '@angular/animations';
@@ -36,6 +36,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy, AfterViewCheck
   private projectService = inject(ProjectService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  private titleService = inject(Title);
   private authStateService = inject(AuthStateService);
   private wsService = inject(WebSocketService);
   private analyticsService = inject(AnalyticsService);
@@ -135,6 +136,8 @@ export class ProjectDetailComponent implements OnInit, OnDestroy, AfterViewCheck
       next: (p) => {
         console.log('[ProjectDetail] getById success:', p?.id, p?.title);
         this._safeHtmlCache.clear();
+        const projectTitle = p?.title?.trim() || 'Detalle de proyecto';
+        this.titleService.setTitle(`Juan Encabo | ${projectTitle}`);
         // Diferir actualización para evitar bloquear el hilo principal durante CD
         setTimeout(() => {
           this.project = p;
@@ -151,6 +154,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy, AfterViewCheck
       },
       error: (err) => {
         console.error('[ProjectDetail] getById error:', err);
+        this.titleService.setTitle('Juan Encabo | Detalle de proyecto');
         this.project = null;
         this.loading = false;
         if (err?.name === 'TimeoutError') {

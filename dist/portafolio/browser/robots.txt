@@ -1,0 +1,22 @@
+User-agent: *
+Allow: /
+
+# Private and auth areas (custom domain at root)
+Disallow: /dashboard/
+Disallow: /login
+Disallow: /register
+Disallow: /forgot-password
+Disallow: /reset-password/
+Disallow: /verify-email
+Disallow: /verify-email-pending
+
+# Private and auth areas (GitHub Pages project path)
+Disallow: /portfolio/dashboard/
+Disallow: /portfolio/login
+Disallow: /portfolio/register
+Disallow: /portfolio/forgot-password
+Disallow: /portfolio/reset-password/
+Disallow: /portfolio/verify-email
+Disallow: /portfolio/verify-email-pending
+
+Sitemap: https://jeep12.github.io/portfolio/sitemap.xml

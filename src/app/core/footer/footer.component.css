@@ -3,96 +3,146 @@
   border-top: 1px solid var(--border-color);
   padding: 3rem 0 1rem;
   margin-top: auto;
+  /* CRÍTICO: no overflow:hidden aquí */
 }
 
-.footer-container {
+.footer-inner {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 2rem;
 }
 
-.footer-content {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 2rem;
-  margin-bottom: 2rem;
+/* ================================================
+   FILA SUPERIOR
+================================================ */
+.footer-top {
+  display: flex;
+  align-items: center;
+  gap: 3rem;
+  margin-bottom: 2.5rem;
+  /* CRÍTICO: no overflow:hidden */
 }
 
-.footer-section h3 {
-  color: var(--primary-color);
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
-  text-shadow: var(--shadow-neon);
+/* ================================================
+   BRAND — ocupa el espacio sobrante
+================================================ */
+.footer-brand {
+  flex: 1 1 0;
+  min-width: 0;
+  /* CRÍTICO: sin overflow, sin clip, sin transform */
 }
 
-.footer-section h4 {
-  color: var(--primary-color);
-  font-size: 1.2rem;
-  margin-bottom: 1rem;
+/* Host del canvas Three.js
+   El engine lee getBoundingClientRect() de este div
+   y crea el canvas con exactamente esas dimensiones.
+   NO poner overflow:hidden aquí. */
+.particle-host {
+  width: 100%;
+  height: 90px;
+  background: transparent;
+  cursor: crosshair;
+  /* Sin overflow, sin clip */
 }
 
-.footer-section p {
-  color: var(--text-secondary);
-  margin-bottom: 0.5rem;
-  line-height: 1.6;
+/* NO tocar el canvas con CSS de tamaño.
+   El engine ya setea width/height en px via style inline. */
+.particle-host canvas {
+  display: block;
 }
 
-.footer-section ul {
-  list-style: none;
-  padding: 0;
+/* ================================================
+   LINKS
+================================================ */
+.footer-links {
+  display: flex;
+  gap: 3rem;
+  flex-shrink: 0;
 }
 
-.footer-section ul li {
-  margin-bottom: 0.5rem;
+.footer-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
-.footer-section ul li a {
+.footer-col-title {
+  color: var(--primary-color, #00ffc3);
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+
+.footer-col a {
   color: var(--text-secondary);
   text-decoration: none;
-  transition: all 0.3s ease;
+  font-size: 0.9rem;
+  transition: color 0.2s ease, transform 0.2s ease;
   display: inline-block;
   position: relative;
 }
 
-.footer-section ul li a:hover {
-  color: var(--primary-color);
-  transform: translateX(5px);
+.footer-col a:hover {
+  color: var(--primary-color, #00ffc3);
+  transform: translateX(4px);
 }
 
-.footer-section ul li a::before {
+.footer-col a::after {
   content: '';
   position: absolute;
   bottom: -2px;
   left: 0;
   width: 0;
   height: 1px;
-  background: var(--primary-color);
-  transition: width 0.3s ease;
+  background: var(--primary-color, #00ffc3);
+  transition: width 0.25s ease;
 }
 
-.footer-section ul li a:hover::before {
+.footer-col a:hover::after {
   width: 100%;
 }
 
+/* ================================================
+   BOTTOM
+================================================ */
 .footer-bottom {
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid rgba(128,128,128,0.15);
   padding-top: 1rem;
   text-align: center;
 }
 
 .footer-bottom p {
-  color: var(--text-muted);
-  font-size: 0.9rem;
+  color: var(--text-muted, #666);
+  font-size: 0.85rem;
+  margin: 0;
 }
 
-/* Responsive */
+/* ================================================
+   RESPONSIVE
+================================================ */
 @media (max-width: 768px) {
-  .footer-content {
-    grid-template-columns: 1fr;
-    text-align: center;
+  .footer-top {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2rem;
   }
-  
-  .footer-section {
-    margin-bottom: 2rem;
+
+  .footer-brand {
+    width: 100%;
+  }
+
+  .particle-host {
+    height: 70px;
+  }
+
+  .footer-links {
+    width: 100%;
+    gap: 2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .footer-links {
+    flex-direction: column;
+    gap: 1.5rem;
   }
 }

@@ -1,34 +1,43 @@
 <footer class="footer">
-  <div class="footer-container">
-    <div class="footer-content">
-      <div class="footer-section">
-        <h3>Juan Encabo</h3>
-        <p>Full Stack Developer</p>
-        <p>Estudiante de TUDAI</p>
+  <div class="footer-inner">
+
+    <!-- FILA SUPERIOR: animación a la izquierda, links a la derecha -->
+    <div class="footer-top">
+
+      <!-- Bloque brand: canvas de partículas, sin nada más -->
+      <div class="footer-brand">
+        <div class="particle-host" #particleBrand></div>
       </div>
 
-      <div class="footer-section">
-        <h4>Enlaces</h4>
-        <ul>
-          <li><a routerLink="/home">Inicio</a></li>
-          <li><a routerLink="/about">Sobre mí</a></li>
-          <li><a routerLink="/projects">Proyectos</a></li>
-          <li><a routerLink="/contact">Contacto</a></li>
-        </ul>
+      <!-- Links -->
+      <div class="footer-links">
+        <div class="footer-col">
+          <span class="footer-col-title">Enlaces</span>
+          <a routerLink="/home">Inicio</a>
+          <a routerLink="/about">Sobre mí</a>
+          <a routerLink="/projects">Proyectos</a>
+          <a routerLink="/contact">Contacto</a>
+        </div>
+
+        <div class="footer-col">
+          <span class="footer-col-title">Contacto</span>
+          <a href="mailto:encabojuan@gmail.com" (click)="onEmailClick()">encabojuan&#64;gmail.com</a>
+          <a href="https://github.com/Ak4n1" target="_blank" rel="noopener" (click)="onGitHubClick()">GitHub</a>
+          <a href="https://www.linkedin.com/in/juan-encabo/" target="_blank" rel="noopener"
+            (click)="onLinkedInClick()">LinkedIn</a>
+          <a href="javascript:void(0)" (click)="enableNotifications($event)">
+            🔔 Activar notificaciones
+          </a>
+
+        </div>
       </div>
 
-      <div class="footer-section">
-        <h4>Contacto</h4>
-        <ul>
-          <li><a href="mailto:encabojuan@gmail.com" (click)="onEmailClick()">encabojuan&#64;gmail.com</a></li>
-          <li><a href="https://github.com/Ak4n1" target="_blank" (click)="onGitHubClick()">GitHub</a></li>
-          <li><a href="https://www.linkedin.com/in/juan-encabo/" target="_blank" (click)="onLinkedInClick()">LinkedIn</a></li>
-        </ul>
-      </div>
     </div>
 
+    <!-- FILA INFERIOR -->
     <div class="footer-bottom">
       <p>&copy; 2024 Juan Encabo. Todos los derechos reservados.</p>
     </div>
+
   </div>
 </footer>

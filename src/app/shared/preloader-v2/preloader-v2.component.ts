@@ -100,6 +100,11 @@ export class PreloaderV2Component implements AfterViewInit, OnDestroy {
   private rings: OrbitalRing[] = [];
   private hexValues: HexValue[] = [];
   private mouse: PointerState = { x: 0, y: 0, active: false };
+  private previousBodyOverflow = '';
+  private previousBodyTouchAction = '';
+  private previousBodyOverscrollBehavior = '';
+  private previousHtmlOverflow = '';
+  private previousHtmlOverscrollBehavior = '';
 
   private readonly onResize = (): void => {
     this.resizeCanvas();
@@ -162,6 +167,7 @@ export class PreloaderV2Component implements AfterViewInit, OnDestroy {
   constructor(private ngZone: NgZone) { }
 
   ngAfterViewInit(): void {
+    this.lockScroll();
     this.resolveThemeMode();
     this.observeThemeChanges();
 
@@ -197,6 +203,7 @@ export class PreloaderV2Component implements AfterViewInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.cleanup();
+    this.unlockScroll();
   }
 
   private cleanup(): void {
@@ -230,6 +237,7 @@ export class PreloaderV2Component implements AfterViewInit, OnDestroy {
     if (this.finished) return;
     this.finished = true;
     this.cleanup();
+    this.unlockScroll();
 
     this.ngZone.run(() => {
       this.complete.emit();
@@ -321,6 +329,22 @@ export class PreloaderV2Component implements AfterViewInit, OnDestroy {
     this.spawnMassiveShockwave(1000, 4.4);
     this.spawnBurstParticles(80, 4, 10);
     this.spawnSparkParticles(40, 2, 6);
+  }
+
+  onSkip(): void {
+    if (this.exiting || this.finished) return;
+
+    this.progress = 100;
+    this.phase = 3;
+    this.exitScheduled = true;
+
+    if (this.exitTimerId !== null) {
+      window.clearTimeout(this.exitTimerId);
+      this.exitTimerId = null;
+    }
+
+    // Deja ver el 100% y luego dispara la misma salida con estallido.
+    this.exitTimerId = window.setTimeout(() => this.startExit(), 120);
   }
 
   private spawnSystems(): void {
@@ -1222,5 +1246,35 @@ export class PreloaderV2Component implements AfterViewInit, OnDestroy {
     return this.themeMode === 'light'
       ? `rgba(30, 38, 40, ${alpha})`
       : `rgba(255, 255, 255, ${alpha})`;
+  }
+
+  private lockScroll(): void {
+    const bodyStyle = document.body?.style;
+    const htmlStyle = document.documentElement?.style;
+    if (!bodyStyle || !htmlStyle) return;
+
+    this.previousBodyOverflow = bodyStyle.overflow;
+    this.previousBodyTouchAction = bodyStyle.touchAction;
+    this.previousBodyOverscrollBehavior = bodyStyle.overscrollBehavior;
+    this.previousHtmlOverflow = htmlStyle.overflow;
+    this.previousHtmlOverscrollBehavior = htmlStyle.overscrollBehavior;
+
+    bodyStyle.overflow = 'hidden';
+    bodyStyle.touchAction = 'none';
+    bodyStyle.overscrollBehavior = 'none';
+    htmlStyle.overflow = 'hidden';
+    htmlStyle.overscrollBehavior = 'none';
+  }
+
+  private unlockScroll(): void {
+    const bodyStyle = document.body?.style;
+    const htmlStyle = document.documentElement?.style;
+    if (!bodyStyle || !htmlStyle) return;
+
+    bodyStyle.overflow = this.previousBodyOverflow;
+    bodyStyle.touchAction = this.previousBodyTouchAction;
+    bodyStyle.overscrollBehavior = this.previousBodyOverscrollBehavior;
+    htmlStyle.overflow = this.previousHtmlOverflow;
+    htmlStyle.overscrollBehavior = this.previousHtmlOverscrollBehavior;
   }
 }

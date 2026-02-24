@@ -277,6 +277,18 @@ main.dashboard-main {
   color: var(--text-accent);
 }
 
+/* Dashboard section titles */
+.dashboard-title-prefix {
+  color: var(--color-primary);
+  font-family: 'Fira Code', monospace;
+  font-weight: 800;
+  margin-right: 0.3rem;
+}
+
+.dashboard-title-accent {
+  color: var(--color-primary);
+}
+
 /* Animaciones globales */
 @keyframes fadeIn {
   from {
