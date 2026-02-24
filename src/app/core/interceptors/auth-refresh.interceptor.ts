@@ -26,6 +26,7 @@ export const authRefreshInterceptor: HttpInterceptorFn = (req, next) => {
 
   if (
     req.url.includes('/api/auth/login') ||
+    req.url.includes('/api/auth/login/2fa/verify') ||
     req.url.includes('/api/auth/register') ||
     req.url.includes('/api/auth/refresh')
   ) {

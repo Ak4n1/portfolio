@@ -1,0 +1,1 @@
+import{a as i}from"./chunk-MQB6D6E4.js";import{d as o}from"./chunk-SFS47BZX.js";import{U as r,_ as a}from"./chunk-PWGBBCAH.js";var n=class e{http=a(o);apiUrl=`${i.apiBaseUrl}/api/chat`;sendMessage(t){return this.http.post(this.apiUrl,t)}static \u0275fac=function(s){return new(s||e)};static \u0275prov=r({token:e,factory:e.\u0275fac,providedIn:"root"})};export{n as a};

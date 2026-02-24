@@ -10,7 +10,6 @@ import {
     ElementRef,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { AdminContactService } from '../../../core/services/admin-contact.service';
 import { AuthStateService } from '../../../core/services/auth-state.service';
@@ -35,13 +34,12 @@ export class DashboardContactosComponent implements OnInit {
     private ws = inject(WebSocketService);
     private destroyRef = inject(DestroyRef);
     private elementRef = inject(ElementRef);
-    private sanitizer = inject(DomSanitizer);
 
     private authState = toSignal(this.authStateService.authState, {
         initialValue: { isAuthenticated: false, user: null, isLoading: false },
     });
 
-    private _safeHtmlCache = new Map<string, SafeHtml>();
+    private _safeHtmlCache = new Map<string, string>();
 
     contacts = signal<ContactResponse[]>([]);
     unreadCount = signal(0);
@@ -74,13 +72,19 @@ export class DashboardContactosComponent implements OnInit {
 
     getRelativeTime = getRelativeTime;
 
-    getSafeHtml(html: string | undefined): SafeHtml {
+    getSafeHtml(html: string | undefined): string {
         const s = html || '';
         const cached = this._safeHtmlCache.get(s);
         if (cached) return cached;
-        // Procesar saltos de línea literales si los hay
-        const processed = s.replace(/&lt;br\s*\/?&gt;/gi, '<br>');
-        const safe = this.sanitizer.bypassSecurityTrustHtml(processed);
+        const escaped = s
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+        const safe = escaped
+            .replace(/&lt;br\s*\/?&gt;/gi, '<br>')
+            .replace(/\r?\n/g, '<br>');
         this._safeHtmlCache.set(s, safe);
         return safe;
     }

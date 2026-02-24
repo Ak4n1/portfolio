@@ -2,7 +2,7 @@ import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
-import { AuthService, UserResponse, UpdateProfileRequest } from '../../../core/services/auth.service';
+import { AuthService, UserResponse, UpdateProfileRequest, TwoFactorSetupInitResponse, TrustedDeviceItem } from '../../../core/services/auth.service';
 import { AuthStateService } from '../../../core/services/auth-state.service';
 import { ConfirmModalComponent } from '../../../core/components/confirm-modal/confirm-modal.component';
 
@@ -35,6 +35,22 @@ export class DashboardConfiguracionComponent implements OnInit {
   savingPassword = signal(false);
   receiveEmails = signal(true);
   confirmDisableVisible = signal(false);
+  twoFactorEnabled = signal(false);
+  loadingTwoFactor = signal(false);
+  enablingTwoFactor = signal(false);
+  twoFactorInitData = signal<TwoFactorSetupInitResponse | null>(null);
+  twoFactorCode = signal('');
+  twoFactorError = signal<string | null>(null);
+  twoFactorInfo = signal<string | null>(null);
+  showManualSetup = signal(false);
+  trustedDevices = signal<TrustedDeviceItem[]>([]);
+  trustedDevicesLoading = signal(false);
+  trustedDevicesModalVisible = signal(false);
+  disablingTwoFactor = signal(false);
+  disableTwoFactorPassword = signal('');
+  disableTwoFactorCode = signal('');
+  confirmDisableTwoFactorVisible = signal(false);
+  manualKeyCopied = signal(false);
 
   // Password visibility toggles
   showCurrentPassword = signal(false);
@@ -74,8 +90,13 @@ export class DashboardConfiguracionComponent implements OnInit {
     'Tu cuenta se deshabilitará y no podrás iniciar sesión hasta que un administrador la reactive. ¿Continuar?'
   );
 
+  confirmDisableTwoFactorMessage = computed(() =>
+    'Se desactivara 2FA en tu cuenta. En Google Authenticator, elimina manualmente el codigo anterior para evitar confusiones futuras. Quieres continuar?'
+  );
+
   ngOnInit(): void {
     this.loadProfile();
+    this.loadTwoFactorStatus();
   }
 
   loadProfile(): void {
@@ -132,6 +153,10 @@ export class DashboardConfiguracionComponent implements OnInit {
         this.authStateService.setLoggedOut();
         this.router.navigate(['/forgot-password']);
       },
+      error: () => {
+        this.authStateService.setLoggedOut();
+        this.router.navigate(['/forgot-password']);
+      },
     });
   }
 
@@ -170,5 +195,195 @@ export class DashboardConfiguracionComponent implements OnInit {
       },
       error: () => this.closeDisableAccountModal(),
     });
+  }
+
+  loadTwoFactorStatus(): void {
+    this.loadingTwoFactor.set(true);
+    this.authService.getTwoFactorStatus().subscribe({
+      next: (res) => {
+        this.twoFactorEnabled.set(!!res.enabled);
+        this.loadingTwoFactor.set(false);
+      },
+      error: () => {
+        this.loadingTwoFactor.set(false);
+        this.twoFactorError.set('No se pudo consultar el estado de 2FA.');
+      },
+    });
+  }
+
+  initTwoFactor(): void {
+    this.twoFactorError.set(null);
+    this.twoFactorInfo.set(null);
+    this.enablingTwoFactor.set(true);
+    this.authService.initTwoFactorSetup().subscribe({
+      next: (res) => {
+        this.twoFactorInitData.set(res);
+        this.showManualSetup.set(false);
+        this.enablingTwoFactor.set(false);
+      },
+      error: (err) => {
+        this.twoFactorError.set(err?.error?.message || 'No se pudo iniciar la configuración de 2FA.');
+        this.enablingTwoFactor.set(false);
+      },
+    });
+  }
+
+  setTwoFactorCode(value: string): void {
+    this.twoFactorCode.set((value || '').replace(/[^0-9]/g, '').slice(0, 6));
+  }
+
+  toggleManualSetup(): void {
+    this.showManualSetup.update((v) => !v);
+    this.manualKeyCopied.set(false);
+  }
+
+  copyManualKey(value: string): void {
+    const key = (value || '').trim();
+    if (!key) return;
+    navigator.clipboard.writeText(key).then(() => {
+      this.manualKeyCopied.set(true);
+      setTimeout(() => this.manualKeyCopied.set(false), 1800);
+    });
+  }
+
+  closeTwoFactorSetup(): void {
+    this.twoFactorInitData.set(null);
+    this.twoFactorCode.set('');
+    this.showManualSetup.set(false);
+    this.manualKeyCopied.set(false);
+    this.twoFactorError.set(null);
+  }
+
+  verifyAndEnableTwoFactor(): void {
+    if (this.twoFactorCode().length < 6) return;
+    this.twoFactorError.set(null);
+    this.twoFactorInfo.set(null);
+    this.enablingTwoFactor.set(true);
+    this.authService.verifyTwoFactorSetup(this.twoFactorCode()).subscribe({
+      next: (res) => {
+        this.enablingTwoFactor.set(false);
+        this.twoFactorEnabled.set(true);
+        this.twoFactorInfo.set(res.message || '2FA activado.');
+        this.twoFactorCode.set('');
+        this.twoFactorInitData.set(null);
+        if (res.requiresReLogin) {
+          this.authStateService.setLoggedOut();
+          this.router.navigate(['/login']);
+        }
+      },
+      error: (err) => {
+        this.enablingTwoFactor.set(false);
+        this.twoFactorError.set(err?.error?.message || 'Código 2FA inválido.');
+      },
+    });
+  }
+
+  openTrustedDevicesModal(): void {
+    this.trustedDevicesModalVisible.set(true);
+    this.loadTrustedDevices();
+  }
+
+  closeTrustedDevicesModal(): void {
+    this.trustedDevicesModalVisible.set(false);
+  }
+
+  loadTrustedDevices(): void {
+    this.trustedDevicesLoading.set(true);
+    this.authService.getTrustedDevices().subscribe({
+      next: (res) => {
+        this.trustedDevices.set(res.items ?? []);
+        this.trustedDevicesLoading.set(false);
+      },
+      error: () => {
+        this.trustedDevicesLoading.set(false);
+        this.twoFactorError.set('No se pudieron cargar los dispositivos confiables.');
+      },
+    });
+  }
+
+  revokeTrustedDevice(deviceId: number): void {
+    const target = this.trustedDevices().find((d) => d.id === deviceId);
+    if (target?.current) {
+      this.twoFactorInfo.set('Este es tu dispositivo actual. No se puede revocar desde esta sesion.');
+      return;
+    }
+    this.authService.revokeTrustedDevice(deviceId).subscribe({
+      next: (res) => {
+        this.twoFactorInfo.set(res.message);
+        this.loadTrustedDevices();
+      },
+      error: (err) => {
+        this.twoFactorError.set(err?.error?.message || 'No se pudo revocar el dispositivo.');
+      },
+    });
+  }
+
+  revokeAllTrustedDevices(): void {
+    const hasRevokable = this.trustedDevices().some((d) => !d.current);
+    if (!hasRevokable) {
+      this.twoFactorInfo.set('No hay otros dispositivos para revocar.');
+      return;
+    }
+    this.authService.revokeAllTrustedDevices().subscribe({
+      next: (res) => {
+        this.twoFactorInfo.set(res.message);
+        this.loadTrustedDevices();
+      },
+      error: (err) => {
+        this.twoFactorError.set(err?.error?.message || 'No se pudieron revocar los dispositivos.');
+      },
+    });
+  }
+
+  disableTwoFactorNow(): void {
+    if (!this.disableTwoFactorPassword() || this.disableTwoFactorCode().length < 6) return;
+    this.disablingTwoFactor.set(true);
+    this.twoFactorError.set(null);
+    this.twoFactorInfo.set(null);
+    this.authService.disableTwoFactor(this.disableTwoFactorPassword(), this.disableTwoFactorCode()).subscribe({
+      next: (res) => {
+        this.disablingTwoFactor.set(false);
+        this.twoFactorEnabled.set(false);
+        this.disableTwoFactorPassword.set('');
+        this.disableTwoFactorCode.set('');
+        this.twoFactorInfo.set(res.message);
+        this.authService.logout().subscribe({
+          next: () => {
+            this.authStateService.setLoggedOut();
+            this.router.navigate(['/login'], { replaceUrl: true, queryParams: { reason: '2fa-disabled' } });
+          },
+          error: () => {
+            this.authStateService.setLoggedOut();
+            this.router.navigate(['/login'], { replaceUrl: true, queryParams: { reason: '2fa-disabled' } });
+          },
+        });
+      },
+      error: (err) => {
+        this.disablingTwoFactor.set(false);
+        this.twoFactorError.set(err?.error?.message || 'No se pudo desactivar 2FA.');
+      },
+    });
+  }
+
+  openDisableTwoFactorModal(): void {
+    if (this.disablingTwoFactor() || !this.disableTwoFactorPassword() || this.disableTwoFactorCode().length < 6) return;
+    this.confirmDisableTwoFactorVisible.set(true);
+  }
+
+  closeDisableTwoFactorModal(): void {
+    this.confirmDisableTwoFactorVisible.set(false);
+  }
+
+  onConfirmDisableTwoFactor(): void {
+    this.closeDisableTwoFactorModal();
+    this.disableTwoFactorNow();
+  }
+
+  setDisableTwoFactorPassword(value: string): void {
+    this.disableTwoFactorPassword.set(value ?? '');
+  }
+
+  setDisableTwoFactorCode(value: string): void {
+    this.disableTwoFactorCode.set((value || '').replace(/[^0-9]/g, '').slice(0, 6));
   }
 }

@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, AfterViewChecked, inject, computed, ChangeDetectorRef, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DomSanitizer, SafeHtml, Title } from '@angular/platform-browser';
+import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { trigger, transition, style, animate } from '@angular/animations';
@@ -41,7 +41,6 @@ export class ProjectDetailComponent implements OnInit, OnDestroy, AfterViewCheck
   private wsService = inject(WebSocketService);
   private analyticsService = inject(AnalyticsService);
   private analyticsEvents = inject(AnalyticsEventsService);
-  private sanitizer = inject(DomSanitizer);
   private cdr = inject(ChangeDetectorRef);
   private ngZone = inject(NgZone);
   private destroy$ = new Subject<void>();
@@ -50,7 +49,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy, AfterViewCheck
   private scrollListenerAttached = false;
 
   /** Cache para evitar recalcular SafeHtml en cada ciclo de change detection */
-  private _safeHtmlCache = new Map<string, SafeHtml>();
+  private _safeHtmlCache = new Map<string, string>();
 
   private authState = toSignal(this.authStateService.authState, { initialValue: null });
   isAdmin = computed(() => {
@@ -78,13 +77,20 @@ export class ProjectDetailComponent implements OnInit, OnDestroy, AfterViewCheck
   faDesktop = faDesktop;
   faServer = faServer;
 
-  /** Permite estilos inline y br codificados (&lt;br&gt;). Con cache para no bloquear CD. */
-  getSafeHtml(html: string | undefined): SafeHtml {
+  /** Renderiza HTML seguro para evitar inyección desde contenido dinámico. */
+  getSafeHtml(html: string | undefined): string {
     const s = html || '';
     const cached = this._safeHtmlCache.get(s);
     if (cached) return cached;
-    const processed = s.replace(/&lt;br\s*\/?&gt;/gi, '<br>');
-    const safe = this.sanitizer.bypassSecurityTrustHtml(processed);
+    const escaped = s
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+    const safe = escaped
+      .replace(/&lt;br\s*\/?&gt;/gi, '<br>')
+      .replace(/\r?\n/g, '<br>');
     this._safeHtmlCache.set(s, safe);
     return safe;
   }

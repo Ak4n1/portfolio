@@ -271,6 +271,8 @@
   letter-spacing: 0.03em;
   cursor: pointer;
   transition: background 0.2s, box-shadow 0.2s;
+  margin: auto;
+  display: block;
 }
 
 .config-btn-primary:hover:not(:disabled) {
@@ -517,6 +519,354 @@
 
 .config-error {
   color: #f87171;
+}
+
+.config-ok {
+  color: #4ade80;
+  margin: 0.5rem 0;
+  font-size: 0.9rem;
+}
+
+.config-2fa-box {
+  margin-top: 1rem;
+  padding: 1rem;
+  border: 1px solid color-mix(in srgb, var(--color-primary) 25%, transparent);
+  border-radius: var(--border-radius-md);
+  background: color-mix(in srgb, var(--color-text-primary) 6%, transparent);
+}
+
+.config-2fa-box-head {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 0.35rem;
+}
+
+.config-2fa-close-btn {
+  border: 1px solid color-mix(in srgb, var(--color-text-primary) 28%, transparent);
+  background: color-mix(in srgb, var(--color-text-primary) 8%, transparent);
+  color: var(--color-text-secondary);
+  border-radius: 8px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 0.35rem 0.6rem;
+  cursor: pointer;
+}
+
+.config-2fa-close-btn:hover {
+  color: var(--color-text-primary);
+  border-color: color-mix(in srgb, var(--color-primary) 35%, transparent);
+}
+
+.config-2fa-label {
+  margin: 0 0 0.35rem;
+  color: var(--color-text-secondary);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.config-2fa-key {
+  display: inline-flex;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.6rem 0.75rem;
+  border-radius: 6px;
+  border: 1px solid color-mix(in srgb, var(--color-primary) 24%, transparent);
+  background: color-mix(in srgb, var(--color-primary) 12%, transparent);
+  color: var(--color-text-primary);
+  font-size: 0.82rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  letter-spacing: 0.08em;
+  overflow-wrap: anywhere;
+}
+
+.config-2fa-key-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.5rem;
+  align-items: stretch;
+}
+
+.config-2fa-copy-btn {
+  padding: 0.6rem 0.8rem;
+  border-radius: 8px;
+  border: 1px solid color-mix(in srgb, var(--color-primary) 30%, transparent);
+  background: color-mix(in srgb, var(--color-primary) 10%, transparent);
+  color: var(--color-primary);
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.config-2fa-copy-btn:hover {
+  background: color-mix(in srgb, var(--color-primary) 18%, transparent);
+}
+
+.config-2fa-manual-card {
+  margin-top: 0.6rem;
+  margin-bottom: 0.9rem;
+  padding: 0.75rem;
+  border-radius: var(--border-radius-md);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 18%, transparent);
+  background: color-mix(in srgb, var(--color-primary) 6%, transparent);
+}
+
+.config-2fa-manual-hint {
+  margin: 0.5rem 0 0;
+  font-size: 0.78rem;
+  color: var(--color-text-secondary);
+}
+
+.config-2fa-uri {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+  word-break: break-all;
+}
+
+.config-qr-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 0.75rem;
+}
+
+.config-qr-image {
+  width: 220px;
+  height: 220px;
+  border-radius: 10px;
+  border: 1px solid color-mix(in srgb, var(--color-primary) 20%, transparent);
+  background: #fff;
+  padding: 8px;
+}
+
+.config-2fa-expire {
+  margin: 0 0 0.75rem;
+  text-align: center;
+  color: var(--color-text-secondary);
+  font-size: 0.85rem;
+}
+
+.config-2fa-confirm-btn {
+  display: block;
+  margin: 1rem auto 0;
+  min-width: 270px;
+}
+
+.config-2fa-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-top: 0.75rem;
+  align-items: stretch;
+}
+
+.config-2fa-actions .config-btn-outline,
+.config-2fa-actions .config-btn-danger {
+  min-height: 44px;
+  padding: 0.75rem 1.25rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.config-2fa-actions .config-btn-danger {
+  margin: 0;
+}
+
+.config-2fa-help-accordion {
+  margin: 1.1rem 0 1rem;
+  padding: 0.9rem;
+  border: 1px solid color-mix(in srgb, var(--color-primary) 20%, transparent);
+  border-radius: var(--border-radius-md);
+  background: color-mix(in srgb, var(--color-primary) 6%, transparent);
+}
+
+.config-2fa-help-head {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin: 0;
+  cursor: pointer;
+}
+
+.config-2fa-help-head::-webkit-details-marker {
+  display: none;
+}
+
+.config-2fa-help-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  background: #fff;
+  padding: 6px;
+  border: 1px solid color-mix(in srgb, var(--color-primary) 25%, transparent);
+}
+
+.config-2fa-help-title {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.config-2fa-help-chevron {
+  margin-left: auto;
+  color: var(--color-text-secondary);
+  transition: transform 0.2s ease;
+}
+
+.config-2fa-help-accordion[open] .config-2fa-help-chevron {
+  transform: rotate(180deg);
+}
+
+.config-2fa-help-body {
+  margin-top: 0.65rem;
+}
+
+.config-2fa-help-steps {
+  margin: 0;
+  padding-left: 0;
+  color: var(--color-text-secondary);
+  font-size: 0.86rem;
+  line-height: 1.45;
+  display: grid;
+  gap: 0.45rem;
+  list-style: none;
+  counter-reset: step;
+}
+
+.config-2fa-help-steps li {
+  counter-increment: step;
+  background: color-mix(in srgb, var(--color-text-primary) 6%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 14%, transparent);
+  border-radius: 8px;
+  padding: 0.45rem 0.55rem 0.45rem 2.05rem;
+  position: relative;
+}
+
+.config-2fa-help-steps li::before {
+  content: counter(step) ".";
+  position: absolute;
+  left: 0.7rem;
+  top: 0.45rem;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.config-2fa-help-note {
+  margin: 0;
+  padding-left: 0;
+  color: var(--color-text-secondary);
+  font-size: 0.86rem;
+  line-height: 1.45;
+  display: grid;
+  gap: 0.45rem;
+  list-style: none;
+  counter-reset: step;
+  counter-increment: step;
+  background: color-mix(in srgb, var(--color-text-primary) 6%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 14%, transparent);
+  border-radius: 8px;
+  position: relative;
+  padding: 5px;
+  margin-top: 10px;
+}
+
+.td-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1100;
+  padding: 1rem;
+}
+
+.td-modal {
+  width: 100%;
+  max-width: 560px;
+  background: var(--background-dark);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 20%, transparent);
+  border-radius: 12px;
+  padding: 1rem;
+}
+
+.td-modal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.td-modal-head h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.td-close {
+  border: 1px solid var(--color-border);
+  background: transparent;
+  color: var(--color-text-secondary);
+  border-radius: 8px;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+}
+
+.td-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-height: 50vh;
+  overflow: auto;
+}
+
+.td-item {
+  border: 1px solid color-mix(in srgb, var(--color-primary) 16%, transparent);
+  border-radius: 10px;
+  padding: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.td-name {
+  margin: 0 0 0.2rem;
+  color: var(--color-text-primary);
+  font-weight: 600;
+}
+
+.td-current-badge {
+  display: inline-block;
+  margin-left: 0.5rem;
+  padding: 0.15rem 0.45rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  background: color-mix(in srgb, var(--color-primary) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 30%, transparent);
+  vertical-align: middle;
+}
+
+.td-date {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: 0.82rem;
+}
+
+.td-actions {
+  margin-top: 0.85rem;
+  display: flex;
+  justify-content: flex-end;
 }
 
 .config-muted {

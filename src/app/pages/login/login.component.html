@@ -1,10 +1,46 @@
 <section class="auth-page">
   <div class="auth-container">
     <p class="auth-error" *ngIf="serverError">{{ serverError }}</p>
-    <app-login-form (submitForm)="onSubmit($event)" (close)="onClose()"></app-login-form>
-    <p class="auth-footer">
-      ¿No tienes cuenta? <a routerLink="/register">Registrarse</a><br>
-      <a routerLink="/forgot-password">¿Olvidaste tu contraseña?</a>
-    </p>
+
+    <ng-container *ngIf="!pendingChallengeId; else mfaStep">
+      <app-login-form (submitForm)="onSubmit($event)" (close)="onClose()"></app-login-form>
+      <p class="auth-footer">
+        No tienes cuenta? <a routerLink="/register">Registrarse</a><br>
+        <a routerLink="/forgot-password">Olvidaste tu password?</a>
+      </p>
+    </ng-container>
+
+    <ng-template #mfaStep>
+      <div class="mfa-form">
+        <h2 class="auth-title">Verificacion 2FA</h2>
+        <p class="auth-subtitle">Ingresa el codigo de Google Authenticator</p>
+        <p class="mfa-time">Expira en {{ challengeExpiresInSec }}s</p>
+
+        <div class="form-group">
+          <label for="mfa-code">Codigo</label>
+          <input
+            id="mfa-code"
+            type="text"
+            maxlength="6"
+            inputmode="numeric"
+            autocomplete="one-time-code"
+            [(ngModel)]="mfaCode"
+            placeholder="123456"
+          />
+        </div>
+
+        <label class="mfa-trust">
+          <input type="checkbox" [(ngModel)]="trustThisDevice" />
+          Confiar en este dispositivo
+        </label>
+
+        <div class="auth-actions">
+          <button type="button" class="btn-cancel" (click)="cancelMfaStep()">Volver</button>
+          <button type="button" class="btn-submit" (click)="onSubmitMfa()" [disabled]="mfaCode.length < 6">
+            Verificar
+          </button>
+        </div>
+      </div>
+    </ng-template>
   </div>
 </section>
